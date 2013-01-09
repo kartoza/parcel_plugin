@@ -30,7 +30,7 @@ from qgis.gui import *
 from qgis.core import *
 # UI imports
 from ui_objectManager import ui_dlg_objectManager
-from ui_beaconForm import Ui_dlg_beaconForm
+from ui_pointForm import ui_dlg_pointForm
 from ui_objectRemover import ui_dlg_objectRemover
 # Plugin imports
 import database
@@ -61,35 +61,36 @@ class controller():
         elif option == 1: self.editPoint()
         elif option == 2: self.deletePoint()
 
+    # checked
     def createPoint(self):
         """ Create new point
         """
-        #dlg = ui_form()
-        #dlg.show()
-        #dlg.exec_()
-        pass
-
+        dlg = ui_form(self.pointDict)
+        dlg.show()
+        dlg.exec_()
+        
     def editPoint(self):
         """ Edit existing point
         """
         QMessageBox.information(None, "Construction", "Under Construction!")
         pass
 
+    # checked
     def deletePoint(self):
         """ Delete existing point
         """
-        #dlg = ui_remover(self.iface, self.layers["beacons"])
-        #dlg.show()
-        #dlg.exec_()
-        #self.iface.mapCanvas().setMapTool(dlg.oldTool)
-        #self.layers["beacons"].removeSelection()
+        dlg = ui_remover(self.pointDict, self.iface, self.layers["points"])
+        dlg.show()
+        dlg.exec_()
+        self.iface.mapCanvas().setMapTool(dlg.oldTool)
+        self.layers["points"].removeSelection()
 
 
 # ========== ============ ==========
 # ========== UI Handelers ==========
 # ========== ============ ==========
 
-#checked
+# checked
 class ui_manager(QDialog):
     """ Retrieve option for managing points
     0. Create New Point
@@ -108,9 +109,7 @@ class ui_manager(QDialog):
         # add event signal to initialized dialog
         self.connect(self.ui.btnbx_options, SIGNAL("clicked(QAbstractButton*)"), self.executeOption)
         # blackout during development
-        self.ui.rdbtn_add.setEnabled(False)
         self.ui.rdbtn_edit.setEnabled(False)
-        self.ui.rdbtn_del.setEnabled(False)
     
     # checked
     def executeOption(self, button):
@@ -126,16 +125,20 @@ class ui_manager(QDialog):
         else:
             QDialog.reject(self)
 
-
+# checked
 class ui_form(QDialog):
-
-    def __init__(self):
+    
+    # checked
+    def __init__(self, pointDict):
         # initialize dialog
         QDialog.__init__(self, None, Qt.WindowStaysOnTopHint)
-        self.ui = Ui_dlg_beaconForm()
-        self.ui.setupUi(self)
         # save other references
+        self.pointDict = pointDict
         self.dbmanager = database.dbmanager()
+        self.pointFields = self.dbmanager.getSchema(pointDict["table"], [pointDict["the_geom"], pointDict["pkey"]])
+        # initialize dialog
+        self.ui = ui_dlg_pointForm()
+        self.ui.setupUi(self, self.pointFields)
         # add event signals to initialized dialog
         self.connect(self.ui.btnbx_options, SIGNAL("clicked(QAbstractButton*)"), self.executeOption)
         # color coding stuffs
@@ -144,30 +147,35 @@ class ui_form(QDialog):
             "invalid":"background-color: rgba(107, 107, 255, 150);"
         }
     
+    # checked
     def executeOption(self, button):
         """ Check and execute selected option
         """
         if self.ui.btnbx_options.standardButton(button) == QDialogButtonBox.Save:
+            data = {}
             # form validation
             valid = False
             try:
                 # check required fields
                 valid = True
-                for wdgt in self.findChildren(QLineEdit):
-                    if bool(wdgt.property("required").toBool()):
-                        if str(wdgt.text()).strip() is "":
-                            wdgt.setStyleSheet(self.colours["empty"])
+                for lnedt in self.ui.lnedts:
+                    if bool(lnedt.property("required").toBool()):
+                        if str(lnedt.text()).strip() is "":
+                            lnedt.setStyleSheet(self.colours["empty"])
                             valid = False
-                        else: wdgt.setStyleSheet("")
+                        else: lnedt.setStyleSheet("")
                 if not valid: raise Exception("Empty Required Fields", "Please ensure that all required fields are completed.") 
                 # check correct field types
                 valid = True
-                for wdgt in self.findChildren(QLineEdit):
+                for index,lnedt in enumerate(self.ui.lnedts):
                     try:
-                        cast = str(wdgt.property("type").toString())
-                        if cast == "double": float(wdgt.text())
-                    except ValueError:
-                        wdgt.setStyleSheet(self.colours["invalid"])
+                        if str(lnedt.text()).strip() is not "":
+                            cast = self.pointFields[index]["type"]
+                            tmp = cast(str(lnedt.text()))
+                            data[self.pointFields[index]["name"]] = tmp
+                            lnedt.setStyleSheet("")
+                    except Exception as e:
+                        lnedt.setStyleSheet(self.colours["invalid"])
                         valid = False
                 if not valid: raise Exception("Invalid Field Types", "Please ensure that fields are completed with valid types.")
                 valid = True
@@ -176,13 +184,9 @@ class ui_form(QDialog):
                 QMessageBox.information(None, title, msg)
             if valid:
                 # construct query
-                data = {}
-                for wdgt in self.findChildren(QLineEdit):
-                    if str(wdgt.text()) != "":
-                        data[str(wdgt.property("db_field").toString())] = (lambda s,t: "'%s'"%(s,) if t == "string" else "%s"%(s,))(str(wdgt.text()), str(wdgt.property("type").toString()))
-                sql = "INSERT INTO beacons({fields}) VALUES({values})".format(fields = ", ".join(sorted(data.keys())), values = ", ".join([data[i] for i in sorted(data.keys())]))
+                sql = self.pointDict["sql"]["insert"].format(fields = ", ".join(sorted(data.keys())), values = ", ".join(["%s" for i in sorted(data.keys())]))
                 # execute query
-                self.dbmanager.query(sql)
+                self.dbmanager.query(sql, [data[k] for k in sorted(data.keys())])
                 self.accept()
         else:
             self.reject()

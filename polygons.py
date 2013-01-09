@@ -189,7 +189,6 @@ class ui_form(QDialog):
                 query = self.polygonDict["sql"]["insert"].split("; ")
                 sql = "; ".join([query[0].format(polygon_id = polygon_id), " ".join([query[1].format(polygon_id = polygon_id, point_id = point_id, sequence = self.sequence.index(point_id) + 1) for point_id in self.sequence])])
                 ## execute query
-                QMessageBox.information(None, "", sql)
                 self.dbmanager.query(sql)
                 self.iface.mapCanvas().setMapTool(self.oldTool)
                 self.layer.removeSelection()

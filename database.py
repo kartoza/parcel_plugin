@@ -46,13 +46,14 @@ class dbmanager():
         except Exception as e:
             raise Exception('Could not disconnect from database!\nError raised: {error}.'.format(error = str(e)))
 
-    def query(self, query):
+    def query(self, query, data=None):
         """ Execute query using given data against connection object
         @returns resultset (array structure)
         """
         try:
             self.connect()
-            self.cursor.execute(query)
+            if data is None: self.cursor.execute(query)
+            else: self.cursor.execute(query, data)
             records = None
             try:
                 records = self.cursor.fetchall()
@@ -62,5 +63,22 @@ class dbmanager():
             self.disconnect()
             return records
         except Exception as e:
-            raise Exception('Backend database query failed!\nTried to execute: "%s".\nError raised: %s.' %(query, str(e)))
+            raise Exception('Backend database query failed!\nError raised: %s.' %(str(e),))
+    
+    def getSchema(self, tbl_name, fld_ignore):
+        """ Get information abot a specific table 
+        @returns [<Field Name>, <Field Type>, <Nullable>] (list)
+        """
+        info = [{"name":data[0], "type":self._pythonize_type(data[1]),
+            "required":False if data[2].lower() == 'yes' else True} for data in reversed(self.query("SELECT column_name, data_type, is_nullable FROM information_schema.columns WHERE table_name = '{table}' AND column_name NOT IN({ignore});".format(table = tbl_name, ignore = ", ".join("'%s'" %(i,) for i in fld_ignore))))]
+        return info
+
+    def _pythonize_type(self, db_type):
+        """ Get python type
+        @returns type (type)
+        """
+        if "char" in db_type.lower(): return str
+        elif "double" in db_type.lower(): return float
+        elif "integer" in db_type.lower(): return int
+        else: return object
 

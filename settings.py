@@ -39,7 +39,8 @@ DATABASE_LAYERS["points"] = {
     "the_geom_type":"points",
     "sql":{
         "select":"SELECT beacon FROM beacons WHERE gid = {id}",
-        "delete":"DELETE FROM beacons WHERE beacon = '{object_id}';"
+        "delete":"DELETE FROM beacons WHERE beacon = '{object_id}';",
+        "insert":"INSERT INTO beacons({fields}) VALUES ({values});"
     }
 }
 DATABASE_LAYERS["polygons"] = {

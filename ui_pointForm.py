@@ -7,7 +7,7 @@ except AttributeError:
     _fromUtf8 = lambda s: s
 
 class ui_dlg_pointForm(object):
-    def setupUi(self, dlg_pointForm):
+    def setupUi(self, dlg_pointForm, pointFields):
         dlg_pointForm.setObjectName(_fromUtf8("dlg_pointForm"))
         dlg_pointForm.resize(233, 255)
         dlg_pointForm.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
@@ -20,41 +20,22 @@ class ui_dlg_pointForm(object):
         self.formLayout = QtGui.QFormLayout()
         self.formLayout.setFieldGrowthPolicy(QtGui.QFormLayout.AllNonFixedFieldsGrow)
         self.formLayout.setObjectName(_fromUtf8("formLayout"))
-        self.lb_name = QtGui.QLabel(dlg_pointForm)
-        self.lb_name.setObjectName(_fromUtf8("lb_name"))
-        self.formLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.lb_name)
-        self.lnedt_name = QtGui.QLineEdit(dlg_pointForm)
-        self.lnedt_name.setProperty("required", True)
-        self.lnedt_name.setObjectName(_fromUtf8("lnedt_name"))
-        self.formLayout.setWidget(0, QtGui.QFormLayout.FieldRole, self.lnedt_name)
-        self.lb_lat = QtGui.QLabel(dlg_pointForm)
-        self.lb_lat.setObjectName(_fromUtf8("lb_lat"))
-        self.formLayout.setWidget(1, QtGui.QFormLayout.LabelRole, self.lb_lat)
-        self.lnedt_lat = QtGui.QLineEdit(dlg_pointForm)
-        self.lnedt_lat.setProperty("required", True)
-        self.lnedt_lat.setObjectName(_fromUtf8("lnedt_lat"))
-        self.formLayout.setWidget(1, QtGui.QFormLayout.FieldRole, self.lnedt_lat)
-        self.lbl_long = QtGui.QLabel(dlg_pointForm)
-        self.lbl_long.setObjectName(_fromUtf8("lbl_long"))
-        self.formLayout.setWidget(2, QtGui.QFormLayout.LabelRole, self.lbl_long)
-        self.lnedt_long = QtGui.QLineEdit(dlg_pointForm)
-        self.lnedt_long.setProperty("required", True)
-        self.lnedt_long.setObjectName(_fromUtf8("lnedt_long"))
-        self.formLayout.setWidget(2, QtGui.QFormLayout.FieldRole, self.lnedt_long)
-        self.lbl_loc = QtGui.QLabel(dlg_pointForm)
-        self.lbl_loc.setObjectName(_fromUtf8("lbl_loc"))
-        self.formLayout.setWidget(3, QtGui.QFormLayout.LabelRole, self.lbl_loc)
-        self.lnedt_loc = QtGui.QLineEdit(dlg_pointForm)
-        self.lnedt_loc.setProperty("required", False)
-        self.lnedt_loc.setObjectName(_fromUtf8("lnedt_loc"))
-        self.formLayout.setWidget(3, QtGui.QFormLayout.FieldRole, self.lnedt_loc)
-        self.lbl_surveyor = QtGui.QLabel(dlg_pointForm)
-        self.lbl_surveyor.setObjectName(_fromUtf8("lbl_surveyor"))
-        self.formLayout.setWidget(4, QtGui.QFormLayout.LabelRole, self.lbl_surveyor)
-        self.lnedt_surveyor = QtGui.QLineEdit(dlg_pointForm)
-        self.lnedt_surveyor.setProperty("required", False)
-        self.lnedt_surveyor.setObjectName(_fromUtf8("lnedt_surveyor"))
-        self.formLayout.setWidget(4, QtGui.QFormLayout.FieldRole, self.lnedt_surveyor)
+        
+        self.pointFields = pointFields
+        self.lbls = []
+        self.lnedts = []
+
+        for index,fld in enumerate(self.pointFields):
+            lbl = QtGui.QLabel(dlg_pointForm)
+            lbl.setObjectName(_fromUtf8("lbl_%s" %(fld["name"],)))
+            self.formLayout.setWidget(index, QtGui.QFormLayout.LabelRole, lbl)
+            self.lbls.append(lbl)
+            lnedt = QtGui.QLineEdit(dlg_pointForm)
+            lnedt.setProperty("required", fld["required"])
+            lnedt.setObjectName(_fromUtf8("lnedt_%s" %(fld["name"],)))
+            self.formLayout.setWidget(index, QtGui.QFormLayout.FieldRole, lnedt)
+            self.lnedts.append(lnedt)
+        
         self.verticalLayout.addLayout(self.formLayout)
         self.line = QtGui.QFrame(dlg_pointForm)
         self.line.setFrameShape(QtGui.QFrame.HLine)
@@ -80,20 +61,10 @@ class ui_dlg_pointForm(object):
 
     def retranslateUi(self, dlg_pointForm):
         dlg_pointForm.setWindowTitle(QtGui.QApplication.translate("dlg_pointForm", "Beacon Form", None, QtGui.QApplication.UnicodeUTF8))
-        self.lb_name.setText(QtGui.QApplication.translate("dlg_pointForm", "*Name", None, QtGui.QApplication.UnicodeUTF8))
-        self.lnedt_name.setProperty("type", QtGui.QApplication.translate("dlg_pointForm", "string", None, QtGui.QApplication.UnicodeUTF8))
-        self.lnedt_name.setProperty("db_field", QtGui.QApplication.translate("dlg_pointForm", "beacon", None, QtGui.QApplication.UnicodeUTF8))
-        self.lb_lat.setText(QtGui.QApplication.translate("dlg_pointForm", "*Latitude", None, QtGui.QApplication.UnicodeUTF8))
-        self.lnedt_lat.setProperty("type", QtGui.QApplication.translate("dlg_pointForm", "double", None, QtGui.QApplication.UnicodeUTF8))
-        self.lnedt_lat.setProperty("db_field", QtGui.QApplication.translate("dlg_pointForm", "y", None, QtGui.QApplication.UnicodeUTF8))
-        self.lbl_long.setText(QtGui.QApplication.translate("dlg_pointForm", "*Longitude", None, QtGui.QApplication.UnicodeUTF8))
-        self.lnedt_long.setProperty("type", QtGui.QApplication.translate("dlg_pointForm", "double", None, QtGui.QApplication.UnicodeUTF8))
-        self.lnedt_long.setProperty("db_field", QtGui.QApplication.translate("dlg_pointForm", "x", None, QtGui.QApplication.UnicodeUTF8))
-        self.lbl_loc.setText(QtGui.QApplication.translate("dlg_pointForm", "Location", None, QtGui.QApplication.UnicodeUTF8))
-        self.lnedt_loc.setProperty("type", QtGui.QApplication.translate("dlg_pointForm", "string", None, QtGui.QApplication.UnicodeUTF8))
-        self.lnedt_loc.setProperty("db_field", QtGui.QApplication.translate("dlg_pointForm", "location", None, QtGui.QApplication.UnicodeUTF8))
-        self.lbl_surveyor.setText(QtGui.QApplication.translate("dlg_pointForm", "Surveyor", None, QtGui.QApplication.UnicodeUTF8))
-        self.lnedt_surveyor.setProperty("type", QtGui.QApplication.translate("dlg_pointForm", "string", None, QtGui.QApplication.UnicodeUTF8))
-        self.lnedt_surveyor.setProperty("db_field", QtGui.QApplication.translate("dlg_pointForm", "name", None, QtGui.QApplication.UnicodeUTF8))
+        
+        for index,fld in enumerate(self.pointFields):
+            self.lbls[index].setText(QtGui.QApplication.translate("dlg_pointForm", ("*" if bool(self.lnedts[index].property("required").toBool()) else "") + fld["name"].title(), None, QtGui.QApplication.UnicodeUTF8))
+            self.lnedts[index].setProperty("type", QtGui.QApplication.translate("dlg_pointForm", str(fld["type"]), None, QtGui.QApplication.UnicodeUTF8))
+        
         self.label.setText(QtGui.QApplication.translate("dlg_pointForm", "<html><head/><body><p><span style=\" color:#ff0000;\">*Required Field</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
 

@@ -62,12 +62,6 @@ class sml_surveyor:
         self.getLayers()
         # add app toolbar
         self.createAppToolBar()
-        lyr = DATABASE_LAYERS["points"]
-        self.getSchema(lyr["table"], [lyr["the_geom"], lyr["pkey"]])
-
-    def getSchema(self, table, ignore):
-        info = self.dbmanager.query("SELECT column_name, data_type, is_nullable FROM information_schema.columns WHERE table_name = '{table}' AND column_name NOT IN({ignore});".format(table = table, ignore = ", ".join("'%s'" %(i,) for i in ignore)))
-        QMessageBox.information(None, "", str(info))
 
     def unload(self):
         """ Uninitialize gui
