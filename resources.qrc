@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/plugins/sml_surveyor" >
+        <file>icon.png</file>
+    </qresource>
+</RCC>
