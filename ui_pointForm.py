@@ -32,6 +32,7 @@ class ui_dlg_pointForm(object):
             self.lbls.append(lbl)
             lnedt = QtGui.QLineEdit(dlg_pointForm)
             lnedt.setProperty("required", fld["required"])
+            lnedt.setProperty("unique", fld["unique"])
             lnedt.setObjectName(_fromUtf8("lnedt_%s" %(fld["name"],)))
             self.formLayout.setWidget(index, QtGui.QFormLayout.FieldRole, lnedt)
             self.lnedts.append(lnedt)

@@ -40,7 +40,7 @@ import database
 # ========== ========== ==========
 
 class controller():
-    """ Class responsible for managing beacons
+    """ Class responsible for managing points
     """
     
     # checked
@@ -136,6 +136,7 @@ class ui_form(QDialog):
         self.pointDict = pointDict
         self.dbmanager = database.dbmanager()
         self.pointFields = self.dbmanager.getSchema(pointDict["table"], [pointDict["the_geom"], pointDict["pkey"]])
+        self.point_id = None
         # initialize dialog
         self.ui = ui_dlg_pointForm()
         self.ui.setupUi(self, self.pointFields)
@@ -144,9 +145,10 @@ class ui_form(QDialog):
         # color coding stuffs
         self.colours = {
             "empty":"background-color: rgba(255, 107, 107, 150);",
-            "invalid":"background-color: rgba(107, 107, 255, 150);"
+            "invalid":"background-color: rgba(107, 107, 255, 150);",
+            "duplicate":"background-color: rgba(107, 255, 107, 150);"
         }
-    
+
     # checked
     def executeOption(self, button):
         """ Check and execute selected option
@@ -178,7 +180,15 @@ class ui_form(QDialog):
                         lnedt.setStyleSheet(self.colours["invalid"])
                         valid = False
                 if not valid: raise Exception("Invalid Field Types", "Please ensure that fields are completed with valid types.")
+                # check unique fields
                 valid = True
+                for index,lnedt in enumerate(self.ui.lnedts):
+                    if bool(lnedt.property("unique").toBool()):
+                        if int(self.dbmanager.query(self.pointDict["sql"]["unique"].format(field = self.pointFields[index]["name"], value = "%s"), data[self.pointFields[index]["name"]])[0][0]) != 0: 
+                            lnedt.setStyleSheet(self.colours["duplicate"])
+                            valid = False
+                        else: lnedt.setStyleSheet("")
+                if not valid: raise Exception("Fields Not Unique", "Please ensure that fields are given unique values.")
             except Exception as e:
                 title, msg = e.args
                 QMessageBox.information(None, title, msg)
@@ -186,7 +196,7 @@ class ui_form(QDialog):
                 # construct query
                 sql = self.pointDict["sql"]["insert"].format(fields = ", ".join(sorted(data.keys())), values = ", ".join(["%s" for i in sorted(data.keys())]))
                 # execute query
-                self.dbmanager.query(sql, [data[k] for k in sorted(data.keys())])
+                self.point_id = self.dbmanager.query(sql, [data[k] for k in sorted(data.keys())])[0][0]
                 self.accept()
         else:
             self.reject()

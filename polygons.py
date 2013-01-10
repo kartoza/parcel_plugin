@@ -88,7 +88,6 @@ class controller():
         dlg.exec_()
         self.iface.mapCanvas().setMapTool(dlg.oldTool)
         self.layers["polygons"].removeSelection()
-        pass
 
 # ========== ============ ==========
 # ========== UI Handelers ==========
@@ -133,7 +132,7 @@ class ui_manager(QDialog):
 class ui_form(QDialog):
     
     # checked
-    def __init__(self, polygonDict, pointDict, iface, layer):
+    def __init__(self, polygonDict, pointDict, iface, layer, selected = None):
         # initialize dialog
         QDialog.__init__(self, None, Qt.WindowStaysOnTopHint)
         self.ui = ui_dlg_polygonForm()
@@ -165,6 +164,15 @@ class ui_form(QDialog):
         self.ui.pshbtn_stop.setEnabled(False)
         self.ui.pshbtn_reset.setEnabled(False)
         self.ui.pshbtn_new.setEnabled(False)
+        # populate dialog if necessary
+        if bool(selected):
+            self.selected = selected
+            for id in self.selected:
+                point_id = str(self.dbmanager.query(self.pointDict["sql"]["select"].format(id = id))[0][0])
+                self.sequence.append(point_id)
+                self.ui.lstwdg_sequence.addItem(QString(point_id))
+            self.layer.setSelectedFeatures(self.selected)
+            self.startSeq()
     
     # checked
     def executeOption(self, button):
@@ -230,23 +238,24 @@ class ui_form(QDialog):
                     self.ui.lstwdg_sequence.addItem(QString(point_id))
                     self.selected.append(feat.id())
             curlyr.setSelectedFeatures(self.selected)
-        else:
-            pass       
-    
 
     def newPoint(self):
-        #if self.capturing:
-        #    self.setEnabled(False)
-        #    self.hide()
-        #    dlg = points.ui_form()
-        #    dlg.show()
-        #    dlg.exec_()
-        #    QMessageBox.information(None, "", "Awkward")
-        #    self.setEnabled(True)
-        #    self.show()
-        #    self.exec_()
-        pass
-    
+        if self.capturing:
+            pos = self.pos()
+            # hide polygon dialog
+            self.hide()
+            # show point dialog 
+            pntdlg = points.ui_form(self.pointDict)
+            pntdlg.show()
+            pntdlg.exec_()
+            # show polygon dialog
+            plydlg = ui_form(self.polygonDict, self.pointDict, self.iface, self.layer, (lambda selected, point: selected + [point] if point is not None else selected)(self.selected, pntdlg.point_id))
+            plydlg.move(pos)            
+            plydlg.show()
+            plydlg.exec_()
+            self.iface.mapCanvas().setMapTool(plydlg.oldTool)
+            self.layer.removeSelection()
+
     # checked
     def startSeq(self):
         """ Start sequence capturing
@@ -255,8 +264,9 @@ class ui_form(QDialog):
         self.capturing = True
         # perform button stuffs
         self.ui.pshbtn_start.setEnabled(False)
+        self.ui.pshbtn_reset.setEnabled(False)
         self.ui.pshbtn_stop.setEnabled(True)
-        #self.ui.pshbtn_new.setEnabled(True)
+        self.ui.pshbtn_new.setEnabled(True)
     
     # checked
     def stopSeq(self):
@@ -266,6 +276,7 @@ class ui_form(QDialog):
         self.capturing = False
         # perform button stuffs
         self.ui.pshbtn_stop.setEnabled(False)
+        self.ui.pshbtn_start.setEnabled(True)
         self.ui.pshbtn_reset.setEnabled(True)
         self.ui.pshbtn_new.setEnabled(False)
     

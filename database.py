@@ -69,8 +69,7 @@ class dbmanager():
         """ Get information abot a specific table 
         @returns [<Field Name>, <Field Type>, <Nullable>] (list)
         """
-        info = [{"name":data[0], "type":self._pythonize_type(data[1]),
-            "required":False if data[2].lower() == 'yes' else True} for data in reversed(self.query("SELECT column_name, data_type, is_nullable FROM information_schema.columns WHERE table_name = '{table}' AND column_name NOT IN({ignore});".format(table = tbl_name, ignore = ", ".join("'%s'" %(i,) for i in fld_ignore))))]
+        info = [{"name":data[0], "type":self._pythonize_type(data[1]), "required":data[2], "unique":data[3]} for data in reversed(self.query("SELECT c.column_name, c.data_type, CASE WHEN c.is_nullable = 'NO' THEN TRUE ELSE FALSE END AS required, CASE WHEN u.column_name IS NOT NULL THEN TRUE ELSE FALSE END AS unique FROM information_schema.columns c LEFT JOIN (SELECT kcu.column_name, tc.table_name FROM information_schema.table_constraints tc LEFT JOIN information_schema.key_column_usage kcu ON tc.constraint_catalog = kcu.constraint_catalog AND tc.constraint_schema = kcu.constraint_schema AND tc.constraint_name = kcu.constraint_name WHERE tc.constraint_type IN ('UNIQUE', 'PRIMARY KEY') AND tc.table_name = '{table}') u ON u.column_name = c.column_name WHERE c.table_name = '{table}' AND c.column_name NOT IN ({ignore});".format(table = tbl_name, ignore = ", ".join("'%s'" %(i,) for i in fld_ignore))))] 
         return info
 
     def _pythonize_type(self, db_type):

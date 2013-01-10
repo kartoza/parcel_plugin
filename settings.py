@@ -27,6 +27,8 @@ DATABASE_LAYERS = {}
 #     "sql": {
 #         "select":<{id}>
 #         "delete":<{object_id}>
+#         "insert":<>
+#         "unique":<{object_id}>
 #     }
 # }
 DATABASE_LAYERS["points"] = {
@@ -40,7 +42,8 @@ DATABASE_LAYERS["points"] = {
     "sql":{
         "select":"SELECT beacon FROM beacons WHERE gid = {id}",
         "delete":"DELETE FROM beacons WHERE beacon = '{object_id}';",
-        "insert":"INSERT INTO beacons({fields}) VALUES ({values});"
+        "insert":"INSERT INTO beacons({fields}) VALUES ({values}) RETURNING gid;",
+        "unique":"SELECT COUNT(*) FROM beacons WHERE {field} = {value};"
     }
 }
 DATABASE_LAYERS["polygons"] = {
