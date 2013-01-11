@@ -43,7 +43,8 @@ DATABASE_LAYERS["points"] = {
         "select":"SELECT beacon FROM beacons WHERE gid = {id}",
         "delete":"DELETE FROM beacons WHERE beacon = '{object_id}';",
         "insert":"INSERT INTO beacons({fields}) VALUES ({values}) RETURNING gid;",
-        "unique":"SELECT COUNT(*) FROM beacons WHERE {field} = {value};"
+        "unique":"SELECT COUNT(*) FROM beacons WHERE {field} = {value};",
+        "edit":"SELECT {fields} FROM beacons WHERE beacon = '{object_id}';"
     }
 }
 DATABASE_LAYERS["polygons"] = {
@@ -56,10 +57,18 @@ DATABASE_LAYERS["polygons"] = {
     "the_geom_type":"polygons",
     "sql":{
         "select":"SELECT parcel_id FROM parcels WHERE id = {id};",
-        "delete":"DELETE FROM parcel_def WHERE parcel_id = '{object_id}'; DELETE FROM parcel_lookup WHERE parcel_id = '{object_id}';",
-        "insert":"INSERT INTO parcel_lookup(parcel_id) VALUES ('{polygon_id}'); INSERT INTO parcel_def(parcel_id, beacon, sequence) VALUES ('{polygon_id}', '{point_id}', {sequence});",
-        "unique":"SELECT COUNT(*) FROM parcel_lookup WHERE parcel_id = '{object_id}';"
+        "delete":"DELETE FROM parcel_def WHERE parcel_id = '{object_id}';",
+        "insert":"INSERT INTO parcel_def(parcel_id, beacon, sequence) VALUES ('{polygon_id}', '{point_id}', {sequence});",
+        "unique":"SELECT COUNT(*) FROM parcel_lookup WHERE parcel_id = '{object_id}';",
+        "edit":"SELECT b.gid FROM beacons b INNER JOIN parcel_def p ON b.beacon = p.beacon WHERE p.parcel_id = '{object_id}';",
+        "available":"SELECT available FROM parcel_lookup WHERE parcel_id = '{object_id}'",
+        "autocomplete":"SELECT parcel_id FROM parcel_lookup WHERE available;"
     }
 }
+# DB Triggers:
+# - auto create parcel id in parcel_lookup if it does not exist on
+# insert/update on parcel_def
+# - auto update available field in parcel_lookup on insert/update/delete on
+# parcel_def
 
 DATABASE_LAYERS_ORDER = ["points", "polygons"]
