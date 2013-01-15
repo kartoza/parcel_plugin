@@ -1,0 +1,1 @@
+DATABASE_PARAMS = {"USER": "robert", "HOST": "localhost", "PASSWORD": "1CanHaz", "PORT": "5432", "NAME": "sml"}

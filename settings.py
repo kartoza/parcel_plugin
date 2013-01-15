@@ -6,12 +6,15 @@ Contact: robert@afrispatial.co.za
 Company: AfriSpatial
 """
 
+import database_params
+
 # Database settings
-DATABASE_HOST = "localhost"
-DATABASE_PORT = "5432"
-DATABASE_NAME = "sml"
-DATABASE_USER = "robert"
-DATABASE_PASSWORD = "1CanHaz"
+DATABASE_HOST = database_params.DATABASE_PARAMS["HOST"]
+DATABASE_PORT = database_params.DATABASE_PARAMS["PORT"]
+DATABASE_NAME = database_params.DATABASE_PARAMS["NAME"]
+DATABASE_USER = database_params.DATABASE_PARAMS["USER"]
+DATABASE_PASSWORD = database_params.DATABASE_PARAMS["PASSWORD"]
+DATABASE_PARAMS = database_params.DATABASE_PARAMS
 DATABASE_SCHEMA = "public"
 DATABASE_LAYERS = {}
 

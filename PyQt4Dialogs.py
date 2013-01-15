@@ -60,7 +60,6 @@ class dlg_Selector(QDialog):
             if not self.confirmed: 
                 QMessageBox.information(self, "No Confirmation", "Please tick the confimation check box.")
                 return
-            # accept
             self.iface.mapCanvas().setMapTool(self.tool)
             if not self.preserve: self.layer.removeSelection()
             self.accept()
@@ -273,7 +272,6 @@ class dlg_FormPolygon(QDialog):
             for i in self.selector.selected:
                 sequence.append(self.db.query(self.layersDict["POINTS"]["SQL"]["SELECT"], (i,))[0][0])
             self.values_new["sequence"] = sequence
-            # accept
             self.iface.mapCanvas().setMapTool(self.tool)
             self.layers["POINTS"].removeSelection()
             self.layers["POLYGONS"].removeSelection()
@@ -480,6 +478,7 @@ class dlg_FormPoint(QDialog):
             # check unique fields
             valid = True
             for index,lnedt in enumerate(self.lnedts):
+                if str(lnedt.text()).strip() is "": continue
                 if bool(lnedt.property("UNIQUE").toBool()):
                     if self.data[index]["NAME"] in self.values_old.keys() and values_new[self.data[index]["NAME"]] == self.values_old[self.data[index]["NAME"]]:
                         lnedt.setStyleSheet("")
@@ -492,7 +491,6 @@ class dlg_FormPoint(QDialog):
                 return
             # save values
             self.values_new = values_new
-            # accept
             self.accept()
 
         else:self.reject()
@@ -557,18 +555,53 @@ class dlg_FormDatabase(QDialog):
     def __init__(self, parent = None):
         super(dlg_FormDatabase, self).__init__(parent, Qt.WindowStaysOnTopHint)
         self.setupUi()
+        self.save = False
+        self.db = None
+        self.params = {}
+        self.colours = {
+            "EMPTY":"background-color: rgba(255, 107, 107, 150);",
+        }
     
-    def executeOption(self, button):
-        pass
+    def getReturn(self):
+        return (self.save, self.db, self.params)
 
-    def testConnection(self):
-        pass
+    def executeOption(self, button):
+        if self.btnbx_options.standardButton(button) == QDialogButtonBox.Ok:
+            # validate fields
+            params = {}
+            valid = True
+            for lnedt in self.findChildren(QLineEdit):
+                if str(lnedt.text()).strip() is "":
+                    lnedt.setStyleSheet(self.colours["EMPTY"])
+                    valid = False
+                else: 
+                    lnedt.setStyleSheet("")
+                    params[str(lnedt.property("KEY").toString())] = str(lnedt.text())
+            if not valid: 
+                QMessageBox.information(self, "Empty Database Fields", "Please ensure that all database fields are completed.")
+                return
+            # test connection
+            db = None
+            try:
+                import database
+                db = database.manager(params)
+            except Exception:
+                QMessageBox.information(self, "Invalid Database Settings", "Please ensure that the supplied database settings are correct.")
+                return
+            # save db
+            self.db = db
+            # save parameters
+            self.params = params
+            self.accept()
+        else:
+            self.reject()
 
     def saveConnection(self, state):
-        pass
+        self.save = bool(state)
 
     def setupUi(self):
         # define ui widgets
+        fields = ["HOST","PORT","NAME","USER","PASSWORD"]
         self.setObjectName(_fromUtf8("dlg_FormDatabase"))
         self.setWindowModality(Qt.ApplicationModal)
         self.setModal(True)
@@ -579,63 +612,36 @@ class dlg_FormDatabase(QDialog):
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.formLayout = QFormLayout()
         self.formLayout.setObjectName(_fromUtf8("formLayout"))
-        self.lbl_host = QLabel(self)
-        self.lbl_host.setObjectName(_fromUtf8("lbl_host"))
-        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.lbl_host)
-        self.lnedt_host = QLineEdit(self)
-        self.lnedt_host.setObjectName(_fromUtf8("lnedt_host"))
-        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.lnedt_host)
-        self.lbl_port = QLabel(self)
-        self.lbl_port.setObjectName(_fromUtf8("lbl_port"))
-        self.formLayout.setWidget(1, QFormLayout.LabelRole, self.lbl_port)
-        self.lnedt_port = QLineEdit(self)
-        self.lnedt_port.setObjectName(_fromUtf8("lnedt_port"))
-        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.lnedt_port)
-        self.lbl_database = QLabel(self)
-        self.lbl_database.setObjectName(_fromUtf8("lbl_database"))
-        self.formLayout.setWidget(2, QFormLayout.LabelRole, self.lbl_database)
-        self.lnedt_database = QLineEdit(self)
-        self.lnedt_database.setObjectName(_fromUtf8("lnedt_database"))
-        self.formLayout.setWidget(2, QFormLayout.FieldRole, self.lnedt_database)
-        self.lbl_user = QLabel(self)
-        self.lbl_user.setObjectName(_fromUtf8("lbl_user"))
-        self.formLayout.setWidget(3, QFormLayout.LabelRole, self.lbl_user)
-        self.lnedt_user = QLineEdit(self)
-        self.lnedt_user.setObjectName(_fromUtf8("lnedt_user"))
-        self.formLayout.setWidget(3, QFormLayout.FieldRole, self.lnedt_user)
-        self.lbl_password = QLabel(self)
-        self.lbl_password.setObjectName(_fromUtf8("lbl_password"))
-        self.formLayout.setWidget(4, QFormLayout.LabelRole, self.lbl_password)
-        self.lnedt_password = QLineEdit(self)
-        self.lnedt_password.setEchoMode(QLineEdit.Password)
-        self.lnedt_password.setObjectName(_fromUtf8("lnedt_password"))
-        self.formLayout.setWidget(4, QFormLayout.FieldRole, self.lnedt_password)
+        self.lbls = []
+        self.lnedts = []
+        for index, field in enumerate(fields):
+            lbl = QLabel(self)
+            lbl.setObjectName(_fromUtf8("lbl_%s" %(field.lower(),)))
+            lbl.setText(QApplication.translate("dlg_FormDatabase", field.title(), None, QApplication.UnicodeUTF8))
+            self.formLayout.setWidget(index, QFormLayout.LabelRole, lbl)
+            lnedt = QLineEdit(self)
+            lnedt.setObjectName(_fromUtf8("lnedt_%s" %(field.lower(),)))
+            lnedt.setProperty("KEY", field)
+            if field == "PASSWORD": lnedt.setEchoMode(QLineEdit.Password)
+            self.formLayout.setWidget(index, QFormLayout.FieldRole, lnedt)
+            self.lbls.append(lbl)
+            self.lnedts.append(lnedt)
         self.verticalLayout.addLayout(self.formLayout)
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
         self.chkbx_save = QCheckBox(self)
         self.chkbx_save.setObjectName(_fromUtf8("chkbx_save"))
         self.horizontalLayout.addWidget(self.chkbx_save)
-        self.pshbtn_test = QPushButton(self)
-        self.pshbtn_test.setObjectName(_fromUtf8("pshbtn_test"))
-        self.horizontalLayout.addWidget(self.pshbtn_test)
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.btnbx_options = QDialogButtonBox(self)
-        self.btnbx_options.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Save)
+        self.btnbx_options.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
         self.btnbx_options.setObjectName(_fromUtf8("btnbx_options"))
         self.verticalLayout.addWidget(self.btnbx_options)
         self.gridLayout.addLayout(self.verticalLayout, 0, 0, 1, 1)
         # translate ui widgets' text
         self.setWindowTitle(QApplication.translate("dlg_FormDatabase", "Database Settings", None, QApplication.UnicodeUTF8))
-        self.lbl_host.setText(QApplication.translate("dlg_FormDatabase", "Host", None, QApplication.UnicodeUTF8))
-        self.lbl_port.setText(QApplication.translate("dlg_FormDatabase", "Port", None, QApplication.UnicodeUTF8))
-        self.lbl_database.setText(QApplication.translate("dlg_FormDatabase", "Database", None, QApplication.UnicodeUTF8))
-        self.lbl_user.setText(QApplication.translate("dlg_FormDatabase", "User", None, QApplication.UnicodeUTF8))
-        self.lbl_password.setText(QApplication.translate("dlg_FormDatabase", "Password", None, QApplication.UnicodeUTF8))
         self.chkbx_save.setText(QApplication.translate("dlg_FormDatabase", "Save Connection", None, QApplication.UnicodeUTF8))
-        self.pshbtn_test.setText(QApplication.translate("dlg_FormDatabase", "Test Connection", None, QApplication.UnicodeUTF8))
         # connect ui widgets
-        self.pshbtn_test.clicked.connect(self.testConnection)
         self.chkbx_save.stateChanged.connect(self.saveConnection)
         self.btnbx_options.clicked.connect(self.executeOption)
         QMetaObject.connectSlotsByName(self)

@@ -17,22 +17,22 @@ This is a postgresql database manager.
 """
 
 import psycopg2
-from settings import *
 
 class manager():
     
-    def __init__(self):
+    def __init__(self, params):
         # test db settings
-        self.connect()
+        self.params = params
+        self.connect(params)
         self.disconnect()
 
-    def connect(self):
+    def connect(self, params):
         """ Create a backend postgres database connection
         """
         try:
             # check if connection object exist  
             if not hasattr(self, 'conn') or self.conn is None:
-                self.conn = psycopg2.connect("host='%s' dbname='%s' user='%s' password='%s' port='%s'" %(DATABASE_HOST, DATABASE_NAME, DATABASE_USER, DATABASE_PASSWORD, DATABASE_PORT))
+                self.conn = psycopg2.connect("host='{HOST}' dbname='{NAME}' user='{USER}' password='{PASSWORD}' port='{PORT}'".format(HOST=params["HOST"], NAME=params["NAME"], USER=params["USER"], PASSWORD= params["PASSWORD"], PORT=params["PORT"]))
             # check if cursor objet exists
             if not hasattr(self, 'cursor') or self.cursor is None:
                 self.cursor = self.conn.cursor()
@@ -59,7 +59,7 @@ class manager():
         @returns resultset (array structure)
         """
         try:
-            self.connect()
+            self.connect(self.params)
             if data is None: self.cursor.execute(query)
             else: self.cursor.execute(query, data)
             records = None
@@ -78,7 +78,7 @@ class manager():
         @returns query (str)
         """
         try:
-            self.connect()
+            self.connect(self.params)
             sql = ""
             if data is None: sql = self.cursor.mogrify(query)
             else: sql = self.cursor.mogrify(query, data)

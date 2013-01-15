@@ -24,9 +24,10 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
 import __init__ as meta
-from settings import *
 import database
+import settings
 from PyQt4Dialogs import *
+import json
 
 class sml_surveyor:
 
@@ -52,8 +53,13 @@ class sml_surveyor:
     def initGui(self):
         """ Initialize gui
         """
-        # test db access
-        self.db = database.manager()
+        # find database
+        self.db = None
+        try:
+            self.db = database.manager(settings.DATABASE_PARAMS)
+        except:
+            QMessageBox.information(None, "Configure Database Settings", "Please define database parameters.")
+            if not(self.manageDatabase()): return
         # add layers
         self.addLayers()
         self.getLayers()
@@ -75,14 +81,11 @@ class sml_surveyor:
         self.appToolBar = QToolBar(meta.name())
         self.appToolBar.setObjectName(meta.name())
         # create apps for toolbar
-        self.actionDatabase = QAction(QIcon(self.plugin_dir + "/images/database"), "Configure Database Settings", self.iface.mainWindow())
-        QObject.connect(self.actionDatabase, SIGNAL("triggered()"), self.manageDatabase)
-        self.actionPoints = QAction(QIcon(self.plugin_dir + "/images/point"), "Manage %s" %(DATABASE_LAYERS["POINTS"]["NAME_PLURAL"].title(),), self.iface.mainWindow())
+        self.actionPoints = QAction(QIcon(self.plugin_dir + "/images/point"), "Manage %s" %(settings.DATABASE_LAYERS["POINTS"]["NAME_PLURAL"].title(),), self.iface.mainWindow())
         QObject.connect(self.actionPoints, SIGNAL("triggered()"), self.managePoints)
-        self.actionPolygons = QAction(QIcon(self.plugin_dir + "/images/polygon"), "Manage %s" %(DATABASE_LAYERS["POLYGONS"]["NAME_PLURAL"].title(),), self.iface.mainWindow())
+        self.actionPolygons = QAction(QIcon(self.plugin_dir + "/images/polygon"), "Manage %s" %(settings.DATABASE_LAYERS["POLYGONS"]["NAME_PLURAL"].title(),), self.iface.mainWindow())
         QObject.connect(self.actionPolygons, SIGNAL("triggered()"), self.managePolygons)
         # populate app toolbar
-        self.appToolBar.addAction(self.actionDatabase)
         self.appToolBar.addAction(self.actionPoints)
         self.appToolBar.addAction(self.actionPolygons)
         # add app toolbar to gui
@@ -98,9 +101,9 @@ class sml_surveyor:
         """ Add postgres layers
         """
         uri = QgsDataSourceURI()
-        uri.setConnection(DATABASE_HOST, DATABASE_PORT, DATABASE_NAME, DATABASE_USER, DATABASE_PASSWORD)
-        for name in reversed(DATABASE_LAYERS_ORDER):
-            lyr = DATABASE_LAYERS[name]
+        uri.setConnection(settings.DATABASE_HOST, settings.DATABASE_PORT, settings.DATABASE_NAME, settings.DATABASE_USER, settings.DATABASE_PASSWORD)
+        for name in reversed(settings.DATABASE_LAYERS_ORDER):
+            lyr = settings.DATABASE_LAYERS[name]
             uri.setDataSource(lyr["SCHEMA"], lyr["TABLE"], lyr["GEOM"], "", lyr["PKEY"])
             self.iface.addVectorLayer(uri.uri(), lyr["NAME_PLURAL"], "postgres")
     
@@ -109,8 +112,8 @@ class sml_surveyor:
         """
         self.layers = {}
         for lyr in self.iface.mapCanvas().layers():
-            for typ in DATABASE_LAYERS_ORDER:
-                if DATABASE_LAYERS[typ]["NAME_PLURAL"] == lyr.name(): self.layers[typ] = lyr
+            for typ in settings.DATABASE_LAYERS_ORDER:
+                if settings.DATABASE_LAYERS[typ]["NAME_PLURAL"] == lyr.name(): self.layers[typ] = lyr
 
     def dropLayers(self):
         """ Drop added postgis layers
@@ -121,14 +124,14 @@ class sml_surveyor:
     def managePoints(self):
         """ Portal which enables the management of points
         """
-        p = Points(self.iface, self.layers, DATABASE_LAYERS, self.db)
+        p = Points(self.iface, self.layers, settings.DATABASE_LAYERS, self.db)
         p.run()
         self.iface.mapCanvas().refresh()
 
     def managePolygons(self):
         """ Portal which enables the management of polygons
         """
-        p = Polygons(self.iface, self.layers, DATABASE_LAYERS, self.db)
+        p = Polygons(self.iface, self.layers, settings.DATABASE_LAYERS, self.db)
         p.run()
         self.iface.mapCanvas().refresh()
 
@@ -137,8 +140,22 @@ class sml_surveyor:
         """
         dlg = dlg_FormDatabase()
         dlg.show()
-        dlg.exec_()
-
+        if bool(dlg.exec_()):            
+            save, db, params = dlg.getReturn()
+            # save new db reference
+            self.db = db
+            # save new params if needed
+            if save:
+                import os
+                p = os.path.join(os.path.dirname(__file__), 'database_params.py')
+                f = open(p, 'w')
+                f.write('DATABASE_PARAMS = %s' %(json.dumps(params),))
+                f.close()
+                reload(settings.database_params)
+                reload(settings)
+            return True
+        return False
+    
 class Polygons():
     """ Class managing polygons
     """
@@ -225,7 +242,8 @@ class Points():
                 frm.show()
                 frm_ret = frm.exec_()
                 if bool(frm_ret):
-                    self.db.query(self.layersDict["POINTS"]["SQL"]["INSERT"].format(fields = ", ".join([f["NAME"] for f in data]), values = ", ".join(["%s" for f in data])), [frm.getReturn()[1][f["NAME"]] for f in data])
+                    values_old, values_new = frm.getReturn() 
+                    self.db.query(self.layersDict["POINTS"]["SQL"]["INSERT"].format(fields = ", ".join(sorted(values_new.keys())), values = ", ".join(["%s" for k in values_new.keys()])), [values_new[k] for k in sorted(values_new.keys())])
             elif mng.getReturn() == 1:
                 # edit existing point
                 obj = {"NAME":self.layersDict["POINTS"]["NAME"],"PURPOSE":"EDITOR","ACTION":"EDIT"}
