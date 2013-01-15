@@ -75,11 +75,14 @@ class sml_surveyor:
         self.appToolBar = QToolBar(meta.name())
         self.appToolBar.setObjectName(meta.name())
         # create apps for toolbar
+        self.actionDatabase = QAction(QIcon(self.plugin_dir + "/images/database"), "Configure Database Settings", self.iface.mainWindow())
+        QObject.connect(self.actionDatabase, SIGNAL("triggered()"), self.manageDatabase)
         self.actionPoints = QAction(QIcon(self.plugin_dir + "/images/point"), "Manage %s" %(DATABASE_LAYERS["POINTS"]["NAME_PLURAL"].title(),), self.iface.mainWindow())
         QObject.connect(self.actionPoints, SIGNAL("triggered()"), self.managePoints)
         self.actionPolygons = QAction(QIcon(self.plugin_dir + "/images/polygon"), "Manage %s" %(DATABASE_LAYERS["POLYGONS"]["NAME_PLURAL"].title(),), self.iface.mainWindow())
         QObject.connect(self.actionPolygons, SIGNAL("triggered()"), self.managePolygons)
         # populate app toolbar
+        self.appToolBar.addAction(self.actionDatabase)
         self.appToolBar.addAction(self.actionPoints)
         self.appToolBar.addAction(self.actionPolygons)
         # add app toolbar to gui
@@ -129,7 +132,17 @@ class sml_surveyor:
         p.run()
         self.iface.mapCanvas().refresh()
 
+    def manageDatabase(self):
+        """ Portal which enables configuration of database settings
+        """
+        dlg = dlg_FormDatabase()
+        dlg.show()
+        dlg.exec_()
+
 class Polygons():
+    """ Class managing polygons
+    """
+
     def __init__(self, iface, layers, layersDict, db):
         self.iface = iface
         self.layers = layers
@@ -137,6 +150,9 @@ class Polygons():
         self.db = db
         
     def run(self):
+        """ Main method
+        """
+        # display manager dialog
         mng = dlg_Manager(obj = {"NAME":self.layersDict["POLYGONS"]["NAME"],})
         mng.show()
         if bool(mng.exec_()):
@@ -171,7 +187,7 @@ class Polygons():
                         self.db.query(self.layersDict["POLYGONS"]["SQL"]["DELETE"], (frm.getReturn()[0]["polygon_id"],))
                         sql = ""
                         for i, point in enumerate(frm.getReturn()[1]["sequence"]):
-                            sql += self.db.queryPreview(self.layersDict["POLYGONS"]["SQL"]["INSERT"], (values["polygon_id"], point, i))
+                            sql += self.db.queryPreview(self.layersDict["POLYGONS"]["SQL"]["INSERT"], (frm.getReturn()[1]["polygon_id"], point, i))
                         self.db.query(sql)
                 for l in self.layers.values(): l.removeSelection()
             elif mng.getReturn() == 2:
@@ -186,6 +202,9 @@ class Polygons():
                 for l in self.layers.values(): l.removeSelection()
 
 class Points():
+    """ Class managing points
+    """
+
     def __init__(self, iface, layers, layersDict, db):
         self.iface = iface
         self.layers = layers
@@ -193,19 +212,20 @@ class Points():
         self.db = db
 
     def run(self):
+        """ Main method
+        """
+        # display manager dialog
         mng = dlg_Manager(obj = {"NAME":self.layersDict["POINTS"]["NAME"],})
         mng.show()
         if bool(mng.exec_()):
             if mng.getReturn() == 0:
-                # create new point
+                # create new point        
                 data = self.db.getSchema(self.layersDict["POINTS"]["TABLE"], [self.layersDict["POINTS"]["GEOM"], self.layersDict["POINTS"]["PKEY"]])
                 frm = dlg_FormPoint(self.db, data, self.layersDict["POINTS"]["SQL"])
                 frm.show()
                 frm_ret = frm.exec_()
                 if bool(frm_ret):
-                    values = [frm.getReturn()[1][f["NAME"]] for f in data]
-                    query = self.layersDict["POINTS"]["SQL"]["INSERT"].format(fields = ", ".join([f["NAME"] for f in data]), values = ", ".join("%s" for v in values))
-                    self.db.query(query, values)
+                    self.db.query(self.layersDict["POINTS"]["SQL"]["INSERT"].format(fields = ", ".join([f["NAME"] for f in data]), values = ", ".join(["%s" for f in data])), [frm.getReturn()[1][f["NAME"]] for f in data])
             elif mng.getReturn() == 1:
                 # edit existing point
                 obj = {"NAME":self.layersDict["POINTS"]["NAME"],"PURPOSE":"EDITOR","ACTION":"EDIT"}

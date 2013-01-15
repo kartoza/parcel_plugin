@@ -292,7 +292,19 @@ class dlg_FormPolygon(QDialog):
             self.lstwdg_sequence.addItem(QString(str(self.db.query(self.layersDict["POINTS"]["SQL"]["SELECT"], (i,))[0][0]))) 
 
     def newPoint(self):
-        pass
+        # disable self
+        self.setEnabled(False)
+        # present point form
+        data = self.db.getSchema(self.layersDict["POINTS"]["TABLE"], [self.layersDict["POINTS"]["GEOM"], self.layersDict["POINTS"]["PKEY"]])
+        frm = dlg_FormPoint(self.db, data, self.layersDict["POINTS"]["SQL"])
+        frm.show()
+        frm_ret = frm.exec_()
+        if bool(frm_ret):
+            # save new point
+            id = self.db.query(self.layersDict["POINTS"]["SQL"]["INSERT"].format(fields = ", ".join([f["NAME"] for f in data]), values = ", ".join(["%s" for f in data])), [frm.getReturn()[1][f["NAME"]] for f in data])[0][0]
+            self.selector.appendSelection(id)
+        # enable self
+        self.setEnabled(True)
 
     def startSeq(self):
         """ Start sequence capturing
@@ -540,5 +552,91 @@ class dlg_FormPoint(QDialog):
         self.btnbx_options.clicked.connect(self.executeOption)
         QMetaObject.connectSlotsByName(self)
         
-        
+class dlg_FormDatabase(QDialog):
+
+    def __init__(self, parent = None):
+        super(dlg_FormDatabase, self).__init__(parent, Qt.WindowStaysOnTopHint)
+        self.setupUi()
+    
+    def executeOption(self, button):
+        pass
+
+    def testConnection(self):
+        pass
+
+    def saveConnection(self, state):
+        pass
+
+    def setupUi(self):
+        # define ui widgets
+        self.setObjectName(_fromUtf8("dlg_FormDatabase"))
+        self.setWindowModality(Qt.ApplicationModal)
+        self.setModal(True)
+        self.gridLayout = QGridLayout(self)
+        self.gridLayout.setSizeConstraint(QLayout.SetFixedSize)
+        self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
+        self.verticalLayout = QVBoxLayout()
+        self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
+        self.formLayout = QFormLayout()
+        self.formLayout.setObjectName(_fromUtf8("formLayout"))
+        self.lbl_host = QLabel(self)
+        self.lbl_host.setObjectName(_fromUtf8("lbl_host"))
+        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.lbl_host)
+        self.lnedt_host = QLineEdit(self)
+        self.lnedt_host.setObjectName(_fromUtf8("lnedt_host"))
+        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.lnedt_host)
+        self.lbl_port = QLabel(self)
+        self.lbl_port.setObjectName(_fromUtf8("lbl_port"))
+        self.formLayout.setWidget(1, QFormLayout.LabelRole, self.lbl_port)
+        self.lnedt_port = QLineEdit(self)
+        self.lnedt_port.setObjectName(_fromUtf8("lnedt_port"))
+        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.lnedt_port)
+        self.lbl_database = QLabel(self)
+        self.lbl_database.setObjectName(_fromUtf8("lbl_database"))
+        self.formLayout.setWidget(2, QFormLayout.LabelRole, self.lbl_database)
+        self.lnedt_database = QLineEdit(self)
+        self.lnedt_database.setObjectName(_fromUtf8("lnedt_database"))
+        self.formLayout.setWidget(2, QFormLayout.FieldRole, self.lnedt_database)
+        self.lbl_user = QLabel(self)
+        self.lbl_user.setObjectName(_fromUtf8("lbl_user"))
+        self.formLayout.setWidget(3, QFormLayout.LabelRole, self.lbl_user)
+        self.lnedt_user = QLineEdit(self)
+        self.lnedt_user.setObjectName(_fromUtf8("lnedt_user"))
+        self.formLayout.setWidget(3, QFormLayout.FieldRole, self.lnedt_user)
+        self.lbl_password = QLabel(self)
+        self.lbl_password.setObjectName(_fromUtf8("lbl_password"))
+        self.formLayout.setWidget(4, QFormLayout.LabelRole, self.lbl_password)
+        self.lnedt_password = QLineEdit(self)
+        self.lnedt_password.setEchoMode(QLineEdit.Password)
+        self.lnedt_password.setObjectName(_fromUtf8("lnedt_password"))
+        self.formLayout.setWidget(4, QFormLayout.FieldRole, self.lnedt_password)
+        self.verticalLayout.addLayout(self.formLayout)
+        self.horizontalLayout = QHBoxLayout()
+        self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
+        self.chkbx_save = QCheckBox(self)
+        self.chkbx_save.setObjectName(_fromUtf8("chkbx_save"))
+        self.horizontalLayout.addWidget(self.chkbx_save)
+        self.pshbtn_test = QPushButton(self)
+        self.pshbtn_test.setObjectName(_fromUtf8("pshbtn_test"))
+        self.horizontalLayout.addWidget(self.pshbtn_test)
+        self.verticalLayout.addLayout(self.horizontalLayout)
+        self.btnbx_options = QDialogButtonBox(self)
+        self.btnbx_options.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Save)
+        self.btnbx_options.setObjectName(_fromUtf8("btnbx_options"))
+        self.verticalLayout.addWidget(self.btnbx_options)
+        self.gridLayout.addLayout(self.verticalLayout, 0, 0, 1, 1)
+        # translate ui widgets' text
+        self.setWindowTitle(QApplication.translate("dlg_FormDatabase", "Database Settings", None, QApplication.UnicodeUTF8))
+        self.lbl_host.setText(QApplication.translate("dlg_FormDatabase", "Host", None, QApplication.UnicodeUTF8))
+        self.lbl_port.setText(QApplication.translate("dlg_FormDatabase", "Port", None, QApplication.UnicodeUTF8))
+        self.lbl_database.setText(QApplication.translate("dlg_FormDatabase", "Database", None, QApplication.UnicodeUTF8))
+        self.lbl_user.setText(QApplication.translate("dlg_FormDatabase", "User", None, QApplication.UnicodeUTF8))
+        self.lbl_password.setText(QApplication.translate("dlg_FormDatabase", "Password", None, QApplication.UnicodeUTF8))
+        self.chkbx_save.setText(QApplication.translate("dlg_FormDatabase", "Save Connection", None, QApplication.UnicodeUTF8))
+        self.pshbtn_test.setText(QApplication.translate("dlg_FormDatabase", "Test Connection", None, QApplication.UnicodeUTF8))
+        # connect ui widgets
+        self.pshbtn_test.clicked.connect(self.testConnection)
+        self.chkbx_save.stateChanged.connect(self.saveConnection)
+        self.btnbx_options.clicked.connect(self.executeOption)
+        QMetaObject.connectSlotsByName(self)
 

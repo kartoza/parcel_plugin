@@ -51,19 +51,19 @@ class featureSelector():
         self.selected = []
         self.layer.removeSelection()
 
+    def appendSelection(self, id):
+        if id in self.selected: del self.selected[self.selected.index(id)]
+        else: self.selected.append(id)
+        self.layer.setSelectedFeatures(self.selected)
+        if self.parent is not None: self.parent.captured(self.selected)
+        
     def capture(self, point, button):
         if self.capturing:
-            curlyr = self.layer 
-            # perform feature selection
             pnt_geom = QgsGeometry.fromPoint(point)
             pnt_buffer = pnt_geom.buffer((self.iface.mapCanvas().mapUnitsPerPixel()*5),0)
             pnt_rect = pnt_buffer.boundingBox()
-            curlyr.select([], pnt_rect, True, True)
+            self.layer.select([], pnt_rect, True, True)
             feat = QgsFeature()
-            while curlyr.nextFeature(feat):
-                if feat.id() in self.selected: del self.selected[self.selected.index(feat.id())]
-                else: self.selected.append(feat.id())
-                curlyr.setSelectedFeatures(self.selected)
-                # notify parent of selection
-                if self.parent is not None: self.parent.captured(self.selected)
+            while self.layer.nextFeature(feat):
+                self.appendSelection(feat.id())
                 break
