@@ -294,7 +294,7 @@ class dlg_FormPolygon(QDialog):
         self.setEnabled(False)
         # present point form
         data = self.db.getSchema(self.layersDict["POINTS"]["TABLE"], [self.layersDict["POINTS"]["GEOM"], self.layersDict["POINTS"]["PKEY"]])
-        frm = dlg_FormPoint(self.db, data, self.layersDict["POINTS"]["SQL"])
+        frm = dlg_FormPoint(self.db, data, self.layersDict["POINTS"]["SQL"], parent = self)
         frm.show()
         frm_ret = frm.exec_()
         if bool(frm_ret):
@@ -603,7 +603,7 @@ class dlg_FormDatabase(QDialog):
         # define ui widgets
         fields = ["HOST","PORT","NAME","USER","PASSWORD"]
         self.setObjectName(_fromUtf8("dlg_FormDatabase"))
-        self.setWindowModality(Qt.ApplicationModal)
+        self.setCursor(QCursor(Qt.PointingHandCursor))
         self.setModal(True)
         self.gridLayout = QGridLayout(self)
         self.gridLayout.setSizeConstraint(QLayout.SetFixedSize)
