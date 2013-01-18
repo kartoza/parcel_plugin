@@ -28,6 +28,7 @@ import database
 import settings
 from PyQt4Dialogs import *
 import json
+import os
 
 class sml_surveyor:
 
@@ -35,7 +36,7 @@ class sml_surveyor:
         # Save reference to the QGIS interface
         self.iface = iface
         # initialize plugin directory
-        self.plugin_dir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins/sml_surveyor"
+        self.plugin_dir = os.path.dirname(os.path.realpath(__file__)) #QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins/sml_surveyor"
         # initialize locale
         localePath = ""
         locale = QSettings().value("locale/userLocale").toString()[0:2]
@@ -81,13 +82,16 @@ class sml_surveyor:
         self.appToolBar = QToolBar(meta.name())
         self.appToolBar.setObjectName(meta.name())
         # create apps for toolbar
-        self.actionPoints = QAction(QIcon(self.plugin_dir + "/images/point"), "Manage %s" %(settings.DATABASE_LAYERS["POINTS"]["NAME_PLURAL"].title(),), self.iface.mainWindow())
-        QObject.connect(self.actionPoints, SIGNAL("triggered()"), self.managePoints)
-        self.actionPolygons = QAction(QIcon(self.plugin_dir + "/images/polygon"), "Manage %s" %(settings.DATABASE_LAYERS["POLYGONS"]["NAME_PLURAL"].title(),), self.iface.mainWindow())
-        QObject.connect(self.actionPolygons, SIGNAL("triggered()"), self.managePolygons)
+        #self.actionBearDist = QAction(QIcon(self.plugin_dir + "/images/beardist.png"), "Manage Bearings and Distances", self.iface.mainWindow())
+        #self.actionBearDist.triggered.connect(self.manageBearDist)        
+        self.actionBeacons = QAction(QIcon(self.plugin_dir + "/images/beacon.gif"), "Manage %s" %(settings.DATABASE_LAYERS["BEACONS"]["NAME_PLURAL"].title(),), self.iface.mainWindow())
+        self.actionBeacons.triggered.connect(self.manageBeacons)
+        self.actionParcels = QAction(QIcon(self.plugin_dir + "/images/parcel.png"), "Manage %s" %(settings.DATABASE_LAYERS["PARCELS"]["NAME_PLURAL"].title(),), self.iface.mainWindow())
+        self.actionParcels.triggered.connect(self.manageParcels)
         # populate app toolbar
-        self.appToolBar.addAction(self.actionPoints)
-        self.appToolBar.addAction(self.actionPolygons)
+        #self.appToolBar.addAction(self.actionBearDist)
+        self.appToolBar.addAction(self.actionBeacons)
+        self.appToolBar.addAction(self.actionParcels)
         # add app toolbar to gui
         self.iface.mainWindow().addToolBar(self.appToolBar)
 
@@ -121,17 +125,17 @@ class sml_surveyor:
         self.getLayers()
         QgsMapLayerRegistry.instance().removeMapLayers([lyr.id() for lyr in self.layers.values()])
             
-    def managePoints(self):
-        """ Portal which enables the management of points
+    def manageBeacons(self):
+        """ Portal which enables the management of beacons
         """
-        p = Points(self.iface, self.layers, settings.DATABASE_LAYERS, self.db)
+        p = Beacons(self.iface, self.layers, settings.DATABASE_LAYERS, self.db)
         p.run()
         self.iface.mapCanvas().refresh()
 
-    def managePolygons(self):
-        """ Portal which enables the management of polygons
+    def manageParcels(self):
+        """ Portal which enables the management of parcels
         """
-        p = Polygons(self.iface, self.layers, settings.DATABASE_LAYERS, self.db)
+        p = Parcels(self.iface, self.layers, settings.DATABASE_LAYERS, self.db)
         p.run()
         self.iface.mapCanvas().refresh()
 
@@ -155,9 +159,16 @@ class sml_surveyor:
                 reload(settings)
             return True
         return False
-    
-class Polygons():
-    """ Class managing polygons
+
+    def manageBearDist(self):
+        """
+        """
+        dlg = dlg_FormBearDist(self.db, settings.DATABASE_OTHER_SQL, settings.DATABASE_LAYERS["BEACONS"]["SQL"], self.db.getSchema(settings.DATABASE_LAYERS["BEACONS"]["TABLE"], [settings.DATABASE_LAYERS["BEACONS"]["GEOM"], settings.DATABASE_LAYERS["BEACONS"]["PKEY"]]))
+        dlg.show()
+        dlg.exec_()
+        
+class Parcels():
+    """ Class managing parcels
     """
 
     def __init__(self, iface, layers, layersDict, db):
@@ -170,56 +181,56 @@ class Polygons():
         """ Main method
         """
         # display manager dialog
-        mng = dlg_Manager(obj = {"NAME":self.layersDict["POLYGONS"]["NAME"],})
+        mng = dlg_Manager(obj = {"NAME":self.layersDict["PARCELS"]["NAME"],})
         mng.show()
         if bool(mng.exec_()):
             if mng.getReturn() == 0:
-                # create new polygon
-                autocomplete = [i[0] for i in self.db.query(self.layersDict["POLYGONS"]["SQL"]["AUTOCOMPLETE"])]
-                frm = dlg_FormPolygon(self.db, self.iface, self.layers, self.layersDict, autocomplete)
+                # create new parcel
+                autocomplete = [i[0] for i in self.db.query(self.layersDict["PARCELS"]["SQL"]["AUTOCOMPLETE"])]
+                frm = dlg_FormParcel(self.db, self.iface, self.layers, self.layersDict, autocomplete)
                 frm.show()
                 frm_ret = frm.exec_()
                 self.iface.mapCanvas().setMapTool(frm.tool)
                 if bool(frm_ret):
                     sql = ""
-                    for i, point in enumerate(frm.getReturn()[1]["sequence"]):
-                        sql += self.db.queryPreview(self.layersDict["POLYGONS"]["SQL"]["INSERT"], (frm.getReturn()[1]["polygon_id"], point, i))
+                    for i, beacon in enumerate(frm.getReturn()[1]["sequence"]):
+                        sql += self.db.queryPreview(self.layersDict["PARCELS"]["SQL"]["INSERT"], (frm.getReturn()[1]["parcel_id"], beacon, i))
                     self.db.query(sql)
                 for l in self.layers.values(): l.removeSelection()
             elif mng.getReturn() == 1:
-                # edit existing polygon 
-                obj = {"NAME":self.layersDict["POLYGONS"]["NAME"],"PURPOSE":"EDITOR","ACTION":"EDIT"}
-                slc = dlg_Selector(self.db, self.iface, self.layers["POLYGONS"], self.layersDict["POLYGONS"]["SQL"], obj = obj, preserve = True)
+                # edit existing parcel 
+                obj = {"NAME":self.layersDict["PARCELS"]["NAME"],"PURPOSE":"EDITOR","ACTION":"EDIT"}
+                slc = dlg_Selector(self.db, self.iface, self.layers["PARCELS"], self.layersDict["PARCELS"]["SQL"], obj = obj, preserve = True)
                 slc.show()
                 slc_ret = slc.exec_()
                 self.iface.mapCanvas().setMapTool(slc.tool)
                 if bool(slc_ret):
-                    autocomplete = [i[0] for i in self.db.query(self.layersDict["POLYGONS"]["SQL"]["AUTOCOMPLETE"])]
-                    values = (lambda t: {"polygon_id":t[0], "sequence":t[1]})(self.db.query(self.layersDict["POLYGONS"]["SQL"]["EDIT"], (slc.getReturn(),))[0])
-                    frm = dlg_FormPolygon(self.db, self.iface, self.layers, self.layersDict, autocomplete, values)
+                    autocomplete = [i[0] for i in self.db.query(self.layersDict["PARCELS"]["SQL"]["AUTOCOMPLETE"])]
+                    values = (lambda t: {"parcel_id":t[0], "sequence":t[1]})(self.db.query(self.layersDict["PARCELS"]["SQL"]["EDIT"], (slc.getReturn(),))[0])
+                    frm = dlg_FormParcel(self.db, self.iface, self.layers, self.layersDict, autocomplete, values)
                     frm.show()
                     frm_ret = frm.exec_()
                     self.iface.mapCanvas().setMapTool(frm.tool)
                     if bool(frm_ret):
-                        self.db.query(self.layersDict["POLYGONS"]["SQL"]["DELETE"], (frm.getReturn()[0]["polygon_id"],))
+                        self.db.query(self.layersDict["PARCELS"]["SQL"]["DELETE"], (frm.getReturn()[0]["parcel_id"],))
                         sql = ""
-                        for i, point in enumerate(frm.getReturn()[1]["sequence"]):
-                            sql += self.db.queryPreview(self.layersDict["POLYGONS"]["SQL"]["INSERT"], (frm.getReturn()[1]["polygon_id"], point, i))
+                        for i, beacon in enumerate(frm.getReturn()[1]["sequence"]):
+                            sql += self.db.queryPreview(self.layersDict["PARCELS"]["SQL"]["INSERT"], (frm.getReturn()[1]["parcel_id"], beacon, i))
                         self.db.query(sql)
                 for l in self.layers.values(): l.removeSelection()
             elif mng.getReturn() == 2:
-                # delete existing polygon
-                obj = {"NAME":self.layersDict["POLYGONS"]["NAME"],"PURPOSE":"REMOVER","ACTION":"REMOVE"}
-                slc = dlg_Selector(self.db, self.iface, self.layers["POLYGONS"], self.layersDict["POLYGONS"]["SQL"], obj = obj, preserve = True)
+                # delete existing parcel
+                obj = {"NAME":self.layersDict["PARCELS"]["NAME"],"PURPOSE":"REMOVER","ACTION":"REMOVE"}
+                slc = dlg_Selector(self.db, self.iface, self.layers["PARCELS"], self.layersDict["PARCELS"]["SQL"], obj = obj, preserve = True)
                 slc.show()
                 slc_ret = slc.exec_()
                 self.iface.mapCanvas().setMapTool(slc.tool)
                 if bool(slc_ret):
-                    self.db.query(self.layersDict["POLYGONS"]["SQL"]["DELETE"], (self.db.query(self.layersDict["POLYGONS"]["SQL"]["SELECT"], (slc.getReturn(),))[0][0],)) 
+                    self.db.query(self.layersDict["PARCELS"]["SQL"]["DELETE"], (self.db.query(self.layersDict["PARCELS"]["SQL"]["SELECT"], (slc.getReturn(),))[0][0],)) 
                 for l in self.layers.values(): l.removeSelection()
 
-class Points():
-    """ Class managing points
+class Beacons():
+    """ Class managing beacons
     """
 
     def __init__(self, iface, layers, layersDict, db):
@@ -232,50 +243,56 @@ class Points():
         """ Main method
         """
         # display manager dialog
-        mng = dlg_Manager(obj = {"NAME":self.layersDict["POINTS"]["NAME"],})
+        mng = dlg_Manager(obj = {"NAME":self.layersDict["BEACONS"]["NAME"],})
         mng.show()
         if bool(mng.exec_()):
             if mng.getReturn() == 0:
-                # create new point        
-                data = self.db.getSchema(self.layersDict["POINTS"]["TABLE"], [self.layersDict["POINTS"]["GEOM"], self.layersDict["POINTS"]["PKEY"]])
-                frm = dlg_FormPoint(self.db, data, self.layersDict["POINTS"]["SQL"])
+                # create new beacon        
+                data = self.db.getSchema(self.layersDict["BEACONS"]["TABLE"], [self.layersDict["BEACONS"]["GEOM"], self.layersDict["BEACONS"]["PKEY"]])
+                frm = dlg_FormBeacon(self.db, data, self.layersDict["BEACONS"]["SQL"])
                 frm.show()
                 frm_ret = frm.exec_()
                 if bool(frm_ret):
                     values_old, values_new = frm.getReturn() 
-                    self.db.query(self.layersDict["POINTS"]["SQL"]["INSERT"].format(fields = ", ".join(sorted(values_new.keys())), values = ", ".join(["%s" for k in values_new.keys()])), [values_new[k] for k in sorted(values_new.keys())])
+                    self.db.query(self.layersDict["BEACONS"]["SQL"]["INSERT"].format(fields = ", ".join(sorted(values_new.keys())), values = ", ".join(["%s" for k in values_new.keys()])), [values_new[k] for k in sorted(values_new.keys())])
             elif mng.getReturn() == 1:
-                # edit existing point
-                obj = {"NAME":self.layersDict["POINTS"]["NAME"],"PURPOSE":"EDITOR","ACTION":"EDIT"}
-                slc = dlg_Selector(self.db, self.iface, self.layers["POINTS"], self.layersDict["POINTS"]["SQL"], obj = obj, preserve = True)
+                # edit existing beacon
+                obj = {"NAME":self.layersDict["BEACONS"]["NAME"],"PURPOSE":"EDITOR","ACTION":"EDIT"}
+                slc = dlg_Selector(self.db, self.iface, self.layers["BEACONS"], self.layersDict["BEACONS"]["SQL"], obj = obj, preserve = True)
                 slc.show()
                 slc_ret = slc.exec_()
                 self.iface.mapCanvas().setMapTool(slc.tool)
                 if bool(slc_ret):
-                    data = self.db.getSchema(self.layersDict["POINTS"]["TABLE"], [self.layersDict["POINTS"]["GEOM"], self.layersDict["POINTS"]["PKEY"]])
+                    data = self.db.getSchema(self.layersDict["BEACONS"]["TABLE"], [self.layersDict["BEACONS"]["GEOM"], self.layersDict["BEACONS"]["PKEY"]])
                     fields = ",".join([f["NAME"] for f in data])
-                    values = [v for v in self.db.query(self.layersDict["POINTS"]["SQL"]["EDIT"].format(fields = fields), (slc.getReturn(),))[0]]
-                    frm = dlg_FormPoint(self.db, data, self.layersDict["POINTS"]["SQL"], values)
+                    values = [v for v in self.db.query(self.layersDict["BEACONS"]["SQL"]["EDIT"].format(fields = fields), (slc.getReturn(),))[0]]
+                    frm = dlg_FormBeacon(self.db, data, self.layersDict["BEACONS"]["SQL"], values)
                     frm.show()
                     frm_ret = frm.exec_()
                     if bool(frm_ret):
-                        set = ", ".join(["{field} = %s".format(field = f["NAME"]) for f in data])
-                        where = " AND ".join(["{field} = %s".format(field = f["NAME"]) for f in data])
+                        fields_old = []
+                        fields_new = []
                         values_old = []
                         values_new = []
                         for f in data:
-                            values_old.append(frm.getReturn()[0][f["NAME"]])
+                            if frm.getReturn()[0][f["NAME"]] is not None:
+                                fields_old.append(f["NAME"])
+                                values_old.append(frm.getReturn()[0][f["NAME"]])
+                            fields_new.append(f["NAME"])
                             values_new.append(frm.getReturn()[1][f["NAME"]])
-                        self.db.query(self.layersDict["POINTS"]["SQL"]["UPDATE"].format(set = set, where = where), values_new + values_old)
+                        set = ", ".join(["{field} = %s".format(field = f) for f in fields_new])
+                        where = " AND ".join(["{field} = %s".format(field = f) for f in fields_old])
+                        QMessageBox.information(None, "", str( self.db.queryPreview(self.layersDict["BEACONS"]["SQL"]["UPDATE"].format(set = set, where = where), values_new + values_old)))
+                        self.db.query(self.layersDict["BEACONS"]["SQL"]["UPDATE"].format(set = set, where = where), values_new + values_old)
                 for l in self.layers.values(): l.removeSelection()
             elif mng.getReturn() == 2:
-                # delete existing point
-                obj = {"NAME":self.layersDict["POINTS"]["NAME"],"PURPOSE":"REMOVER","ACTION":"REMOVE"}
-                slc = dlg_Selector(self.db, self.iface, self.layers["POINTS"], self.layersDict["POINTS"]["SQL"], obj = obj, preserve = True)
+                # delete existing beacon
+                obj = {"NAME":self.layersDict["BEACONS"]["NAME"],"PURPOSE":"REMOVER","ACTION":"REMOVE"}
+                slc = dlg_Selector(self.db, self.iface, self.layers["BEACONS"], self.layersDict["BEACONS"]["SQL"], obj = obj, preserve = True)
                 slc.show()
                 slc_ret = slc.exec_()
                 self.iface.mapCanvas().setMapTool(slc.tool)
                 if bool(slc_ret):
-                    self.db.query(self.layersDict["POINTS"]["SQL"]["DELETE"], (slc.getReturn(),)) 
+                    self.db.query(self.layersDict["BEACONS"]["SQL"]["DELETE"], (slc.getReturn(),)) 
                 for l in self.layers.values(): l.removeSelection()
 

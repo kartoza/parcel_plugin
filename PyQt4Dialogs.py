@@ -20,7 +20,8 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.gui import *
 from qgis.core import *
-from qgisToolbox import *
+from qgisToolbox import featureSelector
+from PyQt4Widgets import XQPushButton, XQDialogButtonBox
 from database import *
 
 try:
@@ -32,10 +33,15 @@ except AttributeError:
 # All dialogs have a getReturn function
 
 class dlg_Selector(QDialog):
+    """ This dialog enables the selection of single features on a vector layer by means of the feature selector tool defined in qgisToolbox
+    """
 
     def __init__(self, db, iface, layer, query, obj={"NAME":"NONAME", "PURPOSE":"NOPURPOSE", "ACTION":"NOACTION"}, preserve = False, parent = None):
+        # initialize QDialog class
         super(dlg_Selector, self).__init__(parent, Qt.WindowStaysOnTopHint)
+        # initialize ui
         self.setupUi(obj)
+        # initialize instance variables
         self.db = db
         self.iface = iface
         self.layer = layer
@@ -44,13 +50,19 @@ class dlg_Selector(QDialog):
         self.preserve = preserve
         self.confirmed = False
         self.featID = None
+        # initialize selector tool
         self.selector = featureSelector(iface, layer, True, self)
+        # save qgis tool
         self.tool = self.selector.parentTool
     
     def getReturn(self):
+        """ Return intended variable(s) after the dialog has been accepted
+        """
         return self.featID
 
     def executeOption(self, button):
+        """ Perform validation and close the dialog
+        """
         if self.btnbx_options.standardButton(button) == QDialogButtonBox.Ok:
             # check that a feature has been selected
             if self.featID is None: 
@@ -60,37 +72,56 @@ class dlg_Selector(QDialog):
             if not self.confirmed: 
                 QMessageBox.information(self, "No Confirmation", "Please tick the confimation check box.")
                 return
+            # reset qgis tool
             self.iface.mapCanvas().setMapTool(self.tool)
+            # remove selection if needed 
             if not self.preserve: self.layer.removeSelection()
+            # accept dialog
             self.accept()
         else: 
+            # reset qgis tool
             self.iface.mapCanvas().setMapTool(self.tool)
+            # remove selection
             self.layer.removeSelection()
+            # reject dialog
             self.reject()
     
     def captured(self, selected):
+        """ Notify the dialog of a feature selection and disable selecting
+        """
+        # disable selector tool
         self.selector.disableCapturing()
+        # update dialog
         self.featID = selected[0]
         self.lnedt_featID.setText(str(self.db.query(self.query["SELECT"], (self.featID,))[0][0]))
         self.pshbtn_re.setEnabled(True)
         self.chkbx_confirm.setEnabled(True)
         
     def reselect(self):
+        """ Blat original selection and re-enable selecting
+        """
+        # update dialog
         self.pshbtn_re.setEnabled(False)
         self.chkbx_confirm.setEnabled(False)
         self.lnedt_featID.setText("")
         self.featID = None
+        # clear selector tool selection
         self.selector.clearSelection()
+        # enable selector tool 
         self.selector.enableCapturing()
 
-    def confirm(self, state): 
+    def confirm(self, state):
+        """ Confirm that the selected feature is correct
+        """
         self.pshbtn_re.setEnabled(not bool(state))
         self.confirmed = bool(state)
 
     def setupUi(self, obj):
+        """ Initialize ui
+        """
         # define ui widgets
         self.setObjectName(_fromUtf8("dlg_Selector"))
-        self.setCursor(QCursor(Qt.PointingHandCursor))
+        self.setCursor(QCursor(Qt.ArrowCursor))
         self.gridLayout = QGridLayout(self)
         self.gridLayout.setSizeConstraint(QLayout.SetFixedSize)
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
@@ -114,14 +145,17 @@ class dlg_Selector(QDialog):
         self.pshbtn_re = QPushButton(self.splitter)
         self.pshbtn_re.setEnabled(False)
         self.pshbtn_re.setObjectName(_fromUtf8("pshbtn_re"))
+        self.pshbtn_re.setCursor(QCursor(Qt.PointingHandCursor))
         self.verticalLayout.addWidget(self.splitter)
         self.chkbx_confirm = QCheckBox(self)
         self.chkbx_confirm.setEnabled(False)
         self.chkbx_confirm.setObjectName(_fromUtf8("chkbx_confirm"))
+        self.chkbx_confirm.setCursor(QCursor(Qt.PointingHandCursor))
         self.verticalLayout.addWidget(self.chkbx_confirm)
         self.btnbx_options = QDialogButtonBox(self)
         self.btnbx_options.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
         self.btnbx_options.setObjectName(_fromUtf8("btnbx_options"))
+        self.btnbx_options.setCursor(QCursor(Qt.PointingHandCursor))
         self.verticalLayout.addWidget(self.btnbx_options)
         self.gridLayout.addLayout(self.verticalLayout, 0, 0, 1, 1)
         # translate ui widgets' text
@@ -136,31 +170,47 @@ class dlg_Selector(QDialog):
         QMetaObject.connectSlotsByName(self)
 
 class dlg_Manager(QDialog):
+    """ This dialog enables the user to select an option with regards to managing a vector layer
+    """
 
     def __init__(self, obj={"NAME":"NONAME",}, parent = None):
+        # initialize QDialog class
         super(dlg_Manager, self).__init__(parent, Qt.WindowStaysOnTopHint)
+        # initialize ui
         self.setupUi(obj)
+        # initialize instance variables
         self.obj = obj
         self.option = None
 
     def getReturn(self):
+        """ Return intended variable(s) after the dialog has been accepted
+        """
         return self.option
 
     def executeOption(self, button):
+        """ Perform validation and close the dialog
+        """
         if self.btnbx_options.standardButton(button) == QDialogButtonBox.Ok:
+            # get selected option
             for i, rdbtn in enumerate(self.findChildren(QRadioButton)): 
                 if rdbtn.isChecked(): 
                     self.option = i
                     break
-            if self.option is not None: self.accept()
+            # check that an option was selected
+            if self.option is not None: 
+                # accept dialog
+                self.accept()
             else: QMessageBox.information(self, "Invalid Selection", "Please select an option before clicking OK")
         else:
+            # reject dialog
             self.reject()
     
     def setupUi(self, obj):
+        """ Initialize ui
+        """
         # define ui widgets
         self.setObjectName(_fromUtf8("dlg_Manager"))
-        self.setCursor(QCursor(Qt.PointingHandCursor))
+        self.setCursor(QCursor(Qt.ArrowCursor))
         self.setModal(True)
         self.mainlyt = QGridLayout(self)
         self.mainlyt.setSizeConstraint(QLayout.SetFixedSize)
@@ -171,18 +221,22 @@ class dlg_Manager(QDialog):
         self.grdlyt.setObjectName(_fromUtf8("grdlyt"))
         self.rdbtn_add = QRadioButton(self)
         self.rdbtn_add.setObjectName(_fromUtf8("rdbtn_add"))
+        self.rdbtn_add.setCursor(QCursor(Qt.PointingHandCursor))
         self.grdlyt.addWidget(self.rdbtn_add, 0, 0, 1, 1)
         self.rdbtn_edit = QRadioButton(self)
         self.rdbtn_edit.setObjectName(_fromUtf8("rdbtn_edit"))
+        self.rdbtn_edit.setCursor(QCursor(Qt.PointingHandCursor))
         self.grdlyt.addWidget(self.rdbtn_edit, 1, 0, 1, 1)
         self.rdbtn_del = QRadioButton(self)
         self.rdbtn_del.setObjectName(_fromUtf8("rdbtn_del"))
+        self.rdbtn_del.setCursor(QCursor(Qt.PointingHandCursor))
         self.grdlyt.addWidget(self.rdbtn_del, 2, 0, 1, 1)
         self.vrtlyt.addLayout(self.grdlyt)
         self.btnbx_options = QDialogButtonBox(self)
         self.btnbx_options.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
         self.btnbx_options.setCenterButtons(False)
         self.btnbx_options.setObjectName(_fromUtf8("btnbx_options"))
+        self.btnbx_options.setCursor(QCursor(Qt.PointingHandCursor))
         self.vrtlyt.addWidget(self.btnbx_options)
         self.mainlyt.addLayout(self.vrtlyt, 0, 0, 1, 1)
         # translate ui widgets' text
@@ -194,11 +248,16 @@ class dlg_Manager(QDialog):
         self.btnbx_options.clicked.connect(self.executeOption)
         QMetaObject.connectSlotsByName(self)
 
-class dlg_FormPolygon(QDialog):
+class dlg_FormParcel(QDialog):
+    """ This dialog enables a user to define and modify a parcel
+    """
 
     def __init__(self, db, iface, layers, layersDict, autocomplete = [], values = {}, parent = None):
-        super(dlg_FormPolygon, self).__init__(parent, Qt.WindowStaysOnTopHint)
+        # initialize QDialog class
+        super(dlg_FormParcel, self).__init__(parent, Qt.WindowStaysOnTopHint)
+        # initialize ui
         self.setupUi(autocomplete, layersDict)
+        # initialize instance variables
         self.db = db
         self.iface = iface
         self.layers = layers
@@ -207,99 +266,120 @@ class dlg_FormPolygon(QDialog):
         self.values_old = {}
         self.values_new = {}
         self.new_accepted = False
-        self.selector = featureSelector(iface, layers["POINTS"], False, self)
+        # initialize selector tool
+        self.selector = featureSelector(iface, layers["BEACONS"], False, self)
+        # save qgis tool
         self.tool = self.selector.parentTool
+        # populate form if values are given
         if bool(values): 
             self.populateForm(values)
             self.pshbtn_reset.setEnabled(True)
 
     def getReturn(self):
+        """ Return intended variable(s) after the dialog has been accepted
+        """
         return (self.values_old, self.values_new)
     
     def populateForm(self, values):
+        """ Populte form with values given
+        """
         # get values
         checker = lambda d, v: d[v] if v in d.keys() else None
-        feat_id = checker(values, "polygon_id")
+        feat_id = checker(values, "parcel_id")
         feat_sequence = checker(values, "sequence")
         # use values
         if bool(feat_id): 
-            # populate polygon_id
-            self.values_old["polygon_id"] = self.db.query(self.layersDict["POLYGONS"]["SQL"]["SELECT"], (feat_id,))[0][0]
-            self.lnedt_polygonID.setText(str(self.values_old["polygon_id"]))
-            self.highlightFeature(self.layers["POLYGONS"], feat_id)
+            # populate parcel_id
+            self.values_old["parcel_id"] = self.db.query(self.layersDict["PARCELS"]["SQL"]["SELECT"], (feat_id,))[0][0]
+            self.lnedt_parcelID.setText(str(self.values_old["parcel_id"]))
+            self.highlightFeature(self.layers["PARCELS"], feat_id)
         if bool(feat_sequence):
             # populate sequence
             self.values_old["sequence"] = []
-            for point_id in feat_sequence:
-                self.values_old["sequence"].append(self.db.query(self.layersDict["POINTS"]["SQL"]["SELECT"], (point_id,))[0][0])
+            for beacon_id in feat_sequence:
+                self.values_old["sequence"].append(self.db.query(self.layersDict["BEACONS"]["SQL"]["SELECT"], (beacon_id,))[0][0])
                 self.lstwdg_sequence.addItem(QString(str(self.values_old["sequence"][-1])))
-            self.highlightFeatures(self.layers["POINTS"], feat_sequence)
-            # update selected
+            self.highlightFeatures(self.layers["BEACONS"], feat_sequence)
+            # update selector selection
             self.selector.selected = feat_sequence
 
     def highlightFeature(self, layer, feature):
+        """ Highlight a single feature on a vector layer
+        """
         self.highlightFeatures(layer, [feature,])
 
     def highlightFeatures(self, layer, features):
+        """ Highlight multiple features on a vector layer
+        """
         layer.setSelectedFeatures(features)
             
     def executeOption(self, button):
+        """ Perform validation and close the dialog
+        """
         if self.btnbx_options.standardButton(button) == QDialogButtonBox.Save:
-            polygon_id = str(self.lnedt_polygonID.text()).strip()
-            # check that polygon id exists
-            if polygon_id == "": 
-                QMessageBox.information(self, "Invalid %s ID" %(self.layersDict["POLYGONS"]["NAME"].title(),), "Please enter a %s ID." %(self.layersDict["POLYGONS"]["NAME"].lower(),))
+            parcel_id = str(self.lnedt_parcelID.text()).strip()
+            # check that parcel id exists
+            if parcel_id == "": 
+                QMessageBox.information(self, "Invalid Parcel ID", "Please enter a parcel ID.")
                 return
-            # check that polygon id is valid (i.e. current, unique, available)
-            if "polygon_id" in self.values_old.keys() and self.values_old["polygon_id"] == polygon_id:
+            # check that parcel id is valid (i.e. current, unique, available)
+            if "parcel_id" in self.values_old.keys() and self.values_old["parcel_id"] == parcel_id:
                 pass
-            elif not bool(int(self.db.query(self.layersDict["POLYGONS"]["SQL"]["UNIQUE"], (polygon_id,))[0][0])):
-                if not self.new_accepted and QMessageBox.question(self, 'Confirm New %s ID' %(self.layersDict["POLYGONS"]["NAME"].title(),), "Are you sure you want to create a new %s ID?" %(self.layersDict["POLYGONS"]["NAME"].lower(),), QMessageBox.Yes, QMessageBox.No) == QMessageBox.No: 
+            elif not bool(int(self.db.query(self.layersDict["PARCELS"]["SQL"]["UNIQUE"], (parcel_id,))[0][0])):
+                if not self.new_accepted and QMessageBox.question(self, 'Confirm New Parcel ID', "Are you sure you want to create a new parcel ID?", QMessageBox.Yes, QMessageBox.No) == QMessageBox.No: 
                     return
                 self.new_accepted = True
             else:
-                if not bool(self.db.query(self.layersDict["POLYGONS"]["SQL"]["AVAILABLE"], (polygon_id,))[0][0]):
-                    QMessageBox.information(self, "Duplicated %s ID" %(self.layersDict["POLYGONS"]["NAME"].title(),), "Please enter a unique or available %s ID." %(self.layersDict["POLYGONS"]["NAME"].lower(),))
+                if not bool(self.db.query(self.layersDict["PARCELS"]["SQL"]["AVAILABLE"], (parcel_id,))[0][0]):
+                    QMessageBox.information(self, "Duplicated Parcel ID", "Please enter a unique or available parcel ID.")
                     return
-            # check that at least 3 points exist within the sequence
+            # check that at least 3 beacons exist within the sequence
             if len(self.selector.selected) < 3: 
-                QMessageBox.information(self, "Too Few %s" %(self.layersDict["POINTS"]["NAME_PLURAL"].title(),), "Please ensure that there are at least 3 %s listed in the sequence." %(self.layersDict["POINTS"]["NAME_PLURAL"].lower(),))
+                QMessageBox.information(self, "Too Few Beacons", "Please ensure that there are at least 3 beacons listed in the sequence.")
                 return
-            # save polygon id
-            self.values_new["polygon_id"] = polygon_id
+            # save parcel id
+            self.values_new["parcel_id"] = parcel_id
             # save sequence
             sequence = []
             for i in self.selector.selected:
-                sequence.append(self.db.query(self.layersDict["POINTS"]["SQL"]["SELECT"], (i,))[0][0])
+                sequence.append(self.db.query(self.layersDict["BEACONS"]["SQL"]["SELECT"], (i,))[0][0])
             self.values_new["sequence"] = sequence
+            # reset qgis tool
             self.iface.mapCanvas().setMapTool(self.tool)
-            self.layers["POINTS"].removeSelection()
-            self.layers["POLYGONS"].removeSelection()
+            # remove selection
+            for l in self.layers.values(): l.removeSelection()
+            # accept dialog
             self.accept()
         else:
+            # reset qgis tool
             self.iface.mapCanvas().setMapTool(self.tool)
-            self.layers["POINTS"].removeSelection()
-            self.layers["POLYGONS"].removeSelection()
+            # remove selection
+            for l in self.layers.values(): l.removeSelection()
+            # accept dialog
             self.reject()
 
     def captured(self, selected):
+        """ Notify the dialog of a feature selection and disable selecting
+        """
         # clear sequence
         self.lstwdg_sequence.clear()
         # create sequence
         for i in selected:
-            self.lstwdg_sequence.addItem(QString(str(self.db.query(self.layersDict["POINTS"]["SQL"]["SELECT"], (i,))[0][0]))) 
+            self.lstwdg_sequence.addItem(QString(str(self.db.query(self.layersDict["BEACONS"]["SQL"]["SELECT"], (i,))[0][0]))) 
 
-    def newPoint(self):
+    def newBeacon(self):
+        """ Define a new beacon on the fly to be added to the parcel sequence
+        """
         # disable self
         self.setEnabled(False)
-        # present point form
-        data = self.db.getSchema(self.layersDict["POINTS"]["TABLE"], [self.layersDict["POINTS"]["GEOM"], self.layersDict["POINTS"]["PKEY"]])
-        frm = dlg_FormPoint(self.db, data, self.layersDict["POINTS"]["SQL"], parent = self)
+        # present beacon form
+        data = self.db.getSchema(self.layersDict["BEACONS"]["TABLE"], [self.layersDict["BEACONS"]["GEOM"], self.layersDict["BEACONS"]["PKEY"]])
+        frm = dlg_FormBeacon(self.db, data, self.layersDict["BEACONS"]["SQL"], parent = self)
         frm.show()
         frm_ret = frm.exec_()
         if bool(frm_ret):
-            # save new point
-            id = self.db.query(self.layersDict["POINTS"]["SQL"]["INSERT"].format(fields = ", ".join([f["NAME"] for f in data]), values = ", ".join(["%s" for f in data])), [frm.getReturn()[1][f["NAME"]] for f in data])[0][0]
+            # save new beacon
+            id = self.db.query(self.layersDict["BEACONS"]["SQL"]["INSERT"].format(fields = ", ".join([f["NAME"] for f in data]), values = ", ".join(["%s" for f in data])), [frm.getReturn()[1][f["NAME"]] for f in data])[0][0]
             self.selector.appendSelection(id)
         # enable self
         self.setEnabled(True)
@@ -338,9 +418,11 @@ class dlg_FormPolygon(QDialog):
         self.pshbtn_start.setEnabled(True)
 
     def setupUi(self, autocomplete, layersDict):
+        """ Initialize ui
+        """
         # define ui widgets
-        self.setObjectName(_fromUtf8("dlg_FormPolygon"))
-        self.setCursor(QCursor(Qt.PointingHandCursor))
+        self.setObjectName(_fromUtf8("dlg_FormParcel"))
+        self.setCursor(QCursor(Qt.ArrowCursor))
         self.gridLayout = QGridLayout(self)
         self.gridLayout.setSizeConstraint(QLayout.SetFixedSize)
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
@@ -348,18 +430,18 @@ class dlg_FormPolygon(QDialog):
         self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
         self.formLayout = QFormLayout()
         self.formLayout.setObjectName(_fromUtf8("formLayout"))
-        self.lbl_polygonID = QLabel(self)
-        self.lbl_polygonID.setObjectName(_fromUtf8("lbl_polygonID"))
-        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.lbl_polygonID)
-        self.lnedt_polygonID = QLineEdit(self)
-        self.lnedt_polygonID.setObjectName(_fromUtf8("lnedt_polygonID"))
-        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.lnedt_polygonID)
+        self.lbl_parcelID = QLabel(self)
+        self.lbl_parcelID.setObjectName(_fromUtf8("lbl_parcelID"))
+        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.lbl_parcelID)
+        self.lnedt_parcelID = QLineEdit(self)
+        self.lnedt_parcelID.setObjectName(_fromUtf8("lnedt_parcelID"))
+        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.lnedt_parcelID)
         model = QStringListModel()
         model.setStringList(autocomplete)
         completer = QCompleter()        
         completer.setCaseSensitivity(Qt.CaseInsensitive)
         completer.setModel(model)
-        self.lnedt_polygonID.setCompleter(completer)
+        self.lnedt_parcelID.setCompleter(completer)
         self.verticalLayout_2.addLayout(self.formLayout)
         self.horizontalLayout_2 = QHBoxLayout()
         self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
@@ -371,6 +453,7 @@ class dlg_FormPolygon(QDialog):
         self.pshbtn_new = QPushButton(self)
         self.pshbtn_new.setEnabled(False)
         self.pshbtn_new.setObjectName(_fromUtf8("pshbtn_new"))
+        self.pshbtn_new.setCursor(QCursor(Qt.PointingHandCursor))
         self.horizontalLayout_2.addWidget(self.pshbtn_new)
         self.verticalLayout_2.addLayout(self.horizontalLayout_2)
         self.horizontalLayout_1 = QHBoxLayout()
@@ -380,14 +463,17 @@ class dlg_FormPolygon(QDialog):
         self.pshbtn_start = QPushButton(self)
         self.pshbtn_start.setEnabled(True)
         self.pshbtn_start.setObjectName(_fromUtf8("pshbtn_start"))
+        self.pshbtn_start.setCursor(QCursor(Qt.PointingHandCursor))
         self.verticalLayout_1.addWidget(self.pshbtn_start)
         self.pshbtn_stop = QPushButton(self)
         self.pshbtn_stop.setEnabled(False)
         self.pshbtn_stop.setObjectName(_fromUtf8("pshbtn_stop"))
+        self.pshbtn_stop.setCursor(QCursor(Qt.PointingHandCursor))
         self.verticalLayout_1.addWidget(self.pshbtn_stop)
         self.pshbtn_reset = QPushButton(self)
         self.pshbtn_reset.setEnabled(False)
         self.pshbtn_reset.setObjectName(_fromUtf8("pshbtn_reset"))
+        self.pshbtn_reset.setCursor(QCursor(Qt.PointingHandCursor))
         self.verticalLayout_1.addWidget(self.pshbtn_reset)
         spacerItem_2 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
         self.verticalLayout_1.addItem(spacerItem_2)
@@ -400,29 +486,35 @@ class dlg_FormPolygon(QDialog):
         self.btnbx_options = QDialogButtonBox(self)
         self.btnbx_options.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Save)
         self.btnbx_options.setObjectName(_fromUtf8("btnbx_options"))
+        self.btnbx_options.setCursor(QCursor(Qt.PointingHandCursor))
         self.verticalLayout_2.addWidget(self.btnbx_options)
         self.gridLayout.addLayout(self.verticalLayout_2, 0, 0, 1, 1)
         # translate ui widgets' text
-        self.setWindowTitle(QApplication.translate("dlg_FormPolygon", "%s Form" %(layersDict["POLYGONS"]["NAME"].title(),), None, QApplication.UnicodeUTF8))
-        self.lbl_polygonID.setText(QApplication.translate("dlg_FormPolygon", "%s ID" %(layersDict["POLYGONS"]["NAME"].title(),), None, QApplication.UnicodeUTF8))
-        self.lbl_sequence.setText(QApplication.translate("dlg_FormPolygon", "%s Sequence" %(layersDict["POINTS"]["NAME"].title(),), None, QApplication.UnicodeUTF8))
-        self.pshbtn_new.setText(QApplication.translate("dlg_FormPolygon", "New %s" %(layersDict["POINTS"]["NAME"].title(),), None, QApplication.UnicodeUTF8))
-        self.pshbtn_start.setText(QApplication.translate("dlg_FormPolygon", "Start", None, QApplication.UnicodeUTF8))
-        self.pshbtn_stop.setText(QApplication.translate("dlg_FormPolygon", "Stop", None, QApplication.UnicodeUTF8))
-        self.pshbtn_reset.setText(QApplication.translate("dlg_FormPolygon", "Reset", None, QApplication.UnicodeUTF8))
+        self.setWindowTitle(QApplication.translate("dlg_FormParcel", "Parcel Form", None, QApplication.UnicodeUTF8))
+        self.lbl_parcelID.setText(QApplication.translate("dlg_FormParcel", "Parcel ID", None, QApplication.UnicodeUTF8))
+        self.lbl_sequence.setText(QApplication.translate("dlg_FormParcel", "Beacon Sequence", None, QApplication.UnicodeUTF8))
+        self.pshbtn_new.setText(QApplication.translate("dlg_FormParcel", "New Beacon", None, QApplication.UnicodeUTF8))
+        self.pshbtn_start.setText(QApplication.translate("dlg_FormParcel", "Start", None, QApplication.UnicodeUTF8))
+        self.pshbtn_stop.setText(QApplication.translate("dlg_FormParcel", "Stop", None, QApplication.UnicodeUTF8))
+        self.pshbtn_reset.setText(QApplication.translate("dlg_FormParcel", "Reset", None, QApplication.UnicodeUTF8))
         # connect ui widgets
-        self.pshbtn_new.clicked.connect(self.newPoint)
+        self.pshbtn_new.clicked.connect(self.newBeacon)
         self.pshbtn_start.clicked.connect(self.startSeq)
         self.pshbtn_stop.clicked.connect(self.stopSeq)
         self.pshbtn_reset.clicked.connect(self.resetSeq)
         self.btnbx_options.clicked.connect(self.executeOption)
         QMetaObject.connectSlotsByName(self)
 
-class dlg_FormPoint(QDialog):
+class dlg_FormBeacon(QDialog):
+    """ This dialog enables a user to define and modify a beacon
+    """
 
     def __init__(self, db, data, query, values = [], parent = None):
-        super(dlg_FormPoint, self).__init__(parent, Qt.WindowStaysOnTopHint)
+        # initialize QDialog class
+        super(dlg_FormBeacon, self).__init__(parent, Qt.WindowStaysOnTopHint)
+        # initialize ui
         self.setupUi(data)
+        # initialize instance variables
         self.db = db
         self.data = data
         self.query = query
@@ -433,18 +525,25 @@ class dlg_FormPoint(QDialog):
             "TYPE":"background-color: rgba(107, 107, 255, 150);",
             "UNIQUE":"background-color: rgba(107, 255, 107, 150);"
         }
+        # populate form if values are given
         if bool(values): 
             self.populateForm(values)
     
     def getReturn(self):
+        """ Return intended variable(s) after the dialog has been accepted
+        """
         return (self.values_old, self.values_new)
 
     def populateForm(self, values):
+        """ Populate form with given values
+        """
         for index,value in enumerate(values):
-            self.lnedts[index].setText(str(value))
+            if value is not None: self.lnedts[index].setText(str(value))
             self.values_old[self.data[index]["NAME"]] = value
 
     def executeOption(self, button):
+        """ Perform validation and close the dialog
+        """
         if self.btnbx_options.standardButton(button) == QDialogButtonBox.Save:
             values_new = {}
             # check required fields        
@@ -491,14 +590,18 @@ class dlg_FormPoint(QDialog):
                 return
             # save values
             self.values_new = values_new
+            # accept dialog
             self.accept()
-
-        else:self.reject()
+        else:
+            # reject dialog
+            self.reject()
 
     def setupUi(self, data):
+        """ Initialize ui
+        """
         # define ui widgets
-        self.setObjectName(_fromUtf8("dlg_FormPoint"))
-        self.setCursor(QCursor(Qt.PointingHandCursor))
+        self.setObjectName(_fromUtf8("dlg_FormBeacon"))
+        self.setCursor(QCursor(Qt.ArrowCursor))
         self.setModal(True)
         self.gridLayout = QGridLayout(self)
         self.gridLayout.setSizeConstraint(QLayout.SetFixedSize)
@@ -511,6 +614,7 @@ class dlg_FormPoint(QDialog):
         self.data = data
         self.lbls = []
         self.lnedts = []
+        # define form fields dynamically from the database schema
         for index,field in enumerate(self.data):
             lbl = QLabel(self)
             lbl.setObjectName(_fromUtf8("lbl_%s" %(field["NAME"],)))
@@ -522,8 +626,8 @@ class dlg_FormPoint(QDialog):
             lnedt.setObjectName(_fromUtf8("lnedt_%s" %(field["NAME"],)))
             self.formLayout.setWidget(index, QFormLayout.FieldRole, lnedt)
             self.lnedts.append(lnedt)
-            lbl.setText(QApplication.translate("dlg_FormPoint", ("*" if bool(self.lnedts[index].property("REQUIRED").toBool()) else "") + field["NAME"].title(), None, QApplication.UnicodeUTF8))
-            lnedt.setProperty("TYPE", QApplication.translate("dlg_FormPoint", str(field["TYPE"]), None, QApplication.UnicodeUTF8))
+            lbl.setText(QApplication.translate("dlg_FormBeacon", ("*" if bool(self.lnedts[index].property("REQUIRED").toBool()) else "") + field["NAME"].title(), None, QApplication.UnicodeUTF8))
+            lnedt.setProperty("TYPE", QApplication.translate("dlg_FormBeacon", str(field["TYPE"]), None, QApplication.UnicodeUTF8))
         self.verticalLayout.addLayout(self.formLayout)
         self.line_1 = QFrame(self)
         self.line_1.setFrameShape(QFrame.HLine)
@@ -541,20 +645,26 @@ class dlg_FormPoint(QDialog):
         self.btnbx_options = QDialogButtonBox(self)
         self.btnbx_options.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Save)
         self.btnbx_options.setObjectName(_fromUtf8("btnbx_options"))
+        self.btnbx_options.setCursor(QCursor(Qt.PointingHandCursor))
         self.verticalLayout.addWidget(self.btnbx_options)
         self.gridLayout.addLayout(self.verticalLayout, 0, 0, 1, 1)
         # translate ui widgets' text
-        self.setWindowTitle(QApplication.translate("dlg_FormPoint", "Beacon Form", None, QApplication.UnicodeUTF8))        
-        self.label.setText(QApplication.translate("dlg_FormPoint", "<html><head/><body><p><span style=\" color:#ff0000;\">*Required Field</span></p></body></html>", None, QApplication.UnicodeUTF8))
+        self.setWindowTitle(QApplication.translate("dlg_FormBeacon", "Beacon Form", None, QApplication.UnicodeUTF8))        
+        self.label.setText(QApplication.translate("dlg_FormBeacon", "<html><head/><body><p><span style=\" color:#ff0000;\">*Required Field</span></p></body></html>", None, QApplication.UnicodeUTF8))
         # connect ui widgets
         self.btnbx_options.clicked.connect(self.executeOption)
         QMetaObject.connectSlotsByName(self)
         
 class dlg_FormDatabase(QDialog):
+    """ This dialog enables the user to define the database connection parameters
+    """
 
     def __init__(self, parent = None):
+        # initialize QDialog class  
         super(dlg_FormDatabase, self).__init__(parent, Qt.WindowStaysOnTopHint)
+        # initialize ui
         self.setupUi()
+        # initialize instance variables
         self.save = False
         self.db = None
         self.params = {}
@@ -563,9 +673,13 @@ class dlg_FormDatabase(QDialog):
         }
     
     def getReturn(self):
+        """ Return intended variable(s) after the dialog has been accepted
+        """
         return (self.save, self.db, self.params)
 
     def executeOption(self, button):
+        """ Perform validation and close the dialog
+        """
         if self.btnbx_options.standardButton(button) == QDialogButtonBox.Ok:
             # validate fields
             params = {}
@@ -592,18 +706,24 @@ class dlg_FormDatabase(QDialog):
             self.db = db
             # save parameters
             self.params = params
+            # accept dialog
             self.accept()
         else:
+            # reject dialog
             self.reject()
 
     def saveConnection(self, state):
+        """ Select option to save database settings
+        """
         self.save = bool(state)
 
     def setupUi(self):
+        """ Initialize ui
+        """
         # define ui widgets
         fields = ["HOST","PORT","NAME","USER","PASSWORD"]
         self.setObjectName(_fromUtf8("dlg_FormDatabase"))
-        self.setCursor(QCursor(Qt.PointingHandCursor))
+        self.setCursor(QCursor(Qt.ArrowCursor))
         self.setModal(True)
         self.gridLayout = QGridLayout(self)
         self.gridLayout.setSizeConstraint(QLayout.SetFixedSize)
@@ -614,6 +734,7 @@ class dlg_FormDatabase(QDialog):
         self.formLayout.setObjectName(_fromUtf8("formLayout"))
         self.lbls = []
         self.lnedts = []
+        # define form fields dynamically from above list
         for index, field in enumerate(fields):
             lbl = QLabel(self)
             lbl.setObjectName(_fromUtf8("lbl_%s" %(field.lower(),)))
@@ -631,11 +752,13 @@ class dlg_FormDatabase(QDialog):
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
         self.chkbx_save = QCheckBox(self)
         self.chkbx_save.setObjectName(_fromUtf8("chkbx_save"))
+        self.chkbx_save.setCursor(QCursor(Qt.PointingHandCursor))
         self.horizontalLayout.addWidget(self.chkbx_save)
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.btnbx_options = QDialogButtonBox(self)
         self.btnbx_options.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
         self.btnbx_options.setObjectName(_fromUtf8("btnbx_options"))
+        self.btnbx_options.setCursor(QCursor(Qt.PointingHandCursor))
         self.verticalLayout.addWidget(self.btnbx_options)
         self.gridLayout.addLayout(self.verticalLayout, 0, 0, 1, 1)
         # translate ui widgets' text
@@ -646,3 +769,310 @@ class dlg_FormDatabase(QDialog):
         self.btnbx_options.clicked.connect(self.executeOption)
         QMetaObject.connectSlotsByName(self)
 
+class dlg_FormBearDist(QDialog):
+
+    def __init__(self, db, beardistSql, beaconSql, beaconSchema, parent = None):
+        # initialize QDialog class
+        super(dlg_FormBearDist, self).__init__(parent, Qt.WindowStaysOnTopHint)
+        # initialize ui
+        self.setupUi()
+        # initialize instance variables
+        self.db = db
+        self.beardistSql = beardistSql
+        self.beaconSql = beaconSql
+        self.beaconSchema = beaconSchema
+        self.auto = {
+            "SURVEYPLAN":self.db.query(self.beardistSql["AUTO_SURVEYPLAN"])[0][0],
+            "REFERENCEBEACON":self.db.query(self.beardistSql["AUTO_REFERENCEBEACON"])[0][0],
+            "FROMBEACON":[]
+        }
+        self.surveyPlan = None
+        self.referenceBeacon = None
+        self.beardistChains = []
+        self.beardistStr = "%s" + chr(176) + " and %sm from %s to %s"
+        # initialize initial step
+        self.initItemSurveyPlan()
+
+    def getReturn(self):
+        pass
+
+    def setCurrentItem(self, index, clear=False, enabled=False):
+        """ Set the current toolbox item and disable all other toolbox items
+        """
+        # clear editable fields if needed
+        if clear:
+            for widget in self.tlbx.widget(index).findChildren(QWidget):
+                if type(widget) in [QLineEdit]:
+                    widget.setText("")
+        # enable editable fields if needed
+        if enabled:
+            for widget in self.tlbx.widget(index).findChildren(QWidget):
+                if type(widget) in [QLineEdit]:
+                    widget.setEnabled(True)
+        # disable all items
+        for i in range(self.count): 
+            self.tlbx.setItemEnabled(i, False)
+        # enable and display desired item
+        self.tlbx.setCurrentIndex(index)
+        self.tlbx.setItemEnabled(index, True)
+
+    def initItemSurveyPlan(self):
+        # update autocompletion
+        model = QStringListModel()
+        model.setStringList(self.auto["SURVEYPLAN"])
+        completer = QCompleter()        
+        completer.setCaseSensitivity(Qt.CaseInsensitive)
+        completer.setModel(model)
+        self.lnedt_plan.setCompleter(completer)
+        # reset variables associated with item
+        self.surveyPlan = None
+        self.setCurrentItem(0)
+
+    def checkItemSurveyPlan(self, forward):
+        # check direction
+        if forward: 
+            # check that a server plan number was specified
+            if str(self.lnedt_plan.text()).strip() is "":
+                QMessageBox.information(self, "Empty Survey Plan Number", "Please enter a surver plan number.")
+                return
+            # set survey plan number
+            self.surveyPlan = str(self.lnedt_plan.text())
+            # display next toolbox item
+            self.initItemReferenceBeacon()
+        else: pass
+
+    def initItemReferenceBeacon(self):
+        # update autocompletion
+        model = QStringListModel()
+        model.setStringList(self.auto["REFERENCEBEACON"])
+        completer = QCompleter()        
+        completer.setCaseSensitivity(Qt.CaseInsensitive)
+        completer.setModel(model)
+        self.lnedt_ref.setCompleter(completer)
+        # reset variables associated with items
+        self.referenceBeacon = None
+        # check if survey plan number has a pre-defined reference beacon
+        if self.surveyPlan in self.auto["SURVEYPLAN"]:
+            # update item contents
+            self.lnedt_ref.setEnabled(False)
+            self.lnedt_ref.setText(str(self.db.query(self.beardistSql["EXIST_REFERENCEBEACON"], (self.surveyPlan,))[0][0]))
+        else:
+            # update item contents
+            self.lnedt_ref.setEnabled(True)
+            self.lnedt_ref.setText("")
+        self.setCurrentItem(1)
+        
+    def checkItemReferenceBeacon(self, forward):
+        # check direction
+        if forward: 
+            # check that a reference beacon was specified
+            if str(self.lnedt_ref.text()).strip() is "":
+                QMessageBox.information(self, "Empty Reference Beacon", "Please enter a reference beacon.")
+                return
+            # check if reference beacon exists
+            if self.referenceBeacon in self.auto["REFERENCEBEACON"]:
+                # set reference beacon
+                self.referenceBeacon = str(self.lnedt_ref.text())
+                # display next toolbox item
+                self.initItemBearDistPlan()
+            else:
+                # disable self
+                self.setEnabled(False)
+                # present beacon form
+                column_index = self.db.query(self.beardistSql["INDEX_REFERENCEBEACON"])[0][0]
+                frm = dlg_FormBeacon(self.db, self.beaconSchema, self.beaconSql, parent = self)
+                frm.lnedts[column_index].setText(str(self.lnedt_ref.text()))
+                frm.lnedts[column_index].setEnabled(False)
+                frm.show()
+                frm_ret = frm.exec_()
+                if bool(frm_ret):
+                    # save new beacon
+                    self.db.query(self.beaconSql["INSERT"].format(fields = ", ".join([f["NAME"] for f in self.beaconSchema]), values = ", ".join(["%s" for f in self.beaconSchema])), [frm.getReturn()[1][f["NAME"]] for f in self.beaconSchema])[0][0]
+                    # set reference beacon
+                    self.referenceBeacon = str(self.lnedt_ref.text())
+                    # enable self
+                    self.setEnabled(True)
+                    # display next toolbox item
+                    self.initItemBearDistChain()
+                else:
+                    # enable self
+                    self.setEnabled(True)
+        else:
+            self.initItemSurveyPlan()
+
+    def initItemBearDistChain(self):
+        # reset variables associated with items
+        self.beardistCahins = []
+        self.auto["FROMBEACON"] = []
+        self.lst_chain.clear()
+        self.auto["FROMBEACON"].append(self.referenceBeacon)
+        # check if reference beacon is predefined
+        if self.referenceBeacon in self.auto["REFERENCEBEACON"]:
+            # check if survey plan number is predefined
+            if self.surveyPlan in self.auto["SURVEYPLAN"]:
+                # get defined bearings and distances
+                for link in self.db.query(self.beardistSql["EXIST_BEARDISTCHAINS"], (self.surveyPlan,)):
+                    self.beardistChains.append(link)
+                    self.auto["FROMBEACON"].append(link[-1])
+                    self.lst_chain.addItem(QString(self.beardistStr %link))
+        self.setCurrentItem(2)
+        QMessagBox.information(self, "", str(self.auto["FROMBEACON"]))
+
+    def checkItemBearDistChain(self, forward):
+        # check direction
+        if forward:
+            pass
+        else:
+            self.initItemReferenceBeacon()
+
+    def saveBearDistChain(self):
+        pass
+
+    def setupUi(self):
+        """ Initialize ui
+        """
+        # define dialog
+        self.setObjectName(_fromUtf8("dlg_FormBearDist"))
+        self.resize(450, 540)
+        self.setModal(True)
+        # define dialog layout manager 
+        self.grdlyt_dlg = QGridLayout(self)
+        self.grdlyt_dlg.setSizeConstraint(QLayout.SetDefaultConstraint)
+        self.grdlyt_dlg.setObjectName(_fromUtf8("grdlyt_dlg"))
+        # define toolbox
+        self.tlbx = QToolBox(self)
+        self.tlbx.setFrameShape(QFrame.StyledPanel)
+        self.tlbx.setObjectName(_fromUtf8("tlbx"))
+        self.count = 3
+        # define first item: survey plan
+        self.itm_plan = QWidget()
+        self.itm_plan.setObjectName(_fromUtf8("itm_plan"))
+        self.grdlyt_plan = QGridLayout(self.itm_plan)
+        self.grdlyt_plan.setObjectName(_fromUtf8("grdlyt_chain"))
+        self.vrtlyt_plan = QVBoxLayout()
+        self.vrtlyt_plan.setObjectName(_fromUtf8("vrtlyt_plan"))
+        self.frmlyt_plan = QFormLayout()
+        self.frmlyt_plan.setObjectName(_fromUtf8("frmlyt_plan"))
+        self.lbl_plan = QLabel(self.itm_plan)
+        self.lbl_plan.setObjectName(_fromUtf8("lbl_plan"))
+        self.frmlyt_plan.setWidget(0, QFormLayout.LabelRole, self.lbl_plan)
+        self.lnedt_plan = QLineEdit(self.itm_plan)
+        self.lnedt_plan.setObjectName(_fromUtf8("lnedt_plan"))
+        self.frmlyt_plan.setWidget(0, QFormLayout.FieldRole, self.lnedt_plan)
+        self.vrtlyt_plan.addLayout(self.frmlyt_plan)
+        self.vrtspc_plan = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.vrtlyt_plan.addItem(self.vrtspc_plan)
+        self.hrzlyt_plan = QHBoxLayout()
+        self.hrzlyt_plan.setObjectName(_fromUtf8("hrzlyt_plan"))
+        self.hrzspc_plan = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.hrzlyt_plan.addItem(self.hrzspc_plan)
+        self.pshbtn_plan_next = XQPushButton(self.itm_plan)
+        self.pshbtn_plan_next.setObjectName(_fromUtf8("pshbtn_plan_next"))
+        self.hrzlyt_plan.addWidget(self.pshbtn_plan_next)
+        self.vrtlyt_plan.addLayout(self.hrzlyt_plan)
+        self.grdlyt_plan.addLayout(self.vrtlyt_plan, 0, 0, 1, 1)
+        self.tlbx.addItem(self.itm_plan, _fromUtf8(""))
+        # define second item: reference beacon
+        self.itm_ref = QWidget()
+        self.itm_ref.setObjectName(_fromUtf8("itm_ref"))
+        self.grdlyt_ref = QGridLayout(self.itm_ref)
+        self.grdlyt_ref.setObjectName(_fromUtf8("grdlyt_ref"))
+        self.vrtlyt_ref = QVBoxLayout()
+        self.vrtlyt_ref.setObjectName(_fromUtf8("vrtlyt_ref"))
+        self.frmlyt_ref = QFormLayout()
+        self.frmlyt_ref.setObjectName(_fromUtf8("frmlyt_ref"))
+        self.lbl_ref = QLabel(self.itm_ref)
+        self.lbl_ref.setObjectName(_fromUtf8("lbl_ref"))
+        self.frmlyt_ref.setWidget(0, QFormLayout.LabelRole, self.lbl_ref)
+        self.lnedt_ref = QLineEdit(self.itm_ref)
+        self.lnedt_ref.setObjectName(_fromUtf8("lnedt_ref"))
+        self.frmlyt_ref.setWidget(0, QFormLayout.FieldRole, self.lnedt_ref)
+        self.vrtlyt_ref.addLayout(self.frmlyt_ref)
+        self.vrtspc_ref = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.vrtlyt_ref.addItem(self.vrtspc_ref)
+        self.hrzlyt_ref = QHBoxLayout()
+        self.hrzlyt_ref.setObjectName(_fromUtf8("hrzlyt_ref"))
+        self.pshbtn_ref_back = XQPushButton(self.itm_ref)
+        self.pshbtn_ref_back.setObjectName(_fromUtf8("pshbtn_ref_back"))
+        self.hrzlyt_ref.addWidget(self.pshbtn_ref_back)
+        self.hrzspc_ref = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.hrzlyt_ref.addItem(self.hrzspc_ref)
+        self.pshbtn_ref_next = XQPushButton(self.itm_ref)
+        self.pshbtn_ref_next.setObjectName(_fromUtf8("pshbtn_ref_next"))
+        self.hrzlyt_ref.addWidget(self.pshbtn_ref_next)
+        self.vrtlyt_ref.addLayout(self.hrzlyt_ref)
+        self.grdlyt_ref.addLayout(self.vrtlyt_ref, 0, 0, 1, 1)
+        self.tlbx.addItem(self.itm_ref, _fromUtf8(""))
+        # define third item: beardist chain
+        self.itm_chain = QWidget()
+        self.itm_chain.setObjectName(_fromUtf8("itm_chain"))
+        self.grdlyt_chain = QGridLayout(self.itm_chain)
+        self.grdlyt_chain.setObjectName(_fromUtf8("grdlyt_chain"))
+        self.vrtlyt_chain = QVBoxLayout()
+        self.vrtlyt_chain.setObjectName(_fromUtf8("vrtlyt_chain"))
+        self.lst_chain = QListWidget(self.itm_chain)
+        self.lst_chain.setObjectName(_fromUtf8("lst_chain"))
+        self.vrtlyt_chain.addWidget(self.lst_chain)
+        self.hrzlyt_chain_link = QHBoxLayout()
+        self.hrzlyt_chain_link.setObjectName(_fromUtf8("hrzlyt_chain_link"))
+        self.vrtlyt_chain_link = QVBoxLayout()
+        self.vrtlyt_chain_link.setObjectName(_fromUtf8("vrtlyt_chain_link"))
+        self.pshbtn_chain_add = XQPushButton(self.itm_chain)
+        self.pshbtn_chain_add.setObjectName(_fromUtf8("pshbtn_chain_add"))
+        self.vrtlyt_chain_link.addWidget(self.pshbtn_chain_add)
+        self.pshbtn_chain_edt = XQPushButton(self.itm_chain)
+        self.pshbtn_chain_edt.setObjectName(_fromUtf8("pshbtn_chain_edt"))
+        self.vrtlyt_chain_link.addWidget(self.pshbtn_chain_edt)
+        self.pshbtn_chain_del = XQPushButton(self.itm_chain)
+        self.pshbtn_chain_del.setObjectName(_fromUtf8("pshbtn_chain_del"))
+        self.vrtlyt_chain_link.addWidget(self.pshbtn_chain_del)
+        self.hrzlyt_chain_link.addLayout(self.vrtlyt_chain_link)
+        self.hrzspc_chain_link = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.hrzlyt_chain_link.addItem(self.hrzspc_chain_link)
+        self.vrtlyt_chain.addLayout(self.hrzlyt_chain_link)
+        self.vrtspc_chain = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.vrtlyt_chain.addItem(self.vrtspc_chain)
+        self.hrzlyt_chain_step = QHBoxLayout()
+        self.hrzlyt_chain_step.setObjectName(_fromUtf8("hrzlyt_chain_step"))
+        self.pshbtn_chain_back = XQPushButton(self.itm_chain)
+        self.pshbtn_chain_back.setObjectName(_fromUtf8("pshbtn_chain_back"))
+        self.hrzlyt_chain_step.addWidget(self.pshbtn_chain_back)
+        self.hrzspc_chain_step = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.hrzlyt_chain_step.addItem(self.hrzspc_chain_step)
+        self.pshbtn_chain_finish = XQPushButton(self.itm_chain)
+        self.pshbtn_chain_finish.setObjectName(_fromUtf8("pshbtn_chain_finish"))
+        self.hrzlyt_chain_step.addWidget(self.pshbtn_chain_finish)
+        self.vrtlyt_chain.addLayout(self.hrzlyt_chain_step)
+        self.grdlyt_chain.addLayout(self.vrtlyt_chain, 0, 0, 1, 1)
+        self.tlbx.addItem(self.itm_chain, _fromUtf8(""))
+        # finish dialog definition
+        self.grdlyt_dlg.addWidget(self.tlbx, 0, 0, 1, 1)
+        self.btnbx_options = XQDialogButtonBox(self)
+        self.btnbx_options.setOrientation(Qt.Horizontal)
+        self.btnbx_options.setStandardButtons(XQDialogButtonBox.Cancel)
+        self.btnbx_options.setObjectName(_fromUtf8("btnbx_options"))
+        self.grdlyt_dlg.addWidget(self.btnbx_options, 1, 0, 1, 1)
+        # translate ui widgets' text
+        self.setWindowTitle(QApplication.translate("dlg_FormBearDist", "Bearings and Distances Form", None, QApplication.UnicodeUTF8))
+        self.lbl_plan.setText(QApplication.translate("dlg_FormBearDist", "Survey Plan", None, QApplication.UnicodeUTF8))
+        self.pshbtn_plan_next.setText(QApplication.translate("dlg_FormBearDist", "Next", None, QApplication.UnicodeUTF8))
+        self.tlbx.setItemText(self.tlbx.indexOf(self.itm_plan), QApplication.translate("dlg_FormBearDist", "Step 1: Define Survey Plan", None, QApplication.UnicodeUTF8))
+        self.lbl_ref.setText(QApplication.translate("dlg_FormBearDist", "Reference Beacon", None, QApplication.UnicodeUTF8))
+        self.pshbtn_ref_back.setText(QApplication.translate("dlg_FormBearDist", "Back", None, QApplication.UnicodeUTF8))
+        self.pshbtn_ref_next.setText(QApplication.translate("dlg_FormBearDist", "Next", None, QApplication.UnicodeUTF8))
+        self.tlbx.setItemText(self.tlbx.indexOf(self.itm_ref), QApplication.translate("dlg_FormBearDist", "Step 2: Define Reference Beacon", None, QApplication.UnicodeUTF8))
+        self.pshbtn_chain_add.setText(QApplication.translate("dlg_FormBearDist", "Add New Link", None, QApplication.UnicodeUTF8))
+        self.pshbtn_chain_edt.setText(QApplication.translate("dlg_FormBearDist", "Edit Link", None, QApplication.UnicodeUTF8))
+        self.pshbtn_chain_del.setText(QApplication.translate("dlg_FormBearDist", "Delete Link", None, QApplication.UnicodeUTF8))
+        self.pshbtn_chain_back.setText(QApplication.translate("dlg_FormBearDist", "Back", None, QApplication.UnicodeUTF8))
+        self.pshbtn_chain_finish.setText(QApplication.translate("dlg_FormBearDist", "Finish", None, QApplication.UnicodeUTF8))
+        self.tlbx.setItemText(self.tlbx.indexOf(self.itm_chain), QApplication.translate("dlg_FormBearDist", "Step 3: Define Bearings and Distances Chain", None, QApplication.UnicodeUTF8))
+        # connect ui widgets
+        self.btnbx_options.accepted.connect(self.accept)
+        self.btnbx_options.rejected.connect(self.reject)
+        self.pshbtn_chain_finish.clicked.connect(lambda: self.checkItemBearDistChain(True))
+        self.pshbtn_chain_back.clicked.connect(lambda: self.checkItemBearDistChain(False))
+        self.pshbtn_ref_next.clicked.connect(lambda: self.checkItemReferenceBeacon(True))
+        self.pshbtn_ref_back.clicked.connect(lambda: self.checkItemReferenceBeacon(False))
+        self.pshbtn_plan_next.clicked.connect(lambda : self.checkItemSurveyPlan(True))
+        QMetaObject.connectSlotsByName(self)

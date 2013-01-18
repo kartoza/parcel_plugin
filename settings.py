@@ -19,7 +19,7 @@ DATABASE_SCHEMA = "public"
 DATABASE_LAYERS = {}
 
 # Define database layers
-DATABASE_LAYERS["POINTS"] = {
+DATABASE_LAYERS["BEACONS"] = {
     "SCHEMA":"public",
     "TABLE":"beacons",
     "NAME":"Beacon",
@@ -34,9 +34,9 @@ DATABASE_LAYERS["POINTS"] = {
         "DELETE":"DELETE FROM beacons WHERE gid = %s;",
         "INSERT":"INSERT INTO beacons({fields}) VALUES ({values}) RETURNING gid;",
         "UPDATE":"UPDATE beacons SET {set} WHERE {where};"
-    }
+        }
 }
-DATABASE_LAYERS["POLYGONS"] = {
+DATABASE_LAYERS["PARCELS"] = {
     "SCHEMA":"public",
     "TABLE":"parcels",
     "NAME":"Parcel",
@@ -61,4 +61,13 @@ DATABASE_LAYERS["POLYGONS"] = {
 # - auto update available field in parcel_lookup on insert/update/delete on
 # parcel_def
 
-DATABASE_LAYERS_ORDER = ["POINTS", "POLYGONS"]
+DATABASE_LAYERS_ORDER = ["BEACONS", "PARCELS"]
+
+# Define other sql commands
+DATABASE_OTHER_SQL = {
+    "AUTO_SURVEYPLAN":"SELECT array_agg(plan_no) FROM survey;",
+    "AUTO_REFERENCEBEACON":"SELECT array_agg(beacon) FROM beacons WHERE beacon NOT IN (SELECT beacon_to FROM beardist WHERE beacon_to NOT IN (SELECT ref_beacon FROM survey));",
+    "EXIST_REFERENCEBEACON":"SELECT ref_beacon FROM survey where plan_no = %s;",
+    "EXIST_BEARDISTCHAINS":"SELECT bearing, distance, beacon_from, beacon_to FROM beardist WHERE plan_no = %s",
+    "INDEX_REFERENCEBEACON":"SELECT i.column_index::integer FROM (SELECT row_number() over(ORDER BY c.ordinal_position) -1 as column_index, c.column_name FROM information_schema.columns c WHERE c.table_name = 'beacons' AND c.column_name NOT IN ('geom', 'gid') ORDER BY c.ordinal_position) as i WHERE i.column_name = 'beacon';"
+}
