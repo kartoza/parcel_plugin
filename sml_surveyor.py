@@ -36,20 +36,20 @@ class sml_surveyor:
         # Save reference to the QGIS interface
         self.iface = iface
         # initialize plugin directory
-        self.plugin_dir = os.path.dirname(os.path.realpath(__file__)) #QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins/sml_surveyor"
+        self.plugin_dir = os.path.dirname(os.path.realpath(__file__))      
         # initialize locale
         localePath = ""
         locale = QSettings().value("locale/userLocale").toString()[0:2]
-
         if QFileInfo(self.plugin_dir).exists():
-            localePath = self.plugin_dir + "/i18n/sml_surveyor_" + locale + ".qm"
-
+            localePath = os.path.join(self.plugin_dir, "i18n", "sml_surveyor_" + str(locale) + ".qm")
         if QFileInfo(localePath).exists():
             self.translator = QTranslator()
             self.translator.load(localePath)
-
             if qVersion() > '4.3.3':
                 QCoreApplication.installTranslator(self.translator)
+        # initialize instance variables
+        self.layers = {}
+        self.db = None
 
     def initGui(self):
         """ Initialize gui
@@ -60,9 +60,8 @@ class sml_surveyor:
             self.db = database.manager(settings.DATABASE_PARAMS)
         except:
             QMessageBox.information(None, "Configure Database Settings", "Please define database parameters.")
-            if not(self.manageDatabase()): return
-        # add layers
-        self.addLayers()
+            if not(self.manageDatabase()): raise Exception("Unspecied database parameters")
+        # find layers
         self.getLayers()
         # add app toolbar
         self.createAppToolBar()
@@ -71,7 +70,7 @@ class sml_surveyor:
         """ Uninitialize gui
         """
         # remove layers
-        self.dropLayers()
+        #self.dropLayers()
         # remove app toolbar
         self.removeAppToolBar()
 
@@ -82,11 +81,11 @@ class sml_surveyor:
         self.appToolBar = QToolBar(meta.name())
         self.appToolBar.setObjectName(meta.name())
         # create apps for toolbar
-        #self.actionBearDist = QAction(QIcon(self.plugin_dir + "/images/beardist.png"), "Manage Bearings and Distances", self.iface.mainWindow())
-        #self.actionBearDist.triggered.connect(self.manageBearDist)        
-        self.actionBeacons = QAction(QIcon(self.plugin_dir + "/images/beacon.gif"), "Manage %s" %(settings.DATABASE_LAYERS["BEACONS"]["NAME_PLURAL"].title(),), self.iface.mainWindow())
+        self.actionBearDist = QAction(QIcon(os.path.join(self.plugin_dir, "images", "beardist.png")), "Manage Bearings and Distances", self.iface.mainWindow())
+        self.actionBearDist.triggered.connect(self.manageBearDist)        
+        self.actionBeacons = QAction(QIcon(os.path.join(self.plugin_dir, "images", "beacon.gif")), "Manage %s" %(settings.DATABASE_LAYERS["BEACONS"]["NAME_PLURAL"].title(),), self.iface.mainWindow())
         self.actionBeacons.triggered.connect(self.manageBeacons)
-        self.actionParcels = QAction(QIcon(self.plugin_dir + "/images/parcel.png"), "Manage %s" %(settings.DATABASE_LAYERS["PARCELS"]["NAME_PLURAL"].title(),), self.iface.mainWindow())
+        self.actionParcels = QAction(QIcon(os.path.join(self.plugin_dir, "images", "parcel.png")), "Manage %s" %(settings.DATABASE_LAYERS["PARCELS"]["NAME_PLURAL"].title(),), self.iface.mainWindow())
         self.actionParcels.triggered.connect(self.manageParcels)
         # populate app toolbar
         #self.appToolBar.addAction(self.actionBearDist)
@@ -115,19 +114,29 @@ class sml_surveyor:
         """ Save reference to added postgis layers
         """
         self.layers = {}
-        for lyr in self.iface.mapCanvas().layers():
-            for typ in settings.DATABASE_LAYERS_ORDER:
-                if settings.DATABASE_LAYERS[typ]["NAME_PLURAL"] == lyr.name(): self.layers[typ] = lyr
+        names = list(settings.DATABASE_LAYERS_ORDER)
+        for l in self.iface.legendInterface().layers():
+            for n in names:
+                if settings.DATABASE_LAYERS[n]["NAME_PLURAL"].lower() == str(l.name()).lower(): 
+                    self.layers[n] = l
+                    names.remove(n)
+    
+    def showLayers(self):
+        """ Show added postgis layers on map canvas
+        """
+        for l in self.layers.values():
+            self.iface.legendInterface().setLayerVisible(l, True)
 
     def dropLayers(self):
         """ Drop added postgis layers
         """        
         self.getLayers()
-        QgsMapLayerRegistry.instance().removeMapLayers([lyr.id() for lyr in self.layers.values()])
+        QgsMapLayerRegistry.instance().removeMapLayers([l.id() for l in self.layers.values()])
             
     def manageBeacons(self):
         """ Portal which enables the management of beacons
         """
+        self.manageLayers()
         p = Beacons(self.iface, self.layers, settings.DATABASE_LAYERS, self.db)
         p.run()
         self.iface.mapCanvas().refresh()
@@ -135,6 +144,7 @@ class sml_surveyor:
     def manageParcels(self):
         """ Portal which enables the management of parcels
         """
+        self.manageLayers()
         p = Parcels(self.iface, self.layers, settings.DATABASE_LAYERS, self.db)
         p.run()
         self.iface.mapCanvas().refresh()
@@ -163,10 +173,22 @@ class sml_surveyor:
     def manageBearDist(self):
         """
         """
-        dlg = dlg_FormBearDist(self.db, settings.DATABASE_OTHER_SQL, settings.DATABASE_LAYERS["BEACONS"]["SQL"], self.db.getSchema(settings.DATABASE_LAYERS["BEACONS"]["TABLE"], [settings.DATABASE_LAYERS["BEACONS"]["GEOM"], settings.DATABASE_LAYERS["BEACONS"]["PKEY"]]))
+        #dlg = dlg_FormBearDist(self.db, settings.DATABASE_OTHER_SQL, settings.DATABASE_LAYERS["BEACONS"]["SQL"], self.db.getSchema(settings.DATABASE_LAYERS["BEACONS"]["TABLE"], [settings.DATABASE_LAYERS["BEACONS"]["GEOM"], settings.DATABASE_LAYERS["BEACONS"]["PKEY"]]))
+        self.manageLayers()
+        dlg = dlg_FormBearDistLink(["lol","loll","lolly"])
         dlg.show()
         dlg.exec_()
-        
+
+    def manageLayers(self):
+        """ Load layers if not yet loaded
+        """
+        self.getLayers()
+        if len(self.layers.keys()) != len(settings.DATABASE_LAYERS.keys()):
+            self.dropLayers()
+            self.addLayers()
+            self.getLayers()    
+        self.showLayers()
+
 class Parcels():
     """ Class managing parcels
     """
@@ -185,17 +207,21 @@ class Parcels():
         mng.show()
         if bool(mng.exec_()):
             if mng.getReturn() == 0:
-                # create new parcel
-                autocomplete = [i[0] for i in self.db.query(self.layersDict["PARCELS"]["SQL"]["AUTOCOMPLETE"])]
-                frm = dlg_FormParcel(self.db, self.iface, self.layers, self.layersDict, autocomplete)
-                frm.show()
-                frm_ret = frm.exec_()
-                self.iface.mapCanvas().setMapTool(frm.tool)
-                if bool(frm_ret):
-                    sql = ""
-                    for i, beacon in enumerate(frm.getReturn()[1]["sequence"]):
-                        sql += self.db.queryPreview(self.layersDict["PARCELS"]["SQL"]["INSERT"], (frm.getReturn()[1]["parcel_id"], beacon, i))
-                    self.db.query(sql)
+                while True:
+                    # create new parcel
+                    autocomplete = [i[0] for i in self.db.query(self.layersDict["PARCELS"]["SQL"]["AUTOCOMPLETE"])]
+                    frm = dlg_FormParcel(self.db, self.iface, self.layers, self.layersDict, autocomplete)
+                    frm.show()
+                    frm_ret = frm.exec_()
+                    self.iface.mapCanvas().setMapTool(frm.tool)
+                    if bool(frm_ret):
+                        sql = ""
+                        for i, beacon in enumerate(frm.getReturn()[1]["sequence"]):
+                            sql += self.db.queryPreview(self.layersDict["PARCELS"]["SQL"]["INSERT"], (frm.getReturn()[1]["parcel_id"], beacon, i))
+                        self.db.query(sql)
+                        self.iface.mapCanvas().refresh()
+                    else:
+                        break
                 for l in self.layers.values(): l.removeSelection()
             elif mng.getReturn() == 1:
                 # edit existing parcel 
@@ -247,14 +273,18 @@ class Beacons():
         mng.show()
         if bool(mng.exec_()):
             if mng.getReturn() == 0:
-                # create new beacon        
-                data = self.db.getSchema(self.layersDict["BEACONS"]["TABLE"], [self.layersDict["BEACONS"]["GEOM"], self.layersDict["BEACONS"]["PKEY"]])
-                frm = dlg_FormBeacon(self.db, data, self.layersDict["BEACONS"]["SQL"])
-                frm.show()
-                frm_ret = frm.exec_()
-                if bool(frm_ret):
-                    values_old, values_new = frm.getReturn() 
-                    self.db.query(self.layersDict["BEACONS"]["SQL"]["INSERT"].format(fields = ", ".join(sorted(values_new.keys())), values = ", ".join(["%s" for k in values_new.keys()])), [values_new[k] for k in sorted(values_new.keys())])
+                while True:
+                    # create new beacon        
+                    data = self.db.getSchema(self.layersDict["BEACONS"]["TABLE"], [self.layersDict["BEACONS"]["GEOM"], self.layersDict["BEACONS"]["PKEY"]])
+                    frm = dlg_FormBeacon(self.db, data, self.layersDict["BEACONS"]["SQL"])
+                    frm.show()
+                    frm_ret = frm.exec_()
+                    if bool(frm_ret):
+                        values_old, values_new = frm.getReturn() 
+                        self.db.query(self.layersDict["BEACONS"]["SQL"]["INSERT"].format(fields = ", ".join(sorted(values_new.keys())), values = ", ".join(["%s" for k in values_new.keys()])), [values_new[k] for k in sorted(values_new.keys())])
+                        self.iface.mapCanvas().refresh()                    
+                    else:
+                        break
             elif mng.getReturn() == 1:
                 # edit existing beacon
                 obj = {"NAME":self.layersDict["BEACONS"]["NAME"],"PURPOSE":"EDITOR","ACTION":"EDIT"}
@@ -282,7 +312,6 @@ class Beacons():
                             values_new.append(frm.getReturn()[1][f["NAME"]])
                         set = ", ".join(["{field} = %s".format(field = f) for f in fields_new])
                         where = " AND ".join(["{field} = %s".format(field = f) for f in fields_old])
-                        QMessageBox.information(None, "", str( self.db.queryPreview(self.layersDict["BEACONS"]["SQL"]["UPDATE"].format(set = set, where = where), values_new + values_old)))
                         self.db.query(self.layersDict["BEACONS"]["SQL"]["UPDATE"].format(set = set, where = where), values_new + values_old)
                 for l in self.layers.values(): l.removeSelection()
             elif mng.getReturn() == 2:

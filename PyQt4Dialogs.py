@@ -816,7 +816,7 @@ class dlg_FormBearDist(QDialog):
         self.tlbx.setCurrentIndex(index)
         self.tlbx.setItemEnabled(index, True)
 
-    def initItemSurveyPlan(self):
+    def initItemSurveyPlan(self, forward=True):
         # update autocompletion
         model = QStringListModel()
         model.setStringList(self.auto["SURVEYPLAN"])
@@ -827,7 +827,7 @@ class dlg_FormBearDist(QDialog):
         # reset variables associated with item
         self.surveyPlan = None
         self.setCurrentItem(0)
-
+        
     def checkItemSurveyPlan(self, forward):
         # check direction
         if forward: 
@@ -841,7 +841,7 @@ class dlg_FormBearDist(QDialog):
             self.initItemReferenceBeacon()
         else: pass
 
-    def initItemReferenceBeacon(self):
+    def initItemReferenceBeacon(self, forward=True):
         # update autocompletion
         model = QStringListModel()
         model.setStringList(self.auto["REFERENCEBEACON"])
@@ -851,15 +851,16 @@ class dlg_FormBearDist(QDialog):
         self.lnedt_ref.setCompleter(completer)
         # reset variables associated with items
         self.referenceBeacon = None
-        # check if survey plan number has a pre-defined reference beacon
-        if self.surveyPlan in self.auto["SURVEYPLAN"]:
-            # update item contents
-            self.lnedt_ref.setEnabled(False)
-            self.lnedt_ref.setText(str(self.db.query(self.beardistSql["EXIST_REFERENCEBEACON"], (self.surveyPlan,))[0][0]))
-        else:
-            # update item contents
-            self.lnedt_ref.setEnabled(True)
-            self.lnedt_ref.setText("")
+        if forward:
+            # check if survey plan number has a pre-defined reference beacon
+            if self.surveyPlan in self.auto["SURVEYPLAN"]:
+                # update item contents
+                self.lnedt_ref.setEnabled(False)
+                self.lnedt_ref.setText(str(self.db.query(self.beardistSql["EXIST_REFERENCEBEACON"], (self.surveyPlan,))[0][0]))
+            else:
+                # update item contents
+                self.lnedt_ref.setEnabled(True)
+                self.lnedt_ref.setText("")
         self.setCurrentItem(1)
         
     def checkItemReferenceBeacon(self, forward):
@@ -869,19 +870,20 @@ class dlg_FormBearDist(QDialog):
             if str(self.lnedt_ref.text()).strip() is "":
                 QMessageBox.information(self, "Empty Reference Beacon", "Please enter a reference beacon.")
                 return
+            referenceBeacon = str(self.lnedt_ref.text())
             # check if reference beacon exists
-            if self.referenceBeacon in self.auto["REFERENCEBEACON"]:
+            if referenceBeacon in self.auto["REFERENCEBEACON"]:
                 # set reference beacon
-                self.referenceBeacon = str(self.lnedt_ref.text())
+                self.referenceBeacon = referenceBeacon
                 # display next toolbox item
-                self.initItemBearDistPlan()
+                self.initItemBearDistChain()
             else:
                 # disable self
                 self.setEnabled(False)
                 # present beacon form
                 column_index = self.db.query(self.beardistSql["INDEX_REFERENCEBEACON"])[0][0]
                 frm = dlg_FormBeacon(self.db, self.beaconSchema, self.beaconSql, parent = self)
-                frm.lnedts[column_index].setText(str(self.lnedt_ref.text()))
+                frm.lnedts[column_index].setText(referenceBeacon)
                 frm.lnedts[column_index].setEnabled(False)
                 frm.show()
                 frm_ret = frm.exec_()
@@ -889,7 +891,8 @@ class dlg_FormBearDist(QDialog):
                     # save new beacon
                     self.db.query(self.beaconSql["INSERT"].format(fields = ", ".join([f["NAME"] for f in self.beaconSchema]), values = ", ".join(["%s" for f in self.beaconSchema])), [frm.getReturn()[1][f["NAME"]] for f in self.beaconSchema])[0][0]
                     # set reference beacon
-                    self.referenceBeacon = str(self.lnedt_ref.text())
+                    self.referenceBeacon = referenceBeacon
+                    self.auto["REFERENCEBEACON"].append(referenceBeacon)
                     # enable self
                     self.setEnabled(True)
                     # display next toolbox item
@@ -898,9 +901,9 @@ class dlg_FormBearDist(QDialog):
                     # enable self
                     self.setEnabled(True)
         else:
-            self.initItemSurveyPlan()
+            self.initItemSurveyPlan(False)
 
-    def initItemBearDistChain(self):
+    def initItemBearDistChain(self, forward=True):
         # reset variables associated with items
         self.beardistCahins = []
         self.auto["FROMBEACON"] = []
@@ -916,16 +919,27 @@ class dlg_FormBearDist(QDialog):
                     self.auto["FROMBEACON"].append(link[-1])
                     self.lst_chain.addItem(QString(self.beardistStr %link))
         self.setCurrentItem(2)
-        QMessagBox.information(self, "", str(self.auto["FROMBEACON"]))
+        QMessageBox.information(self, "", str(self.auto["FROMBEACON"]))
 
     def checkItemBearDistChain(self, forward):
         # check direction
         if forward:
             pass
         else:
-            self.initItemReferenceBeacon()
+            self.initItemReferenceBeacon(False)
 
     def saveBearDistChain(self):
+        pass
+
+    def addLink(self):
+        dlg = dlg_FormBearDistLink(self)
+        dlg.show()
+        dlg.exec_()
+
+    def editLink(self):
+        pass
+
+    def deleteLink(self):
         pass
 
     def setupUi(self):
@@ -1061,7 +1075,7 @@ class dlg_FormBearDist(QDialog):
         self.pshbtn_ref_back.setText(QApplication.translate("dlg_FormBearDist", "Back", None, QApplication.UnicodeUTF8))
         self.pshbtn_ref_next.setText(QApplication.translate("dlg_FormBearDist", "Next", None, QApplication.UnicodeUTF8))
         self.tlbx.setItemText(self.tlbx.indexOf(self.itm_ref), QApplication.translate("dlg_FormBearDist", "Step 2: Define Reference Beacon", None, QApplication.UnicodeUTF8))
-        self.pshbtn_chain_add.setText(QApplication.translate("dlg_FormBearDist", "Add New Link", None, QApplication.UnicodeUTF8))
+        self.pshbtn_chain_add.setText(QApplication.translate("dlg_FormBearDist", "Add Link", None, QApplication.UnicodeUTF8))
         self.pshbtn_chain_edt.setText(QApplication.translate("dlg_FormBearDist", "Edit Link", None, QApplication.UnicodeUTF8))
         self.pshbtn_chain_del.setText(QApplication.translate("dlg_FormBearDist", "Delete Link", None, QApplication.UnicodeUTF8))
         self.pshbtn_chain_back.setText(QApplication.translate("dlg_FormBearDist", "Back", None, QApplication.UnicodeUTF8))
@@ -1075,4 +1089,132 @@ class dlg_FormBearDist(QDialog):
         self.pshbtn_ref_next.clicked.connect(lambda: self.checkItemReferenceBeacon(True))
         self.pshbtn_ref_back.clicked.connect(lambda: self.checkItemReferenceBeacon(False))
         self.pshbtn_plan_next.clicked.connect(lambda : self.checkItemSurveyPlan(True))
+        self.pshbtn_chain_add.clicked.connect(self.addLink)
+        self.pshbtn_chain_edt.clicked.connect(self.editLink)
+        self.pshbtn_chain_del.clicked.connect(self.deleteLink)
         QMetaObject.connectSlotsByName(self)
+
+class dlg_FormBearDistLink(QDialog):
+    """ This dialog enables the user to add a bearing and distance link
+    """
+
+    def __init__(self, fromBeacons, values=[], parent = None):
+        # initialize QDialog class
+        super(dlg_FormBearDistLink, self).__init__(parent, Qt.WindowStaysOnTopHint)
+        # initialize ui
+        self.setupUi(fromBeacons)
+        # initialize instance variables
+        self.values_old = values
+        self.values_new = []
+        self.fromBeacons = fromBeacons
+        self.colours = {
+            "EMPTY":"background-color: rgba(255, 107, 107, 150);",
+            "TYPE":"background-color: rgba(107, 107, 255, 150);",
+            "FROMFIELD":"background-color: rgba(107, 255, 107, 150);"
+        }
+        # populate form if values are given
+        if bool(values): 
+            self.populateForm(values)
+
+    def populateForm(self, values):
+        """ Populte form with values given
+        """
+        for index, lnedt in enumerate(self.lnedts): lnedt.setText(str(values[index]))
+
+    def getReturn(self):
+        """ Return intended variable(s) after the dialog has been accepted
+        """
+        return (self.values_old, self.values_new)
+
+    def executeOption(self, button):
+        """ Perform validation and close the dialog
+        """
+        if self.btnbx_options.standardButton(button) == QDialogButtonBox.Save:
+            values_new = []
+            # check required fields        
+            valid = True
+            for lnedt in self.lnedts:
+                if str(lnedt.text()).strip() is "":
+                    lnedt.setStyleSheet(self.colours["EMPTY"])
+                    valid = False
+                else: lnedt.setStyleSheet("")
+            if not valid: 
+                QMessageBox.information(self, "Empty Fields", "Please ensure that all fields are completed.")
+                return
+            # check correct field types
+            valid = True
+            for index,lnedt in enumerate(self.lnedts):
+                try:
+                    cast = self.fields[index]["TYPE"]
+                    tmp = cast(str(lnedt.text()))
+                    values_new.append(tmp)
+                    lnedt.setStyleSheet("")
+                except Exception as e:
+                    lnedt.setStyleSheet(self.colours["TYPE"])
+                    valid = False
+            if not valid: 
+                QMessageBox.information(self, "Invalid Field Types", "Please ensure that fields are completed with valid types.")
+                return
+            # check valid from beacon field
+            valid = True
+            for index,lnedt in enumerate(self.lnedts):
+                if self.fields[index]["NAME"].lower() == "from":
+                    if str(lnedt.text()) not in self.values_old:
+                        lnedt.setStyleSheet(self.colours["FROMFIELD"])
+                        valid = False
+            if not valid: 
+                QMessageBox.information(self, "Fields Not Unique", "Please ensure that fields are given unique values.")
+                return
+            # save values
+            self.values_new = values_new
+            # accept dialog
+            self.accept()
+        else:
+            # reject dialog
+            self.reject()
+
+    def setupUi(self, fromBeacons):
+        """ Initialize ui
+        """
+        # define dialog
+        self.gridLayout = QGridLayout(self)
+        self.gridLayout.setSizeConstraint(QLayout.SetFixedSize)        
+        self.formLayout = QFormLayout()
+        self.lbls = []
+        self.lnedts = []
+        self.fields = [
+            {"NAME":"Bearing", "TYPE":float},
+            {"NAME":"Distance", "TYPE":float},
+            {"NAME":"From", "TYPE":str},
+            {"NAME":"To", "TYPE":str},
+        ]
+        for index, field in enumerate(self.fields):
+            lbl = QLabel(self)
+            self.formLayout.setWidget(index, QFormLayout.LabelRole, lbl)
+            lbl.setText(QApplication.translate("dlg_FormBearDistEntry", field["NAME"].title(), None, QApplication.UnicodeUTF8))
+            self.lbls.append(lbl)
+            lnedt = QLineEdit(self)
+            self.formLayout.setWidget(index, QFormLayout.FieldRole, lnedt)
+            self.lnedts.append(lnedt)
+            if field["NAME"].lower() == "from":
+                model = QStringListModel()
+                model.setStringList(fromBeacons)
+                completer = QCompleter()        
+                completer.setCaseSensitivity(Qt.CaseInsensitive)
+                completer.setModel(model)
+                lnedt.setCompleter(completer)
+        self.gridLayout.addLayout(self.formLayout, 0, 0, 1, 1)
+        self.btnbx_options = QDialogButtonBox(self)
+        self.btnbx_options.setCursor(QCursor(Qt.PointingHandCursor))
+        self.btnbx_options.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Save)
+        self.gridLayout.addWidget(self.btnbx_options, 1, 0, 1, 1)
+        # translate ui widgets' text
+        self.setWindowTitle(QApplication.translate("dlg_FormBearDistEntry", "Link Form", None, QApplication.UnicodeUTF8))
+        self.lbl_bear.setText(QApplication.translate("dlg_FormBearDistEntry", "Bearing", None, QApplication.UnicodeUTF8))
+        self.lbl_dist.setText(QApplication.translate("dlg_FormBearDistEntry", "Distance", None, QApplication.UnicodeUTF8))
+        self.lbl_from.setText(QApplication.translate("dlg_FormBearDistEntry", "From", None, QApplication.UnicodeUTF8))
+        self.lbl_to.setText(QApplication.translate("dlg_FormBearDistEntry", "To", None, QApplication.UnicodeUTF8))
+        # connect ui widgets
+        self.btnbx_options.clicked.connect(self.executeOption)
+        QMetaObject.connectSlotsByName(self)
+
