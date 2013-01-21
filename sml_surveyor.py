@@ -124,8 +124,9 @@ class sml_surveyor:
     def showLayers(self):
         """ Show added postgis layers on map canvas
         """
-        for l in self.layers.values():
+        for n,l in self.layers.items():
             self.iface.legendInterface().setLayerVisible(l, True)
+            l.loadNamedStyle(os.path.join(self.plugin_dir, "styles", "%s.qml" %(n.lower(),)))
 
     def dropLayers(self):
         """ Drop added postgis layers
