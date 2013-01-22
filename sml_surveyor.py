@@ -63,6 +63,7 @@ class sml_surveyor:
             if not(self.manageDatabase()): raise Exception("Unspecied database parameters")
         # find layers
         self.getLayers()
+        self.showLayers()
         # add app toolbar
         self.createAppToolBar()
         
@@ -125,6 +126,7 @@ class sml_surveyor:
         for n,l in self.layers.items():
             self.iface.legendInterface().setLayerVisible(l, True)
             l.loadNamedStyle(os.path.join(self.plugin_dir, "styles", "%s.qml" %(n.lower(),)))
+            self.iface.legendInterface().refreshLayerSymbology(l)
 
     def dropLayers(self):
         """ Drop added postgis layers
