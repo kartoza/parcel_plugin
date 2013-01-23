@@ -1,4 +1,4 @@
----- create tables
+﻿---- create tables
 -- parcel_lookup
 CREATE TABLE parcel_lookup
 (
@@ -70,16 +70,14 @@ CREATE TRIGGER parcel_lookup_define_parcel
   FOR EACH ROW
   EXECUTE PROCEDURE parcel_lookup_define_parcel_trigger();
 ---- create database constraints
-ALTER TABLE beacons ADD CONSTRAINT beacons_pkey PRIMARY KEY (gid );
-ALTER TABLE beacons ADD CONSTRAINT beacons_beacon_key UNIQUE (beacon );
-ALTER TABLE parcel_def ADD CONSTRAINT parcel_def_pkey PRIMARY KEY (id );
 ALTER TABLE parcel_def ADD CONSTRAINT parcel_def_beacon_fkey FOREIGN KEY (beacon)
       REFERENCES beacons (beacon) MATCH FULL
       ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE parcel_def ADD CONSTRAINT parcel_def_parcel_id_fkey FOREIGN KEY (parcel_id)
       REFERENCES parcel_lookup (parcel_id) MATCH FULL
       ON UPDATE CASCADE ON DELETE CASCADE;
-ALTER TABLE parcel_lookup ADD CONSTRAINT parcel_lookup_pkey PRIMARY KEY (id );
-ALTER TABLE parcel_lookup ADD CONSTRAINT parcel_lookup_parcel_id_key UNIQUE (parcel_id );
+
+--insert into parcel_lookup  (parcel_id,available) VALUES (8,'f'),(9,'f'),(1,'f');
+
 
 
