@@ -45,8 +45,8 @@ DATABASE_LAYERS["PARCELS"] = {
     "GEOM":"the_geom",
     "GEOM_TYPE":"polygons",
     "SQL":{
-        "SELECT":"SELECT parcel_id FROM parcel_lookup WHERE id = %s;",
-        "EDIT":"SELECT l.id, array_agg(s.gid) FROM ( SELECT b.gid, d.parcel_id FROM beacons b INNER JOIN parcel_def d ON d.beacon = b.beacon) s JOIN parcel_lookup l ON s.parcel_id = l.parcel_id WHERE l.id = %s GROUP BY l.id;",
+        "SELECT":"SELECT parcel_id FROM parcel_lookup WHERE parcel_id = %s;",
+        "EDIT":"SELECT l.parcel_id, array_agg(s.gid) FROM ( SELECT b.gid, d.parcel_id FROM beacons b INNER JOIN parcel_def d ON d.beacon = b.beacon) s JOIN parcel_lookup l ON s.parcel_id = l.parcel_id WHERE l.parcel_id = %s GROUP BY l.parcel_id;",
         "AUTOCOMPLETE":"SELECT parcel_id FROM parcel_lookup WHERE available;",
         "UNIQUE":"SELECT COUNT(*) FROM parcel_lookup WHERE parcel_id = %s;",
         "AVAILABLE":"SELECT available FROM parcel_lookup WHERE parcel_id = %s;",

@@ -174,9 +174,9 @@ class sml_surveyor:
     def manageBearDist(self):
         """
         """
-        #dlg = dlg_FormBearDist(self.db, settings.DATABASE_OTHER_SQL, settings.DATABASE_LAYERS["BEACONS"]["SQL"], self.db.getSchema(settings.DATABASE_LAYERS["BEACONS"]["TABLE"], [settings.DATABASE_LAYERS["BEACONS"]["GEOM"], settings.DATABASE_LAYERS["BEACONS"]["PKEY"]]))
+        dlg = dlg_FormBearDist(self.db, settings.DATABASE_OTHER_SQL, settings.DATABASE_LAYERS["BEACONS"]["SQL"], self.db.getSchema(settings.DATABASE_LAYERS["BEACONS"]["TABLE"], [settings.DATABASE_LAYERS["BEACONS"]["GEOM"], settings.DATABASE_LAYERS["BEACONS"]["PKEY"]]))
         self.manageLayers()
-        dlg = dlg_FormBearDistLink(["lol","loll","lolly"])
+        #dlg = dlg_FormBearDistLink(["lol","loll","lolly"])
         dlg.show()
         dlg.exec_()
 
