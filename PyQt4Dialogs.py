@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -*- coding: utf8 -*-
 """
 Author: Robert Moerman
 Contact: robert@afrispatial.co.za
@@ -323,7 +323,7 @@ class dlg_FormParcel(QDialog):
                 QMessageBox.information(self, "Invalid Parcel ID", "Please enter a parcel ID.")
                 return
             # check that parcel id is valid (i.e. current, unique, available)
-            if "parcel_id" in self.values_old.keys() and self.values_old["parcel_id"] == parcel_id:
+            if "parcel_id" in self.values_old.keys() and str(self.values_old["parcel_id"]) == parcel_id:
                 pass
             elif not bool(int(self.db.query(self.layersDict["PARCELS"]["SQL"]["UNIQUE"], (parcel_id,))[0][0])):
                 if not self.new_accepted and QMessageBox.question(self, 'Confirm New Parcel ID', "Are you sure you want to create a new parcel ID?", QMessageBox.Yes, QMessageBox.No) == QMessageBox.No: 

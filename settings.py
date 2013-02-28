@@ -25,7 +25,7 @@ DATABASE_LAYERS["BEACONS"] = {
     "NAME":"Beacon",
     "NAME_PLURAL":"Beacons",
     "PKEY":"gid", 
-    "GEOM":"geom", 
+    "GEOM":"the_geom", 
     "GEOM_TYPE":"points",
     "SQL":{
         "SELECT":"SELECT beacon FROM beacons WHERE gid = %s;",
@@ -41,12 +41,12 @@ DATABASE_LAYERS["PARCELS"] = {
     "TABLE":"parcels",
     "NAME":"Parcel",
     "NAME_PLURAL":"Parcels",
-    "PKEY":"id",
+    "PKEY":"parcel_id",
     "GEOM":"the_geom",
     "GEOM_TYPE":"polygons",
     "SQL":{
         "SELECT":"SELECT parcel_id FROM parcel_lookup WHERE parcel_id = %s;",
-        "EDIT":"SELECT l.parcel_id, array_agg(s.gid) FROM ( SELECT b.gid, d.parcel_id FROM beacons b INNER JOIN parcel_def d ON d.beacon = b.beacon) s JOIN parcel_lookup l ON s.parcel_id = l.parcel_id WHERE l.parcel_id = %s GROUP BY l.parcel_id;",
+        "EDIT":"SELECT l.parcel_id, array_agg(s.gid ORDER BY s.sequence) FROM ( SELECT b.gid, d.parcel_id, d.sequence FROM beacons b INNER JOIN parcel_def d ON d.beacon = b.beacon) s JOIN parcel_lookup l ON s.parcel_id = l.parcel_id WHERE l.parcel_id = %s GROUP BY l.parcel_id;",
         "AUTOCOMPLETE":"SELECT parcel_id FROM parcel_lookup WHERE available;",
         "UNIQUE":"SELECT COUNT(*) FROM parcel_lookup WHERE parcel_id = %s;",
         "AVAILABLE":"SELECT available FROM parcel_lookup WHERE parcel_id = %s;",
@@ -69,5 +69,5 @@ DATABASE_OTHER_SQL = {
     "AUTO_REFERENCEBEACON":"SELECT array_agg(beacon) FROM beacons WHERE beacon NOT IN (SELECT beacon_to FROM beardist WHERE beacon_to NOT IN (SELECT ref_beacon FROM survey));",
     "EXIST_REFERENCEBEACON":"SELECT ref_beacon FROM survey where plan_no = %s;",
     "EXIST_BEARDISTCHAINS":"SELECT bearing, distance, beacon_from, beacon_to FROM beardist WHERE plan_no = %s",
-    "INDEX_REFERENCEBEACON":"SELECT i.column_index::integer FROM (SELECT row_number() over(ORDER BY c.ordinal_position) -1 as column_index, c.column_name FROM information_schema.columns c WHERE c.table_name = 'beacons' AND c.column_name NOT IN ('geom', 'gid') ORDER BY c.ordinal_position) as i WHERE i.column_name = 'beacon';"
+    "INDEX_REFERENCEBEACON":"SELECT i.column_index::integer FROM (SELECT row_number() over(ORDER BY c.ordinal_position) -1 as column_index, c.column_name FROM information_schema.columns c WHERE c.table_name = 'beacons' AND c.column_name NOT IN ('the_geom', 'gid') ORDER BY c.ordinal_position) as i WHERE i.column_name = 'beacon';"
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis version="1.8.0-Lisboa" minimumScale="0" maximumScale="1e+08" hasScaleBasedVisibilityFlag="0">
+<qgis version="1.9.0-Master" minimumScale="-4.65661e-10" maximumScale="1e+08" hasScaleBasedVisibilityFlag="0">
   <transparencyLevelInt>255</transparencyLevelInt>
   <renderer-v2 symbollevels="0" type="singleSymbol">
     <symbols>
@@ -15,15 +15,21 @@
       </symbol>
     </symbols>
     <rotation field=""/>
-    <sizescale field=""/>
+    <sizescale field="" scalemethod="area"/>
   </renderer-v2>
   <customproperties>
     <property key="labeling" value="pal"/>
     <property key="labeling/addDirectionSymbol" value="false"/>
+    <property key="labeling/angleOffset" value="0"/>
     <property key="labeling/bufferColorB" value="255"/>
     <property key="labeling/bufferColorG" value="255"/>
     <property key="labeling/bufferColorR" value="255"/>
+    <property key="labeling/bufferJoinStyle" value="64"/>
+    <property key="labeling/bufferNoFill" value="false"/>
     <property key="labeling/bufferSize" value="0.5"/>
+    <property key="labeling/bufferSizeInMapUnits" value="false"/>
+    <property key="labeling/bufferTransp" value="0"/>
+    <property key="labeling/centroidWhole" value="false"/>
     <property key="labeling/dataDefinedProperty0" value=""/>
     <property key="labeling/dataDefinedProperty1" value=""/>
     <property key="labeling/dataDefinedProperty10" value=""/>
@@ -31,7 +37,13 @@
     <property key="labeling/dataDefinedProperty12" value=""/>
     <property key="labeling/dataDefinedProperty13" value=""/>
     <property key="labeling/dataDefinedProperty14" value=""/>
+    <property key="labeling/dataDefinedProperty15" value=""/>
+    <property key="labeling/dataDefinedProperty16" value=""/>
+    <property key="labeling/dataDefinedProperty17" value=""/>
+    <property key="labeling/dataDefinedProperty18" value=""/>
+    <property key="labeling/dataDefinedProperty19" value=""/>
     <property key="labeling/dataDefinedProperty2" value=""/>
+    <property key="labeling/dataDefinedProperty20" value=""/>
     <property key="labeling/dataDefinedProperty3" value=""/>
     <property key="labeling/dataDefinedProperty4" value=""/>
     <property key="labeling/dataDefinedProperty5" value=""/>
@@ -40,33 +52,60 @@
     <property key="labeling/dataDefinedProperty8" value=""/>
     <property key="labeling/dataDefinedProperty9" value=""/>
     <property key="labeling/decimals" value="0"/>
+    <property key="labeling/displayAll" value="false"/>
     <property key="labeling/dist" value="0"/>
     <property key="labeling/distInMapUnits" value="false"/>
     <property key="labeling/enabled" value="true"/>
-    <property key="labeling/fieldName" value="parcel_id"/>
+    <property key="labeling/fieldName" value="parcel_number"/>
+    <property key="labeling/fontCapitals" value="0"/>
     <property key="labeling/fontFamily" value="Ubuntu"/>
     <property key="labeling/fontItalic" value="false"/>
+    <property key="labeling/fontLetterSpacing" value="0"/>
+    <property key="labeling/fontLimitPixelSize" value="false"/>
+    <property key="labeling/fontMaxPixelSize" value="10000"/>
+    <property key="labeling/fontMinPixelSize" value="3"/>
     <property key="labeling/fontSize" value="12"/>
     <property key="labeling/fontSizeInMapUnits" value="false"/>
     <property key="labeling/fontStrikeout" value="false"/>
     <property key="labeling/fontUnderline" value="false"/>
     <property key="labeling/fontWeight" value="50"/>
+    <property key="labeling/fontWordSpacing" value="0"/>
     <property key="labeling/formatNumbers" value="false"/>
     <property key="labeling/isExpression" value="false"/>
+    <property key="labeling/labelOffsetInMapUnits" value="true"/>
     <property key="labeling/labelPerPart" value="false"/>
+    <property key="labeling/leftDirectionSymbol" value="&lt;"/>
+    <property key="labeling/limitNumLabels" value="false"/>
+    <property key="labeling/maxCurvedCharAngleIn" value="20"/>
+    <property key="labeling/maxCurvedCharAngleOut" value="-20"/>
+    <property key="labeling/maxNumLabels" value="2000"/>
     <property key="labeling/mergeLines" value="false"/>
     <property key="labeling/minFeatureSize" value="0"/>
+    <property key="labeling/multilineAlign" value="0"/>
+    <property key="labeling/multilineHeight" value="1"/>
+    <property key="labeling/namedStyle" value="Regular"/>
     <property key="labeling/obstacle" value="true"/>
+    <property key="labeling/placeDirectionSymbol" value="0"/>
     <property key="labeling/placement" value="1"/>
     <property key="labeling/placementFlags" value="0"/>
     <property key="labeling/plussign" value="true"/>
+    <property key="labeling/preserveRotation" value="true"/>
+    <property key="labeling/previewBkgrdColor" value="#ffffff"/>
     <property key="labeling/priority" value="5"/>
+    <property key="labeling/reverseDirectionSymbol" value="false"/>
+    <property key="labeling/rightDirectionSymbol" value=">"/>
     <property key="labeling/scaleMax" value="2000"/>
     <property key="labeling/scaleMin" value="1"/>
     <property key="labeling/textColorB" value="0"/>
     <property key="labeling/textColorG" value="0"/>
     <property key="labeling/textColorR" value="0"/>
+    <property key="labeling/textTransp" value="0"/>
+    <property key="labeling/upsidedownLabels" value="0"/>
     <property key="labeling/wrapChar" value=""/>
+    <property key="labeling/xOffset" value="0"/>
+    <property key="labeling/xQuadOffset" value="0"/>
+    <property key="labeling/yOffset" value="0"/>
+    <property key="labeling/yQuadOffset" value="0"/>
   </customproperties>
   <displayfield>id</displayfield>
   <label>0</label>
@@ -91,11 +130,20 @@
     <selectedonly on=""/>
   </labelattributes>
   <edittypes>
+    <edittype type="0" name="allocation"/>
+    <edittype type="0" name="block"/>
+    <edittype type="0" name="file_number"/>
     <edittype type="0" name="id"/>
+    <edittype type="0" name="owner"/>
     <edittype type="0" name="parcel_id"/>
+    <edittype type="0" name="parcel_number"/>
+    <edittype type="0" name="scheme"/>
   </edittypes>
-  <editform></editform>
+  <editform>.</editform>
   <editforminit></editforminit>
-  <annotationform></annotationform>
+  <annotationform>.</annotationform>
+  <editorlayout>generatedlayout</editorlayout>
+  <excludeAttributesWMS/>
+  <excludeAttributesWFS/>
   <attributeactions/>
 </qgis>

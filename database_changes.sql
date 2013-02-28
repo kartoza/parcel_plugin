@@ -12,23 +12,14 @@ WITH (
   OIDS=FALSE
 );
 ---- create functions
---
-CREATE OR REPLACE FUNCTION calc_point()
-  RETURNS trigger AS
-$BODY$
-  BEGIN
-    NEW.geom:=ST_SetSRID(ST_MakePoint(new.x, new.y), 26331) ;
-    RETURN NEW;
-  END
-$BODY$
-  LANGUAGE plpgsql VOLATILE COST 100;
+
 --
 CREATE OR REPLACE FUNCTION parcel_lookup_availability_trigger()
   RETURNS trigger AS
 $BODY$
   BEGIN
     UPDATE parcel_lookup SET available = TRUE;
-    UPDATE parcel_lookup SET available = FALSE WHERE parcel_id IN (SELECT parcel_id FROM parcel_def GROUP BY parcel_id);
+    UPDATE parcel_lookup SET available = FALSE WHERE parcel_id IN (SELECT DISTINCT parcel_id FROM parcel_def);
     RETURN NEW;
   END
 $BODY$
@@ -79,8 +70,7 @@ ALTER TABLE parcel_def ADD CONSTRAINT parcel_def_parcel_id_fkey FOREIGN KEY (par
 
 --insert into parcel_lookup  (parcel_id,available) VALUES (8,'f'),(9,'f'),(1,'f');
 
-ALTER TABLE parcel_lookup ADD CONSTRAINT parcel_lookup_pkey PRIMARY KEY (id );
-ALTER TABLE parcel_lookup ADD CONSTRAINT parcel_lookup_parcel_id_key UNIQUE (parcel_id );
+
 ---- bearing and distance stuff
 --
 ALTER TABLE survey ADD UNIQUE (plan_no);
@@ -181,7 +171,9 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 --
-CREATE OR REPLACE FUNCTION beardistupdate(arg_plan_no character varying, arg_bearing double precision, arg_distance double precision, arg_beacon_from character varying, arg_beacon_to character varying, arg_location character varying, arg_name character varying, arg_index integer)
+CREATE OR REPLACE FUNCTION beardistupdate(arg_plan_no character varying, arg_bearing double precision, 
+arg_distance double precision, arg_beacon_from character varying, arg_beacon_to character varying, 
+arg_location character varying, arg_name character varying, arg_index integer)
   RETURNS void AS
 $BODY$
   DECLARE

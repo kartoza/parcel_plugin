@@ -88,7 +88,7 @@ class sml_surveyor:
         self.actionParcels = QAction(QIcon(os.path.join(self.plugin_dir, "images", "parcel.png")), "Manage %s" %(settings.DATABASE_LAYERS["PARCELS"]["NAME_PLURAL"].title(),), self.iface.mainWindow())
         self.actionParcels.triggered.connect(self.manageParcels)
         # populate app toolbar
-        #self.appToolBar.addAction(self.actionBearDist)
+        self.appToolBar.addAction(self.actionBearDist)
         self.appToolBar.addAction(self.actionBeacons)
         self.appToolBar.addAction(self.actionParcels)
         # add app toolbar to gui
@@ -210,7 +210,8 @@ class Parcels():
             if mng.getReturn() == 0:
                 while True:
                     # create new parcel
-                    autocomplete = [i[0] for i in self.db.query(self.layersDict["PARCELS"]["SQL"]["AUTOCOMPLETE"])]
+                    autocomplete = [str(i[0]) for i in self.db.query(self.layersDict["PARCELS"]["SQL"]["AUTOCOMPLETE"])]
+                    #autocomplete = [i[0] for i in self.db.query(self.layersDict["PARCELS"]["SQL"]["AUTOCOMPLETE"])]
                     frm = dlg_FormParcel(self.db, self.iface, self.layers, self.layersDict, autocomplete)
                     frm.show()
                     frm_ret = frm.exec_()
@@ -232,7 +233,8 @@ class Parcels():
                 slc_ret = slc.exec_()
                 self.iface.mapCanvas().setMapTool(slc.tool)
                 if bool(slc_ret):
-                    autocomplete = [i[0] for i in self.db.query(self.layersDict["PARCELS"]["SQL"]["AUTOCOMPLETE"])]
+                    autocomplete = [str(i[0]) for i in self.db.query(self.layersDict["PARCELS"]["SQL"]["AUTOCOMPLETE"])]
+                    #autocomplete = [i[0] for i in self.db.query(self.layersDict["PARCELS"]["SQL"]["AUTOCOMPLETE"])]
                     values = (lambda t: {"parcel_id":t[0], "sequence":t[1]})(self.db.query(self.layersDict["PARCELS"]["SQL"]["EDIT"], (slc.getReturn(),))[0])
                     frm = dlg_FormParcel(self.db, self.iface, self.layers, self.layersDict, autocomplete, values)
                     frm.show()
