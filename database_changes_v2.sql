@@ -124,10 +124,11 @@ WITH (
 --int4(row_number() OVER (ORDER BY vl.parcel_id)) AS gid, 
 --drop view parcels;
 CREATE OR REPLACE VIEW parcels AS
-	SELECT parcel.*, round(st_area(parcel.the_geom)::numeric,3)::double precision AS comp_area,description.official_area,description.parcel_number, description.block, description.scheme, 
-		description.file_number,description.allocation,description.owner,
-		'<a href="http://192.168.10.12/geoserver/'||description.deeds_file
-		||'" target="blank_">'||description.deeds_file||'</a>' AS deeds_file FROM 
+	SELECT parcel.*, round(st_area(parcel.the_geom)::numeric,3)::double precision AS comp_area,
+	description.official_area,description.parcel_number, description.block, description.serial_no,
+	description.scheme, description.file_number,description.allocation,description.owner,
+	'<a href="http://192.168.10.12/geoserver/' || description.deeds_file ||'" target="blank_">'||
+	description.deeds_file||'</a>' AS deeds_file FROM 
 	 (SELECT int4(vl.parcel_id) as parcel_id, 
 	 st_makepolygon(st_addpoint(st_makeline(vl.the_geom),st_startpoint(st_makeline(vl.the_geom))))::geometry(Polygon,26331)  AS the_geom
 	   FROM ( SELECT pd.id, pd.parcel_id, pd.beacon, pd.sequence, b.the_geom
@@ -137,7 +138,7 @@ CREATE OR REPLACE VIEW parcels AS
 	  GROUP BY vl.parcel_id
 	 HAVING st_npoints(st_collect(vl.the_geom)) > 1) AS parcel
 	 INNER JOIN
-	(SELECT p.parcel_id,p.local_govt || p.prop_type || p.plot_sn AS parcel_number, p.allocation,p.block,p.official_area,
+	(SELECT p.parcel_id,p.local_govt || p.prop_type || p.parcel_id AS parcel_number, p.allocation,p.block,p.plot_sn AS serial_no,p.official_area,
 	s.scheme_name AS scheme,p.file_number,d.grantee AS owner,p.deeds_file 
 	FROM parcel_lookup p LEFT JOIN deeds d ON p.file_number=d.fileno LEFT JOIN schemes s ON p.scheme = s.id) AS description
 	USING (parcel_id);
@@ -237,3 +238,10 @@ ALTER TABLE parcel_lookup ADD COLUMN official_area double precision;
 
 ALTER TABLE survey ADD FOREIGN KEY (ref_beacon) REFERENCES beacons (beacon) ON UPDATE NO ACTION ON DELETE NO ACTION;
 
+--convert plot_sn from integer to character_varying so ids like '7A' can be added
+
+drop view parcels;
+
+alter table parcel_lookup alter column plot_sn type character varying;
+
+CREATE VIEW parcels ...

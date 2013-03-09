@@ -140,7 +140,7 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 --
-CREATE OR REPLACE FUNCTION public.BearDistInsert(
+CREATE OR REPLACE FUNCTION public.beardistinsert(
   arg_plan_no     character varying(20),
   arg_bearing     double precision,
   arg_distance    double precision,

@@ -63,6 +63,7 @@ class sml_surveyor:
             if not(self.manageDatabase()): raise Exception("Unspecied database parameters")
         # find layers
         self.getLayers()
+        self.showLayers()
         # add app toolbar
         self.createAppToolBar()
         
@@ -127,6 +128,7 @@ class sml_surveyor:
         for n,l in self.layers.items():
             self.iface.legendInterface().setLayerVisible(l, True)
             l.loadNamedStyle(os.path.join(self.plugin_dir, "styles", "%s.qml" %(n.lower(),)))
+            self.iface.legendInterface().refreshLayerSymbology(l)
 
     def dropLayers(self):
         """ Drop added postgis layers
@@ -174,11 +176,47 @@ class sml_surveyor:
     def manageBearDist(self):
         """
         """
-        dlg = dlg_FormBearDist(self.db, settings.DATABASE_OTHER_SQL, settings.DATABASE_LAYERS["BEACONS"]["SQL"], self.db.getSchema(settings.DATABASE_LAYERS["BEACONS"]["TABLE"], [settings.DATABASE_LAYERS["BEACONS"]["GEOM"], settings.DATABASE_LAYERS["BEACONS"]["PKEY"]]))
         self.manageLayers()
-        #dlg = dlg_FormBearDistLink(["lol","loll","lolly"])
+        dlg = dlg_FormBearDist(self.db, settings.DATABASE_OTHER_SQL, settings.DATABASE_LAYERS["BEACONS"]["SQL"], self.db.getSchema(settings.DATABASE_LAYERS["BEACONS"]["TABLE"], [settings.DATABASE_LAYERS["BEACONS"]["GEOM"], settings.DATABASE_LAYERS["BEACONS"]["PKEY"]]))
         dlg.show()
-        dlg.exec_()
+        if bool(dlg.exec_()):
+            #tmp = ('YE125', 'PBA6015', [[[29.45, 46.29, 'PBA6015', 'PBA6016lol', None, None], 'UPDATE', 0], [[123.0, 123.0, 'PBA6016lol', 'l', None, None], 'INSERT', None], [[123.0, 234.0, 'l', 'lo', None, None], 'INSERT', None], [[123.0, 345.0, 'lo', 'lol', None, None], 'INSERT', None]])
+            surveyPlan, referenceBeacon, beardistChain = dlg.getReturn()
+            # check whether survey plan is defined otherwise define it
+            if not self.db.query(settings.DATABASE_OTHER_SQL["IS_SURVEYPLAN"], (surveyPlan,))[0][0]:
+                QMessageBox.information(None, "", "need to make a plan about this survey")
+                self.db.query(settings.DATABASE_OTHER_SQL["INSERT_SURVEYPLAN"], (surveyPlan, referenceBeacon))
+            # get list of existing links
+            beardistChainExisting = []
+            for index, link in enumerate(self.db.query(settings.DATABASE_OTHER_SQL["EXIST_BEARDISTCHAINS"],(surveyPlan,))):
+                beardistChainExisting.append([list(link), "NULL", index] )
+            # perform appropriate action for each link in the beardist chain
+            new = []
+            old = []
+            for link in beardistChain:
+                if link[2] is None: new.append(link)
+                else: old.append(link)
+            #QMessageBox.information(None, "", str(beardistChainExisting))
+            #QMessageBox.information(None, "", str(new))
+            #QMessageBox.information(None, "", str(old))
+            # sort out old links
+            tmp = list(beardistChainExisting)
+            for elink in beardistChainExisting:
+                for olink in old:
+                    if elink[2] == olink[2]:
+                        if olink[1] == "NULL":
+                            tmp.remove(elink)
+                            break;
+                        self.db.query(settings.DATABASE_OTHER_SQL["UPDATE_LINK"], [surveyPlan] + olink[0] + [olink[2]])
+                        tmp.remove(elink)
+                        break;
+            beardistChainExisting = tmp
+            for elink in beardistChainExisting:
+                self.db.query(settings.DATABASE_OTHER_SQL["DELETE_LINK"], (elink[0][3],))
+            # sort out new links
+            for nlink in new:
+                self.db.query(settings.DATABASE_OTHER_SQL["INSERT_LINK"], [surveyPlan] + nlink[0])
+            self.iface.mapCanvas().refresh()
 
     def manageLayers(self):
         """ Load layers if not yet loaded
@@ -296,6 +334,10 @@ class Beacons():
                 slc_ret = slc.exec_()
                 self.iface.mapCanvas().setMapTool(slc.tool)
                 if bool(slc_ret):
+                    if self.db.query(self.layersDict["BEACONS"]["SQL"]["BEARDIST"], (slc.getReturn(),))[0][0]: 
+                        QMessageBox.warning(None, "Bearing and Distance Definition", "Cannot edit beacon defined by distance and bearing via this tool")
+                        for l in self.layers.values(): l.removeSelection()
+                        return
                     data = self.db.getSchema(self.layersDict["BEACONS"]["TABLE"], [self.layersDict["BEACONS"]["GEOM"], self.layersDict["BEACONS"]["PKEY"]])
                     fields = ",".join([f["NAME"] for f in data])
                     values = [v for v in self.db.query(self.layersDict["BEACONS"]["SQL"]["EDIT"].format(fields = fields), (slc.getReturn(),))[0]]
@@ -325,6 +367,10 @@ class Beacons():
                 slc_ret = slc.exec_()
                 self.iface.mapCanvas().setMapTool(slc.tool)
                 if bool(slc_ret):
+                    if self.db.query(self.layersDict["BEACONS"]["SQL"]["BEARDIST"], (slc.getReturn(),))[0][0]: 
+                        QMessageBox.warning(None, "Bearing and Distance Definition", "Cannot delete beacon defined by distance and bearing via this tool")
+                        for l in self.layers.values(): l.removeSelection()
+                        return
                     self.db.query(self.layersDict["BEACONS"]["SQL"]["DELETE"], (slc.getReturn(),)) 
                 for l in self.layers.values(): l.removeSelection()
 

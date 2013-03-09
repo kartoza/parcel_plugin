@@ -791,7 +791,7 @@ class dlg_FormBearDist(QDialog):
         self.surveyPlan = None
         self.referenceBeacon = None
         self.beardistChain = []
-        self.beardistStr = "%s" + chr(176) + " and %sm from %s to %s"
+        self.beardistStr = "%s" + u"\u00B0" + " and %sm from %s to %s"
         # initialize initial step
         self.initItemSurveyPlan()
         
@@ -863,7 +863,7 @@ class dlg_FormBearDist(QDialog):
         self.lnedt_ref.setCompleter(completer)
         # reset variables associated with items
         self.referenceBeacon = None
-        # check direction from whence it came
+        # check direction whence it came
         if forward:
             # check if survey plan number has a pre-defined reference beacon
             if self.surveyPlan in self.auto["SURVEYPLAN"]:
@@ -992,7 +992,7 @@ class dlg_FormBearDist(QDialog):
         beacon_ref = self.beardistChain[index][0][2]
         # check if reference beacon is used
         if beacon_ref != self.referenceBeacon: return False
-        # count number of reference beacon occurances
+        # count number of reference beacon occurrences
         count = 0
         for link in self.beardistChain:
             beacon_from = link[0][2]
@@ -1030,6 +1030,7 @@ class dlg_FormBearDist(QDialog):
         self.auto["FROMBEACON"] = [self.referenceBeacon]
         # populate dependants
         for link in self.beardistChain:
+            #QMessageBox.information(self,QString(','.join(link[0][:4])))
             self.lst_chain.addItem(QString(self.beardistStr %tuple(link[0][:4])))
             self.auto["FROMBEACON"].append(link[0][3])
         self.auto["FROMBEACON"].sort()            
@@ -1067,7 +1068,7 @@ class dlg_FormBearDist(QDialog):
                 values = dlg.getReturn()
                 # check if anything was changed
                 if values == self.beardistChain[index][0]: return
-                # check if refernce beacon can be found
+                # check if reference beacon can be found
                 if not self.canFindReferenceBeacon(self.beardistChain[index][0][3]):
                     QMessageBox.information(None, "", "oops")
                 # recursively update beacon names if changed

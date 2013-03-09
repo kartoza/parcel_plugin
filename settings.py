@@ -33,7 +33,8 @@ DATABASE_LAYERS["BEACONS"] = {
         "EDIT":"SELECT {fields} FROM beacons WHERE gid = %s;",
         "DELETE":"DELETE FROM beacons WHERE gid = %s;",
         "INSERT":"INSERT INTO beacons({fields}) VALUES ({values}) RETURNING gid;",
-        "UPDATE":"UPDATE beacons SET {set} WHERE {where};"
+        "UPDATE":"UPDATE beacons SET {set} WHERE {where};",
+        "BEARDIST":"SELECT CASE WHEN count(*) = 0 THEN FALSE ELSE TRUE END FROM beardist WHERE beacon_to = (SELECT beacon FROM beacons WHERE gid = %s);"
         }
 }
 DATABASE_LAYERS["PARCELS"] = {
@@ -68,6 +69,11 @@ DATABASE_OTHER_SQL = {
     "AUTO_SURVEYPLAN":"SELECT array_agg(plan_no) FROM survey;",
     "AUTO_REFERENCEBEACON":"SELECT array_agg(beacon) FROM beacons WHERE beacon NOT IN (SELECT beacon_to FROM beardist WHERE beacon_to NOT IN (SELECT ref_beacon FROM survey));",
     "EXIST_REFERENCEBEACON":"SELECT ref_beacon FROM survey where plan_no = %s;",
-    "EXIST_BEARDISTCHAINS":"SELECT bearing, distance, beacon_from, beacon_to FROM beardist WHERE plan_no = %s",
-    "INDEX_REFERENCEBEACON":"SELECT i.column_index::integer FROM (SELECT row_number() over(ORDER BY c.ordinal_position) -1 as column_index, c.column_name FROM information_schema.columns c WHERE c.table_name = 'beacons' AND c.column_name NOT IN ('the_geom', 'gid') ORDER BY c.ordinal_position) as i WHERE i.column_name = 'beacon';"
+    "EXIST_BEARDISTCHAINS":"SELECT bd.bearing, bd.distance, bd.beacon_from, bd.beacon_to, b.location, b.name FROM beardist bd INNER JOIN beacons b ON bd.beacon_to = b.beacon WHERE bd.plan_no = %s;",
+    "INDEX_REFERENCEBEACON":"SELECT i.column_index::integer FROM (SELECT row_number() over(ORDER BY c.ordinal_position) -1 as column_index, c.column_name FROM information_schema.columns c WHERE c.table_name = 'beacons' AND c.column_name NOT IN ('geom', 'gid') ORDER BY c.ordinal_position) as i WHERE i.column_name = 'beacon';",
+    "IS_SURVEYPLAN":"SELECT CASE WHEN COUNT(*) <> 0 THEN TRUE ELSE FALSE END FROM survey WHERE plan_no = %s;",
+    "INSERT_SURVEYPLAN":"INSERT INTO survey(plan_no, ref_beacon) VALUES(%s, %s);",
+    "UPDATE_LINK":"SELECT beardistupdate(%s, %s, %s, %s, %s, %s, %s, %s);",
+    "DELETE_LINK":"DELETE FROM beacons WHERE beacon = %s;",
+    "INSERT_LINK":"SELECT beardistinsert(%s, %s, %s, %s, %s, %s, %s);"
 }
