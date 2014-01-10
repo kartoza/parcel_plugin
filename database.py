@@ -15,10 +15,19 @@ This is a postgresql database manager.
  *                                                                         *
  ***************************************************************************/
 """
-
 import psycopg2
 
-class manager():
+
+class Field:
+
+    def __init__(self, name, type, required, unique):
+        self.name = name
+        self.type = type
+        self.required = required
+        self.unique = unique
+
+
+class Manager:
     
     def __init__(self, params):
         # test db settings
@@ -91,8 +100,12 @@ class manager():
         """ Get information abot a specific table 
         @returns [<Field Name>, <Field Type>, <Nullable>] (list)
         """
-        info = [{"NAME":data[0], "TYPE":self._pythonize_type(data[1]), "REQUIRED":data[2], "UNIQUE":data[3]} for data in reversed(self.query("SELECT c.column_name, c.data_type, CASE WHEN c.is_nullable = 'NO' THEN TRUE ELSE FALSE END AS required, CASE WHEN u.column_name IS NOT NULL THEN TRUE ELSE FALSE END AS unique FROM information_schema.columns c LEFT JOIN (SELECT kcu.column_name, tc.table_name FROM information_schema.table_constraints tc LEFT JOIN information_schema.key_column_usage kcu ON tc.constraint_catalog = kcu.constraint_catalog AND tc.constraint_schema = kcu.constraint_schema AND tc.constraint_name = kcu.constraint_name WHERE tc.constraint_type IN ('UNIQUE', 'PRIMARY KEY') AND tc.table_name = '{table}') u ON u.column_name = c.column_name WHERE c.table_name = '{table}' AND c.column_name NOT IN ({ignore});".format(table = tbl_name, ignore = ", ".join("'%s'" %(i,) for i in fld_ignore))))] 
-        return info
+        return [Field(
+            data[0], 
+            self._pythonize_type(data[1]), 
+            data[2], 
+            data[3]
+        ) for data in reversed(self.query("SELECT c.column_name, c.data_type, CASE WHEN c.is_nullable = 'NO' THEN TRUE ELSE FALSE END AS required, CASE WHEN u.column_name IS NOT NULL THEN TRUE ELSE FALSE END AS unique FROM information_schema.columns c LEFT JOIN (SELECT kcu.column_name, tc.table_name FROM information_schema.table_constraints tc LEFT JOIN information_schema.key_column_usage kcu ON tc.constraint_catalog = kcu.constraint_catalog AND tc.constraint_schema = kcu.constraint_schema AND tc.constraint_name = kcu.constraint_name WHERE tc.constraint_type IN ('UNIQUE', 'PRIMARY KEY') AND tc.table_name = '{table}') u ON u.column_name = c.column_name WHERE c.table_name = '{table}' AND c.column_name NOT IN ({ignore});".format(table = tbl_name, ignore = ", ".join("'%s'" %(i,) for i in fld_ignore))))] 
 
     def _pythonize_type(self, db_type):
         """ Get python type

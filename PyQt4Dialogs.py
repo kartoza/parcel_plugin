@@ -24,40 +24,145 @@ from qgisToolbox import featureSelector
 from PyQt4Widgets import XQPushButton, XQDialogButtonBox
 from database import *
 
-try:
-    _fromUtf8 = QString.fromUtf8
-except AttributeError:
-    _fromUtf8 = lambda s: s
+def _fromUtf8(s):
+    return s
 
 # All dialogs using selector tool have a captured function
 # All dialogs have a getReturn function
 
+class dlg_DatabaseConnection(QDialog):
+    """ This dialog enables the user to choose a database connection
+    defined through DB Manager
+    """
+    
+    def __init__(self):
+        # initialize QDialog class
+        super(dlg_DatabaseConnection, self).__init__(None, Qt.WindowStaysOnTopHint)
+        # initialize ui
+        self.conn = None
+        self.setupUi()
+        self.populateDatabaseChoices()
+
+    def getDatabaseConnection(self):
+        return self.conn
+
+    def populateDatabaseChoices(self):
+        """ Populate database connection choices
+        """
+        settings = QSettings()
+        settings.beginGroup('PostgreSQL/connections')
+        self.cmbbx_conn.addItem(_fromUtf8(""))
+        self.cmbbx_conn.setItemText(0, QApplication.translate(
+            "dlg_DatabaseConnection", 
+            "", 
+            None
+        ))
+        for i,db in enumerate(settings.childGroups()):
+            self.cmbbx_conn.addItem(_fromUtf8(""))
+            self.cmbbx_conn.setItemText(i + 1, QApplication.translate(
+                "dlg_DatabaseConnection", 
+                db, 
+                None
+            ))
+
+    def testDatabaseConnection(self):
+        """ Test database connection has necessary tables
+        """
+        conn = str(self.cmbbx_conn.currentText())
+        if not bool(conn.replace(" ", "")):
+            QMessageBox.information(self, "Database Connection", "Please select a database connection")
+        else:
+            self.conn = conn
+            self.accept()
+
+    def setupUi(self):
+        """ Initialize ui
+        """
+        # define ui widgets
+        self.setObjectName(_fromUtf8("dlg_DatabaseConnection"))
+        self.resize(370, 200)
+        self.setCursor(QCursor(Qt.ArrowCursor))
+        self.setModal(True)
+        self.gridLayout = QGridLayout(self)
+        self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
+        self.verticalLayout = QVBoxLayout()
+        self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
+        self.lbl_instr = QLabel(self)
+        self.lbl_instr.setWordWrap(True)
+        self.lbl_instr.setObjectName(_fromUtf8("lbl_instr"))
+        self.verticalLayout.addWidget(self.lbl_instr)
+        self.formLayout = QFormLayout()
+        self.formLayout.setObjectName(_fromUtf8("formLayout"))
+        self.lbl_conn = QLabel(self)
+        self.lbl_conn.setObjectName(_fromUtf8("lbl_conn"))
+        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.lbl_conn)
+        self.cmbbx_conn = QComboBox(self)
+        self.cmbbx_conn.setObjectName(_fromUtf8("cmbbx_conn"))
+        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.cmbbx_conn)
+        self.verticalLayout.addLayout(self.formLayout)
+        self.lbl_aside = QLabel(self)
+        self.lbl_aside.setWordWrap(True)
+        self.lbl_aside.setObjectName(_fromUtf8("lbl_aside"))
+        self.verticalLayout.addWidget(self.lbl_aside)
+        self.btnbx_options = XQDialogButtonBox(self)
+        self.btnbx_options.setOrientation(Qt.Horizontal)
+        self.btnbx_options.setStandardButtons(XQDialogButtonBox.Cancel|XQDialogButtonBox.Ok)
+        self.btnbx_options.setObjectName(_fromUtf8("btnbx_options"))
+        self.verticalLayout.addWidget(self.btnbx_options)
+        self.gridLayout.addLayout(self.verticalLayout, 0, 0, 1, 1)
+        # translate ui widgets' text
+        self.setWindowTitle(QApplication.translate(
+            "dlg_DatabaseConnection",
+            "Database Connection", 
+            None, 
+            QApplication.UnicodeUTF8
+        ))
+        self.lbl_conn.setText(QApplication.translate(
+            "dlg_DatabaseConnection", 
+            "Connection: ", 
+            None
+        ))
+        self.lbl_aside.setText(QApplication.translate(
+            "dlg_DatabaseConnection", 
+            "*If your database connection cannot be found above then please define it through the PostGIS Connection Manager.", 
+            None
+        ))
+        self.lbl_instr.setText(QApplication.translate(
+            "dlg_DatabaseConnection", 
+            "A database connection has not yet been selected or is no longer valid. Please select a database connection.", 
+            None
+        ))
+        # connect ui widgets
+        self.btnbx_options.accepted.connect(self.testDatabaseConnection)
+        self.btnbx_options.rejected.connect(self.reject)
+        QMetaObject.connectSlotsByName(self)
+
+
 class dlg_Selector(QDialog):
-    """ This dialog enables the selection of single features on a vector layer by means of the feature selector tool defined in qgisToolbox
+    """ This dialog enables the selection of single features on a 
+    vector layer by means of the feature selector tool defined in 
+    qgisToolbox
     """
 
-    def __init__(self, db, iface, layer, query, obj={"NAME":"NONAME", "PURPOSE":"NOPURPOSE", "ACTION":"NOACTION"}, preserve = False, parent = None):
+    def __init__(self, db, iface, requiredLayer, mode, query, preserve = False, parent = None):
         # initialize QDialog class
         super(dlg_Selector, self).__init__(parent, Qt.WindowStaysOnTopHint)
         # initialize ui
-        self.setupUi(obj)
-        # initialize instance variables
+        self.setupUi(requiredLayer, mode)
         self.db = db
         self.iface = iface
-        self.layer = layer
+        self.layer = requiredLayer
+        self.mode = mode
         self.query = query
-        self.obj = obj
         self.preserve = preserve
         self.confirmed = False
         self.featID = None
         # initialize selector tool
-        self.selector = featureSelector(iface, layer, True, self)
+        self.selector = featureSelector(iface, requiredLayer.layer, True, self)
         # save qgis tool
         self.tool = self.selector.parentTool
     
-    def getReturn(self):
-        """ Return intended variable(s) after the dialog has been accepted
-        """
+    def getFeatureId(self):
         return self.featID
 
     def executeOption(self, button):
@@ -66,23 +171,31 @@ class dlg_Selector(QDialog):
         if self.btnbx_options.standardButton(button) == QDialogButtonBox.Ok:
             # check that a feature has been selected
             if self.featID is None: 
-                QMessageBox.information(self, "No %s Selected" %(self.obj["NAME"].title(),), "Please select a %s." %(self.obj["NAME"].lower(),))
+                QMessageBox.information(
+                    self, 
+                    "No %s Selected" %(self.layer.name.title(),), 
+                    "Please select a %s." %(self.layer.name.lower(),)
+                )
                 return
             # check confirmation
             if not self.confirmed: 
-                QMessageBox.information(self, "No Confirmation", "Please tick the confimation check box.")
+                QMessageBox.information(
+                    self, 
+                    "No Confirmation", 
+                    "Please tick the confimation check box."
+                )
                 return
             # reset qgis tool
             self.iface.mapCanvas().setMapTool(self.tool)
             # remove selection if needed 
-            if not self.preserve: self.layer.removeSelection()
+            if not self.preserve: self.layer.layer.removeSelection()
             # accept dialog
             self.accept()
         else: 
             # reset qgis tool
             self.iface.mapCanvas().setMapTool(self.tool)
             # remove selection
-            self.layer.removeSelection()
+            self.layer.layer.removeSelection()
             # reject dialog
             self.reject()
     
@@ -93,7 +206,7 @@ class dlg_Selector(QDialog):
         self.selector.disableCapturing()
         # update dialog
         self.featID = selected[0]
-        self.lnedt_featID.setText(str(self.db.query(self.query["SELECT"], (self.featID,))[0][0]))
+        self.lnedt_featID.setText(str(self.db.query(self.query, (self.featID,))[0][0]))
         self.pshbtn_re.setEnabled(True)
         self.chkbx_confirm.setEnabled(True)
         
@@ -116,7 +229,7 @@ class dlg_Selector(QDialog):
         self.pshbtn_re.setEnabled(not bool(state))
         self.confirmed = bool(state)
 
-    def setupUi(self, obj):
+    def setupUi(self, layer, mode):
         """ Initialize ui
         """
         # define ui widgets
@@ -137,7 +250,7 @@ class dlg_Selector(QDialog):
         self.formLayout.setObjectName(_fromUtf8("formLayout"))
         self.lbl_featID = QLabel(self.widget)
         self.lbl_featID.setObjectName(_fromUtf8("lbl_featID"))
-        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.lbl_featID)      
+        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.lbl_featID)
         self.lnedt_featID = QLineEdit(self.widget)
         self.lnedt_featID.setEnabled(False)
         self.lnedt_featID.setObjectName(_fromUtf8("lnedt_featID"))
@@ -159,32 +272,40 @@ class dlg_Selector(QDialog):
         self.verticalLayout.addWidget(self.btnbx_options)
         self.gridLayout.addLayout(self.verticalLayout, 0, 0, 1, 1)
         # translate ui widgets' text
-        self.setWindowTitle(QApplication.translate("dlg_Selector", "%s %s" %(obj["NAME"].title(), obj["PURPOSE"].title()), None, QApplication.UnicodeUTF8))
-        self.lbl_featID.setText(QApplication.translate("dlg_Selector", "%s ID" %(obj["NAME"].title(),), None, QApplication.UnicodeUTF8))
-        self.pshbtn_re.setText(QApplication.translate("dlg_Selector", "Re-select", None, QApplication.UnicodeUTF8))
-        self.chkbx_confirm.setText(QApplication.translate("dlg_Selector", "I am sure I want to %s this %s" %(obj["ACTION"].lower(), obj["NAME"].lower()), None, QApplication.UnicodeUTF8))
+        self.setWindowTitle(QApplication.translate("dlg_Selector", 
+            "%s %s" %(layer.name.title(), mode.actor.title()), 
+            None, 
+            QApplication.UnicodeUTF8))
+        self.lbl_featID.setText(QApplication.translate("dlg_Selector", 
+            "%s ID" %(layer.name.title(),), 
+            None, 
+            QApplication.UnicodeUTF8))
+        self.pshbtn_re.setText(QApplication.translate("dlg_Selector", 
+            "Re-select", 
+            None, 
+            QApplication.UnicodeUTF8))
+        self.chkbx_confirm.setText(QApplication.translate("dlg_Selector", 
+            "I am sure I want to %s this %s" %(mode.action.lower(), layer.name.lower()), 
+            None, 
+            QApplication.UnicodeUTF8))
         # connect ui widgets
         self.pshbtn_re.clicked.connect(self.reselect)
         self.chkbx_confirm.stateChanged.connect(self.confirm)
         self.btnbx_options.clicked.connect(self.executeOption)
         QMetaObject.connectSlotsByName(self)
 
+
 class dlg_Manager(QDialog):
     """ This dialog enables the user to select an option with regards to managing a vector layer
     """
 
-    def __init__(self, obj={"NAME":"NONAME",}, parent = None):
-        # initialize QDialog class
+    def __init__(self, requiredLayer, parent=None):
         super(dlg_Manager, self).__init__(parent, Qt.WindowStaysOnTopHint)
-        # initialize ui
-        self.setupUi(obj)
-        # initialize instance variables
-        self.obj = obj
+        self.setupUi(requiredLayer)
+        self.layer = requiredLayer
         self.option = None
 
-    def getReturn(self):
-        """ Return intended variable(s) after the dialog has been accepted
-        """
+    def getOption(self):
         return self.option
 
     def executeOption(self, button):
@@ -205,7 +326,7 @@ class dlg_Manager(QDialog):
             # reject dialog
             self.reject()
     
-    def setupUi(self, obj):
+    def setupUi(self, layer):
         """ Initialize ui
         """
         # define ui widgets
@@ -240,66 +361,257 @@ class dlg_Manager(QDialog):
         self.vrtlyt.addWidget(self.btnbx_options)
         self.mainlyt.addLayout(self.vrtlyt, 0, 0, 1, 1)
         # translate ui widgets' text
-        self.setWindowTitle(QApplication.translate("dlg_Manager", "%s Manager" %(obj["NAME"].title(),), None, QApplication.UnicodeUTF8))
-        self.rdbtn_add.setText(QApplication.translate("dlg_Manager", "Create New %s" %(obj["NAME"].title(),), None, QApplication.UnicodeUTF8))
-        self.rdbtn_edit.setText(QApplication.translate("dlg_Manager", "Edit Existing %s" %(obj["NAME"].title(),), None, QApplication.UnicodeUTF8))
-        self.rdbtn_del.setText(QApplication.translate("dlg_Manager", "Delete Existing %s" %(obj["NAME"].title(),), None, QApplication.UnicodeUTF8))
+        self.setWindowTitle(QApplication.translate(
+            "dlg_Manager", 
+            "%s Manager" %(layer.name.title(),), 
+            None, 
+            QApplication.UnicodeUTF8
+        ))
+        self.rdbtn_add.setText(QApplication.translate(
+            "dlg_Manager",
+            "Create New %s" %(layer.name.title(),), 
+            None, 
+            QApplication.UnicodeUTF8
+        ))
+        self.rdbtn_edit.setText(QApplication.translate(
+            "dlg_Manager",
+            "Edit Existing %s" %(layer.name.title(),), 
+            None, 
+            QApplication.UnicodeUTF8
+        ))
+        self.rdbtn_del.setText(QApplication.translate(
+            "dlg_Manager",
+            "Delete Existing %s" %(layer.name.title(),), 
+            None, 
+            QApplication.UnicodeUTF8
+        ))
         # connect ui widgets
         self.btnbx_options.clicked.connect(self.executeOption)
         QMetaObject.connectSlotsByName(self)
 
-class dlg_FormParcel(QDialog):
-    """ This dialog enables a user to define and modify a parcel
+
+class dlg_FormBeacon(QDialog):
+    """ This dialog enables a user to define and modify a beacon
     """
 
-    def __init__(self, db, iface, layers, layersDict, autocomplete = [], values = {}, parent = None):
+    def __init__(self, db, query, fields, values=[], parent = None):
         # initialize QDialog class
-        super(dlg_FormParcel, self).__init__(parent, Qt.WindowStaysOnTopHint)
+        super(dlg_FormBeacon, self).__init__(parent, Qt.WindowStaysOnTopHint)
         # initialize ui
-        self.setupUi(autocomplete, layersDict)
+        self.setupUi(fields)
         # initialize instance variables
         self.db = db
-        self.iface = iface
-        self.layers = layers
-        self.layersDict = layersDict
-        self.autocomplete = autocomplete
+        self.query = query
+        self.fields = fields
         self.values_old = {}
         self.values_new = {}
-        self.new_accepted = False
-        # initialize selector tool
-        self.selector = featureSelector(iface, layers["BEACONS"], False, self)
-        # save qgis tool
-        self.tool = self.selector.parentTool
+        self.colours = {
+            "REQUIRED":"background-color: rgba(255, 107, 107, 150);",
+            "TYPE":"background-color: rgba(107, 107, 255, 150);",
+            "UNIQUE":"background-color: rgba(107, 255, 107, 150);"
+        }
         # populate form if values are given
         if bool(values): 
             self.populateForm(values)
-            self.pshbtn_reset.setEnabled(True)
-
-    def getReturn(self):
+    
+    def getValues(self):
         """ Return intended variable(s) after the dialog has been accepted
         """
         return (self.values_old, self.values_new)
-    
+
     def populateForm(self, values):
+        """ Populate form with given values
+        """
+        for index,v in enumerate(values):
+            if v is not None: self.lnedts[index].setText(str(v))
+            self.values_old[self.fields[index].name] = v
+
+    def executeOption(self, button):
+        """ Perform validation and close the dialog
+        """
+        if self.btnbx_options.standardButton(button) == QDialogButtonBox.Save:
+            values_new = {}
+            # check required fields        
+            valid = True
+            for lnedt in self.lnedts:
+                if bool(lnedt.property("REQUIRED")):
+                    if str(lnedt.text()).strip() is "":
+                        lnedt.setStyleSheet(self.colours["REQUIRED"])
+                        valid = False
+                    else: lnedt.setStyleSheet("")
+            if not valid: 
+                QMessageBox.information(
+                    self, 
+                    "Empty Required Fields", 
+                    "Please ensure that all required fields are completed."
+                )
+                return
+            # check correct field types
+            valid = True
+            for index,lnedt in enumerate(self.lnedts):
+                try:
+                    if str(lnedt.text()).strip() is not "":
+                        cast = self.fields[index].type
+                        tmp = cast(str(lnedt.text()).strip())
+                        values_new[self.fields[index].name] = tmp
+                        lnedt.setStyleSheet("")
+                    else:
+                        values_new[self.fields[index].name] = None
+                except Exception as e:
+                    lnedt.setStyleSheet(self.colours["TYPE"])
+                    valid = False
+            if not valid: 
+                QMessageBox.information(
+                    self, 
+                    "Invalid Field Types", 
+                    "Please ensure that fields are completed with valid types."
+                )
+                return
+            # check unique fields
+            valid = True
+            for index,lnedt in enumerate(self.lnedts):
+                if str(lnedt.text()).strip() is "": continue
+                if bool(lnedt.property("UNIQUE")):
+                    if self.fields[index].name in self.values_old.keys() and values_new[self.fields[index].name] == self.values_old[self.fields[index].name]:
+                        lnedt.setStyleSheet("")
+                    elif bool(int(self.db.query(self.query %(self.fields[index].name, "%s"), (values_new[self.fields[index].name],))[0][0])): 
+                        lnedt.setStyleSheet(self.colours["UNIQUE"])
+                        valid = False
+                    else: lnedt.setStyleSheet("")
+            if not valid: 
+                QMessageBox.information(
+                    self, 
+                    "Fields Not Unique", 
+                    "Please ensure that fields are given unique values."
+                )
+                return
+            # save values
+            self.values_new = values_new
+            # accept dialog
+            self.accept()
+        else:
+            # reject dialog
+            self.reject()
+
+    def setupUi(self, fields):
+        """ Initialize ui
+        """
+        # define ui widgets
+        self.setObjectName(_fromUtf8("dlg_FormBeacon"))
+        self.setCursor(QCursor(Qt.ArrowCursor))
+        self.setModal(True)
+        self.gridLayout = QGridLayout(self)
+        self.gridLayout.setSizeConstraint(QLayout.SetFixedSize)
+        self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
+        self.verticalLayout = QVBoxLayout()
+        self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
+        self.formLayout = QFormLayout()
+        self.formLayout.setFieldGrowthPolicy(QFormLayout.AllNonFixedFieldsGrow)
+        self.formLayout.setObjectName(_fromUtf8("formLayout"))        
+        self.lbls = []
+        self.lnedts = []
+        # define form fields dynamically from the database schema
+        for index, f in enumerate(fields):
+            lbl = QLabel(self)
+            lbl.setObjectName(_fromUtf8("lbl_%s" %(f.name,)))
+            self.formLayout.setWidget(index, QFormLayout.LabelRole, lbl)
+            self.lbls.append(lbl)
+            lnedt = QLineEdit(self)
+            lnedt.setProperty("REQUIRED", f.required)
+            lnedt.setProperty("UNIQUE", f.unique)
+            lnedt.setObjectName(_fromUtf8("lnedt_%s" %(f.name,)))
+            self.formLayout.setWidget(index, QFormLayout.FieldRole, lnedt)
+            self.lnedts.append(lnedt)
+            lbl.setText(QApplication.translate("dlg_FormBeacon", 
+                ("*" if bool(self.lnedts[index].property("REQUIRED")) else "") + f.name.title(), 
+                None, 
+                QApplication.UnicodeUTF8))
+            lnedt.setProperty("TYPE", QApplication.translate("dlg_FormBeacon", str(f.type), None, QApplication.UnicodeUTF8))
+        self.verticalLayout.addLayout(self.formLayout)
+        self.line_1 = QFrame(self)
+        self.line_1.setFrameShape(QFrame.HLine)
+        self.line_1.setFrameShadow(QFrame.Sunken)
+        self.line_1.setObjectName(_fromUtf8("line_1"))
+        self.verticalLayout.addWidget(self.line_1)
+        self.label = QLabel(self)
+        self.label.setObjectName(_fromUtf8("label"))
+        self.verticalLayout.addWidget(self.label)
+        self.line_2 = QFrame(self)
+        self.line_2.setFrameShape(QFrame.HLine)
+        self.line_2.setFrameShadow(QFrame.Sunken)
+        self.line_2.setObjectName(_fromUtf8("line_2"))
+        self.verticalLayout.addWidget(self.line_2)
+        self.btnbx_options = QDialogButtonBox(self)
+        self.btnbx_options.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Save)
+        self.btnbx_options.setObjectName(_fromUtf8("btnbx_options"))
+        self.btnbx_options.setCursor(QCursor(Qt.PointingHandCursor))
+        self.verticalLayout.addWidget(self.btnbx_options)
+        self.gridLayout.addLayout(self.verticalLayout, 0, 0, 1, 1)
+        # translate ui widgets' text
+        self.setWindowTitle(QApplication.translate("dlg_FormBeacon", "Beacon Form", None, QApplication.UnicodeUTF8))        
+        self.label.setText(QApplication.translate("dlg_FormBeacon", "<html><head/><body><p><span style=\" color:#ff0000;\">*Required Field</span></p></body></html>", None, QApplication.UnicodeUTF8))
+        # connect ui widgets
+        self.btnbx_options.clicked.connect(self.executeOption)
+        QMetaObject.connectSlotsByName(self)
+
+
+class dlg_FormParcel(QDialog):
+    """ This dialog enables a user to define and modify a parcel
+    """
+    
+    def __init__(self, db, iface, requiredLayers, SQL_BEACONS, SQL_PARCELS, autocomplete=[], data={}, parent=None):
+        # initialize QDialog class
+        super(dlg_FormParcel, self).__init__(parent, Qt.WindowStaysOnTopHint)
+        # initialize ui
+        self.setupUi(autocomplete)
+        self.db = db
+        self.iface = iface
+        self.layers = requiredLayers
+        self.SQL_BEACONS = SQL_BEACONS
+        self.SQL_PARCELS = SQL_PARCELS
+        self.autocomplete = autocomplete
+        self.values_old = {}
+        self.values_new = {}
+        self.sequence = []
+        self.new_accepted = False
+        # initialize selector tool
+        self.selector = featureSelector(iface, requiredLayers[0].layer, False, self)
+        # save qgis tool
+        self.tool = self.selector.parentTool
+        # populate form if values are given
+        if bool(data): 
+            self.populateForm(data)
+            self.pshbtn_reset.setEnabled(True)
+
+    def getValues(self):
+        return (self.values_old, self.values_new)
+    
+    def populateForm(self, data):
         """ Populte form with values given
         """
         # get values
-        checker = lambda d, v: d[v] if v in d.keys() else None
-        feat_id = checker(values, "parcel_id")
-        feat_sequence = checker(values, "sequence")
+        checker = lambda d, k: d[k] if k in d.keys() else None
+        feat_id = checker(data, "parcel_id")
+        feat_sequence = checker(data, "sequence")
         # use values
         if bool(feat_id): 
             # populate parcel_id
-            self.values_old["parcel_id"] = self.db.query(self.layersDict["PARCELS"]["SQL"]["SELECT"], (feat_id,))[0][0]
+            self.values_old["parcel_id"] = self.db.query(
+                self.SQL_PARCELS["SELECT"], (feat_id,)
+            )[0][0]
             self.lnedt_parcelID.setText(str(self.values_old["parcel_id"]))
-            self.highlightFeature(self.layers["PARCELS"], feat_id)
+            self.highlightFeature(self.layers[1].layer, feat_id)
         if bool(feat_sequence):
             # populate sequence
+            self.sequence = []
             self.values_old["sequence"] = []
-            for beacon_id in feat_sequence:
-                self.values_old["sequence"].append(self.db.query(self.layersDict["BEACONS"]["SQL"]["SELECT"], (beacon_id,))[0][0])
-                self.lstwdg_sequence.addItem(QString(str(self.values_old["sequence"][-1])))
-            self.highlightFeatures(self.layers["BEACONS"], feat_sequence)
+            for id in feat_sequence:
+                beacon_id = str(self.db.query(self.SQL_BEACONS["SELECT"], (id,))[0][0])
+                self.sequence.append(beacon_id)
+                self.values_old["sequence"].append(beacon_id)
+                self.lstwdg_sequence.addItem(beacon_id.replace("\n",""))
+            self.highlightFeatures(self.layers[0].layer, feat_sequence)
+            self.selector.selected = feat_sequence
             # update selector selection
             self.selector.selected = feat_sequence
 
@@ -312,7 +624,12 @@ class dlg_FormParcel(QDialog):
         """ Highlight multiple features on a vector layer
         """
         layer.setSelectedFeatures(features)
-            
+
+    def captured(self, selected):
+        """ Notify the dialog of a feature selection and disable selecting
+        """
+        pass 
+                    
     def executeOption(self, button):
         """ Perform validation and close the dialog
         """
@@ -320,66 +637,100 @@ class dlg_FormParcel(QDialog):
             parcel_id = str(self.lnedt_parcelID.text()).strip()
             # check that parcel id exists
             if parcel_id == "": 
-                QMessageBox.information(self, "Invalid Parcel ID", "Please enter a parcel ID.")
+                QMessageBox.information(
+                    self, 
+                    "Invalid Parcel ID", 
+                    "Please enter a parcel ID."
+                )
+                return
+            # check that parcel id is an int
+            try:
+                int(parcel_id)
+            except ValueError:
+                QMessageBox.information(
+                    self, 
+                    "Invalid Parcel ID", 
+                    "Please enter a number for the parcel ID."
+                )
                 return
             # check that parcel id is valid (i.e. current, unique, available)
             if "parcel_id" in self.values_old.keys() and str(self.values_old["parcel_id"]) == parcel_id:
                 pass
-            elif not bool(int(self.db.query(self.layersDict["PARCELS"]["SQL"]["UNIQUE"], (parcel_id,))[0][0])):
-                if not self.new_accepted and QMessageBox.question(self, 'Confirm New Parcel ID', "Are you sure you want to create a new parcel ID?", QMessageBox.Yes, QMessageBox.No) == QMessageBox.No: 
+            elif not bool(self.db.query(
+                self.SQL_PARCELS["UNIQUE"], (int(parcel_id),)
+            )[0][0]):
+                if not self.new_accepted and QMessageBox.question(
+                    self, 
+                    'Confirm New Parcel ID', 
+                    "Are you sure you want to create a new parcel ID?", 
+                    QMessageBox.Yes, 
+                    QMessageBox.No
+                ) == QMessageBox.No: 
                     return
                 self.new_accepted = True
             else:
-                if not bool(self.db.query(self.layersDict["PARCELS"]["SQL"]["AVAILABLE"], (parcel_id,))[0][0]):
-                    QMessageBox.information(self, "Duplicated Parcel ID", "Please enter a unique or available parcel ID.")
+                if not bool(self.db.query(
+                    self.SQL_PARCELS["AVAILABLE"], 
+                    (parcel_id,)
+                )[0][0]):
+                    QMessageBox.information(
+                        self, 
+                        "Duplicated Parcel ID", 
+                        "Please enter a unique or available parcel ID."
+                    )
                     return
             # check that at least 3 beacons exist within the sequence
             if len(self.selector.selected) < 3: 
-                QMessageBox.information(self, "Too Few Beacons", "Please ensure that there are at least 3 beacons listed in the sequence.")
+                QMessageBox.information(
+                    self, 
+                    "Too Few Beacons", 
+                    "Please ensure that there are at least 3 beacons listed in the sequence."
+                )
                 return
             # save parcel id
             self.values_new["parcel_id"] = parcel_id
             # save sequence
-            sequence = []
-            for i in self.selector.selected:
-                sequence.append(self.db.query(self.layersDict["BEACONS"]["SQL"]["SELECT"], (i,))[0][0])
-            self.values_new["sequence"] = sequence
+            self.values_new["sequence"] = self.sequence
             # reset qgis tool
             self.iface.mapCanvas().setMapTool(self.tool)
             # remove selection
-            for l in self.layers.values(): l.removeSelection()
+            for l in self.layers: l.layer.removeSelection()
             # accept dialog
             self.accept()
         else:
             # reset qgis tool
             self.iface.mapCanvas().setMapTool(self.tool)
             # remove selection
-            for l in self.layers.values(): l.removeSelection()
+            for l in self.layers: l.layer.removeSelection()
             # accept dialog
             self.reject()
-
-    def captured(self, selected):
-        """ Notify the dialog of a feature selection and disable selecting
-        """
-        # clear sequence
-        self.lstwdg_sequence.clear()
-        # create sequence
-        for i in selected:
-            self.lstwdg_sequence.addItem(QString(str(self.db.query(self.layersDict["BEACONS"]["SQL"]["SELECT"], (i,))[0][0]))) 
 
     def newBeacon(self):
         """ Define a new beacon on the fly to be added to the parcel sequence
         """
         # disable self
         self.setEnabled(False)
-        # present beacon form
-        data = self.db.getSchema(self.layersDict["BEACONS"]["TABLE"], [self.layersDict["BEACONS"]["GEOM"], self.layersDict["BEACONS"]["PKEY"]])
-        frm = dlg_FormBeacon(self.db, data, self.layersDict["BEACONS"]["SQL"], parent = self)
+        # get fields
+        fields = self.db.getSchema(
+            self.layers[0].table, [
+            self.layers[0].geometry_column, 
+            self.layers[0].primary_key
+        ])
+        # display form
+        frm = dlg_FormBeacon(
+            self.db, 
+            self.SQL_BEACONS["UNIQUE"],
+            fields
+        )
         frm.show()
         frm_ret = frm.exec_()
         if bool(frm_ret):
-            # save new beacon
-            id = self.db.query(self.layersDict["BEACONS"]["SQL"]["INSERT"].format(fields = ", ".join([f["NAME"] for f in data]), values = ", ".join(["%s" for f in data])), [frm.getReturn()[1][f["NAME"]] for f in data])[0][0]
+            # add beacon to database
+            values_old, values_new = frm.getValues() 
+            id = self.db.query(
+                self.SQL_BEACONS["INSERT"].format(fields = ", ".join(sorted(values_new.keys())), values = ", ".join(["%s" for k in values_new.keys()])), [values_new[k] for k in sorted(values_new.keys())])[0][0]
+            self.iface.mapCanvas().refresh()
+            self.highlightFeature(self.layers[0].layer, id)
             self.selector.appendSelection(id)
         # enable self
         self.setEnabled(True)
@@ -402,22 +753,29 @@ class dlg_FormParcel(QDialog):
         self.selector.disableCapturing()
         # perform button stuffs
         self.pshbtn_stop.setEnabled(False)
+        self.pshbtn_new.setEnabled(False)
+        self.lstwdg_sequence.clear()
+        self.sequence = []
+        for i in self.selector.selected:
+            beacon_id = str(self.db.query(self.SQL_BEACONS["SELECT"], (i,))[0][0])
+            self.sequence.append(beacon_id)
+            self.lstwdg_sequence.addItem(beacon_id.replace("\n",""))
         self.pshbtn_start.setEnabled(True)
         self.pshbtn_reset.setEnabled(True)
-        self.pshbtn_new.setEnabled(False)
     
     def resetSeq(self):
         """ Reset captured sequence
         """
         # clear selection
         self.selector.clearSelection()
+        self.sequence = []
         # clear sequence
         self.lstwdg_sequence.clear()
         # perform button stuffs
         self.pshbtn_reset.setEnabled(False)
         self.pshbtn_start.setEnabled(True)
 
-    def setupUi(self, autocomplete, layersDict):
+    def setupUi(self, autocomplete):
         """ Initialize ui
         """
         # define ui widgets
@@ -490,13 +848,20 @@ class dlg_FormParcel(QDialog):
         self.verticalLayout_2.addWidget(self.btnbx_options)
         self.gridLayout.addLayout(self.verticalLayout_2, 0, 0, 1, 1)
         # translate ui widgets' text
-        self.setWindowTitle(QApplication.translate("dlg_FormParcel", "Parcel Form", None, QApplication.UnicodeUTF8))
-        self.lbl_parcelID.setText(QApplication.translate("dlg_FormParcel", "Parcel ID", None, QApplication.UnicodeUTF8))
-        self.lbl_sequence.setText(QApplication.translate("dlg_FormParcel", "Beacon Sequence", None, QApplication.UnicodeUTF8))
-        self.pshbtn_new.setText(QApplication.translate("dlg_FormParcel", "New Beacon", None, QApplication.UnicodeUTF8))
-        self.pshbtn_start.setText(QApplication.translate("dlg_FormParcel", "Start", None, QApplication.UnicodeUTF8))
-        self.pshbtn_stop.setText(QApplication.translate("dlg_FormParcel", "Stop", None, QApplication.UnicodeUTF8))
-        self.pshbtn_reset.setText(QApplication.translate("dlg_FormParcel", "Reset", None, QApplication.UnicodeUTF8))
+        self.setWindowTitle(QApplication.translate("dlg_FormParcel", 
+            "Parcel Form", None, QApplication.UnicodeUTF8))
+        self.lbl_parcelID.setText(QApplication.translate("dlg_FormParcel", 
+            "Parcel ID", None, QApplication.UnicodeUTF8))
+        self.lbl_sequence.setText(QApplication.translate("dlg_FormParcel", 
+            "Beacon Sequence", None, QApplication.UnicodeUTF8))
+        self.pshbtn_new.setText(QApplication.translate("dlg_FormParcel", 
+            "New Beacon", None, QApplication.UnicodeUTF8))
+        self.pshbtn_start.setText(QApplication.translate("dlg_FormParcel", 
+            "Start", None, QApplication.UnicodeUTF8))
+        self.pshbtn_stop.setText(QApplication.translate("dlg_FormParcel", 
+            "Stop", None, QApplication.UnicodeUTF8))
+        self.pshbtn_reset.setText(QApplication.translate("dlg_FormParcel", 
+            "Reset", None, QApplication.UnicodeUTF8))
         # connect ui widgets
         self.pshbtn_new.clicked.connect(self.newBeacon)
         self.pshbtn_start.clicked.connect(self.startSeq)
@@ -505,287 +870,27 @@ class dlg_FormParcel(QDialog):
         self.btnbx_options.clicked.connect(self.executeOption)
         QMetaObject.connectSlotsByName(self)
 
-class dlg_FormBeacon(QDialog):
-    """ This dialog enables a user to define and modify a beacon
-    """
-
-    def __init__(self, db, data, query, values = [], parent = None):
-        # initialize QDialog class
-        super(dlg_FormBeacon, self).__init__(parent, Qt.WindowStaysOnTopHint)
-        # initialize ui
-        self.setupUi(data)
-        # initialize instance variables
-        self.db = db
-        self.data = data
-        self.query = query
-        self.values_old = {}
-        self.values_new = {}
-        self.colours = {
-            "REQUIRED":"background-color: rgba(255, 107, 107, 150);",
-            "TYPE":"background-color: rgba(107, 107, 255, 150);",
-            "UNIQUE":"background-color: rgba(107, 255, 107, 150);"
-        }
-        # populate form if values are given
-        if bool(values): 
-            self.populateForm(values)
-    
-    def getReturn(self):
-        """ Return intended variable(s) after the dialog has been accepted
-        """
-        return (self.values_old, self.values_new)
-
-    def populateForm(self, values):
-        """ Populate form with given values
-        """
-        for index,value in enumerate(values):
-            if value is not None: self.lnedts[index].setText(str(value))
-            self.values_old[self.data[index]["NAME"]] = value
-
-    def executeOption(self, button):
-        """ Perform validation and close the dialog
-        """
-        if self.btnbx_options.standardButton(button) == QDialogButtonBox.Save:
-            values_new = {}
-            # check required fields        
-            valid = True
-            for lnedt in self.lnedts:
-                if bool(lnedt.property("REQUIRED").toBool()):
-                    if str(lnedt.text()).strip() is "":
-                        lnedt.setStyleSheet(self.colours["REQUIRED"])
-                        valid = False
-                    else: lnedt.setStyleSheet("")
-            if not valid: 
-                QMessageBox.information(self, "Empty Required Fields", "Please ensure that all required fields are completed.")
-                return
-            # check correct field types
-            valid = True
-            for index,lnedt in enumerate(self.lnedts):
-                try:
-                    if str(lnedt.text()).strip() is not "":
-                        cast = self.data[index]["TYPE"]
-                        tmp = cast(str(lnedt.text()))
-                        values_new[self.data[index]["NAME"]] = tmp
-                        lnedt.setStyleSheet("")
-                    else:
-                        values_new[self.data[index]["NAME"]] = None
-                except Exception as e:
-                    lnedt.setStyleSheet(self.colours["TYPE"])
-                    valid = False
-            if not valid: 
-                QMessageBox.information(self, "Invalid Field Types", "Please ensure that fields are completed with valid types.")
-                return
-            # check unique fields
-            valid = True
-            for index,lnedt in enumerate(self.lnedts):
-                if str(lnedt.text()).strip() is "": continue
-                if bool(lnedt.property("UNIQUE").toBool()):
-                    if self.data[index]["NAME"] in self.values_old.keys() and values_new[self.data[index]["NAME"]] == self.values_old[self.data[index]["NAME"]]:
-                        lnedt.setStyleSheet("")
-                    elif bool(int(self.db.query(self.query["UNIQUE"] %(self.data[index]["NAME"], "%s"), (values_new[self.data[index]["NAME"]],))[0][0])): 
-                        lnedt.setStyleSheet(self.colours["UNIQUE"])
-                        valid = False
-                    else: lnedt.setStyleSheet("")
-            if not valid: 
-                QMessageBox.information(self, "Fields Not Unique", "Please ensure that fields are given unique values.")
-                return
-            # save values
-            self.values_new = values_new
-            # accept dialog
-            self.accept()
-        else:
-            # reject dialog
-            self.reject()
-
-    def setupUi(self, data):
-        """ Initialize ui
-        """
-        # define ui widgets
-        self.setObjectName(_fromUtf8("dlg_FormBeacon"))
-        self.setCursor(QCursor(Qt.ArrowCursor))
-        self.setModal(True)
-        self.gridLayout = QGridLayout(self)
-        self.gridLayout.setSizeConstraint(QLayout.SetFixedSize)
-        self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
-        self.verticalLayout = QVBoxLayout()
-        self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
-        self.formLayout = QFormLayout()
-        self.formLayout.setFieldGrowthPolicy(QFormLayout.AllNonFixedFieldsGrow)
-        self.formLayout.setObjectName(_fromUtf8("formLayout"))        
-        self.data = data
-        self.lbls = []
-        self.lnedts = []
-        # define form fields dynamically from the database schema
-        for index,field in enumerate(self.data):
-            lbl = QLabel(self)
-            lbl.setObjectName(_fromUtf8("lbl_%s" %(field["NAME"],)))
-            self.formLayout.setWidget(index, QFormLayout.LabelRole, lbl)
-            self.lbls.append(lbl)
-            lnedt = QLineEdit(self)
-            lnedt.setProperty("REQUIRED", field["REQUIRED"])
-            lnedt.setProperty("UNIQUE", field["UNIQUE"])
-            lnedt.setObjectName(_fromUtf8("lnedt_%s" %(field["NAME"],)))
-            self.formLayout.setWidget(index, QFormLayout.FieldRole, lnedt)
-            self.lnedts.append(lnedt)
-            lbl.setText(QApplication.translate("dlg_FormBeacon", ("*" if bool(self.lnedts[index].property("REQUIRED").toBool()) else "") + field["NAME"].title(), None, QApplication.UnicodeUTF8))
-            lnedt.setProperty("TYPE", QApplication.translate("dlg_FormBeacon", str(field["TYPE"]), None, QApplication.UnicodeUTF8))
-        self.verticalLayout.addLayout(self.formLayout)
-        self.line_1 = QFrame(self)
-        self.line_1.setFrameShape(QFrame.HLine)
-        self.line_1.setFrameShadow(QFrame.Sunken)
-        self.line_1.setObjectName(_fromUtf8("line_1"))
-        self.verticalLayout.addWidget(self.line_1)
-        self.label = QLabel(self)
-        self.label.setObjectName(_fromUtf8("label"))
-        self.verticalLayout.addWidget(self.label)
-        self.line_2 = QFrame(self)
-        self.line_2.setFrameShape(QFrame.HLine)
-        self.line_2.setFrameShadow(QFrame.Sunken)
-        self.line_2.setObjectName(_fromUtf8("line_2"))
-        self.verticalLayout.addWidget(self.line_2)
-        self.btnbx_options = QDialogButtonBox(self)
-        self.btnbx_options.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Save)
-        self.btnbx_options.setObjectName(_fromUtf8("btnbx_options"))
-        self.btnbx_options.setCursor(QCursor(Qt.PointingHandCursor))
-        self.verticalLayout.addWidget(self.btnbx_options)
-        self.gridLayout.addLayout(self.verticalLayout, 0, 0, 1, 1)
-        # translate ui widgets' text
-        self.setWindowTitle(QApplication.translate("dlg_FormBeacon", "Beacon Form", None, QApplication.UnicodeUTF8))        
-        self.label.setText(QApplication.translate("dlg_FormBeacon", "<html><head/><body><p><span style=\" color:#ff0000;\">*Required Field</span></p></body></html>", None, QApplication.UnicodeUTF8))
-        # connect ui widgets
-        self.btnbx_options.clicked.connect(self.executeOption)
-        QMetaObject.connectSlotsByName(self)
-        
-class dlg_FormDatabase(QDialog):
-    """ This dialog enables the user to define the database connection parameters
-    """
-
-    def __init__(self, parent = None):
-        # initialize QDialog class  
-        super(dlg_FormDatabase, self).__init__(parent, Qt.WindowStaysOnTopHint)
-        # initialize ui
-        self.setupUi()
-        # initialize instance variables
-        self.save = False
-        self.db = None
-        self.params = {}
-        self.colours = {
-            "EMPTY":"background-color: rgba(255, 107, 107, 150);",
-        }
-    
-    def getReturn(self):
-        """ Return intended variable(s) after the dialog has been accepted
-        """
-        return (self.save, self.db, self.params)
-
-    def executeOption(self, button):
-        """ Perform validation and close the dialog
-        """
-        if self.btnbx_options.standardButton(button) == QDialogButtonBox.Ok:
-            # validate fields
-            params = {}
-            valid = True
-            for lnedt in self.findChildren(QLineEdit):
-                if str(lnedt.text()).strip() is "":
-                    lnedt.setStyleSheet(self.colours["EMPTY"])
-                    valid = False
-                else: 
-                    lnedt.setStyleSheet("")
-                    params[str(lnedt.property("KEY").toString())] = str(lnedt.text())
-            if not valid: 
-                QMessageBox.information(self, "Empty Database Fields", "Please ensure that all database fields are completed.")
-                return
-            # test connection
-            db = None
-            try:
-                import database
-                db = database.manager(params)
-            except Exception:
-                QMessageBox.information(self, "Invalid Database Settings", "Please ensure that the supplied database settings are correct.")
-                return
-            # save db
-            self.db = db
-            # save parameters
-            self.params = params
-            # accept dialog
-            self.accept()
-        else:
-            # reject dialog
-            self.reject()
-
-    def saveConnection(self, state):
-        """ Select option to save database settings
-        """
-        self.save = bool(state)
-
-    def setupUi(self):
-        """ Initialize ui
-        """
-        # define ui widgets
-        fields = ["HOST","PORT","NAME","USER","PASSWORD"]
-        self.setObjectName(_fromUtf8("dlg_FormDatabase"))
-        self.setCursor(QCursor(Qt.ArrowCursor))
-        self.setModal(True)
-        self.gridLayout = QGridLayout(self)
-        self.gridLayout.setSizeConstraint(QLayout.SetFixedSize)
-        self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
-        self.verticalLayout = QVBoxLayout()
-        self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
-        self.formLayout = QFormLayout()
-        self.formLayout.setObjectName(_fromUtf8("formLayout"))
-        self.lbls = []
-        self.lnedts = []
-        # define form fields dynamically from above list
-        for index, field in enumerate(fields):
-            lbl = QLabel(self)
-            lbl.setObjectName(_fromUtf8("lbl_%s" %(field.lower(),)))
-            lbl.setText(QApplication.translate("dlg_FormDatabase", field.title(), None, QApplication.UnicodeUTF8))
-            self.formLayout.setWidget(index, QFormLayout.LabelRole, lbl)
-            lnedt = QLineEdit(self)
-            lnedt.setObjectName(_fromUtf8("lnedt_%s" %(field.lower(),)))
-            lnedt.setProperty("KEY", field)
-            if field == "PASSWORD": lnedt.setEchoMode(QLineEdit.Password)
-            self.formLayout.setWidget(index, QFormLayout.FieldRole, lnedt)
-            self.lbls.append(lbl)
-            self.lnedts.append(lnedt)
-        self.verticalLayout.addLayout(self.formLayout)
-        self.horizontalLayout = QHBoxLayout()
-        self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
-        self.chkbx_save = QCheckBox(self)
-        self.chkbx_save.setObjectName(_fromUtf8("chkbx_save"))
-        self.chkbx_save.setCursor(QCursor(Qt.PointingHandCursor))
-        self.horizontalLayout.addWidget(self.chkbx_save)
-        self.verticalLayout.addLayout(self.horizontalLayout)
-        self.btnbx_options = QDialogButtonBox(self)
-        self.btnbx_options.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
-        self.btnbx_options.setObjectName(_fromUtf8("btnbx_options"))
-        self.btnbx_options.setCursor(QCursor(Qt.PointingHandCursor))
-        self.verticalLayout.addWidget(self.btnbx_options)
-        self.gridLayout.addLayout(self.verticalLayout, 0, 0, 1, 1)
-        # translate ui widgets' text
-        self.setWindowTitle(QApplication.translate("dlg_FormDatabase", "Database Settings", None, QApplication.UnicodeUTF8))
-        self.chkbx_save.setText(QApplication.translate("dlg_FormDatabase", "Save Connection", None, QApplication.UnicodeUTF8))
-        # connect ui widgets
-        self.chkbx_save.stateChanged.connect(self.saveConnection)
-        self.btnbx_options.clicked.connect(self.executeOption)
-        QMetaObject.connectSlotsByName(self)
 
 class dlg_FormBearDist(QDialog):
     """ This dialog enables the user to define bearings and distances
     """
 
-    def __init__(self, db, beardistSql, beaconSql, beaconSchema, parent = None):
+    def __init__(self, db, SQL_BEARDIST, SQL_BEACONS, requiredLayers, parent = None):
         # initialize QDialog class
         super(dlg_FormBearDist, self).__init__(parent, Qt.WindowStaysOnTopHint)
         # initialize ui
         self.setupUi()
-        # initialize instance variables
         self.db = db
-        self.beardistSql = beardistSql
-        self.beaconSql = beaconSql
-        self.beaconSchema = beaconSchema
+        self.SQL_BEARDIST = SQL_BEARDIST
+        self.SQL_BEACONS = SQL_BEACONS
+        self.layers = requiredLayers
         self.auto = {
-            "SURVEYPLAN":self.db.query(self.beardistSql["AUTO_SURVEYPLAN"])[0][0],
-            "REFERENCEBEACON":self.db.query(self.beardistSql["AUTO_REFERENCEBEACON"])[0][0],
+            "SURVEYPLAN":self.db.query(
+                SQL_BEARDIST["AUTO_SURVEYPLAN"]
+                )[0][0],
+            "REFERENCEBEACON":self.db.query(
+                SQL_BEARDIST["AUTO_REFERENCEBEACON"]
+                )[0][0],
             "FROMBEACON":[]
         }
         self.surveyPlan = None
@@ -824,6 +929,9 @@ class dlg_FormBearDist(QDialog):
     def initItemSurveyPlan(self, forward=True):
         """ Initialize form elements for the survey plan item
         """
+        if not forward:
+            if not self.confirmBack():
+                return
         # update autocompletion
         model = QStringListModel()
         model.setStringList(self.auto["SURVEYPLAN"])
@@ -842,11 +950,16 @@ class dlg_FormBearDist(QDialog):
         # check direction
         if forward: 
             # check that a server plan number was specified
-            if str(self.lnedt_plan.text()).strip() is "":
-                QMessageBox.information(self, "Empty Survey Plan Number", "Please enter a surver plan number.")
+            surveyPlan = str(self.lnedt_plan.text()).strip() 
+            if surveyPlan is "":
+                QMessageBox.information(
+                    self, 
+                    "Empty Survey Plan Number", 
+                    "Please enter a surver plan number."
+                )
                 return
             # set survey plan number
-            self.surveyPlan = str(self.lnedt_plan.text())
+            self.surveyPlan = surveyPlan
             # display next toolbox item
             self.initItemReferenceBeacon()
         else: pass
@@ -854,6 +967,9 @@ class dlg_FormBearDist(QDialog):
     def initItemReferenceBeacon(self, forward=True):
         """ Initialize form elements for the reference beacon item
         """
+        if not forward:
+            if not self.confirmBack():
+                return
         # update autocompletion
         model = QStringListModel()
         model.setStringList(self.auto["REFERENCEBEACON"])
@@ -869,7 +985,10 @@ class dlg_FormBearDist(QDialog):
             if self.surveyPlan in self.auto["SURVEYPLAN"]:
                 # update item contents
                 self.lnedt_ref.setEnabled(False)
-                self.lnedt_ref.setText(str(self.db.query(self.beardistSql["EXIST_REFERENCEBEACON"], (self.surveyPlan,))[0][0]))
+                self.lnedt_ref.setText(str(self.db.query(
+                    self.SQL_BEARDIST["EXIST_REFERENCEBEACON"], 
+                    (self.surveyPlan,)
+                )[0][0]))
             else:
                 # update item contents
                 self.lnedt_ref.setEnabled(True)
@@ -883,10 +1002,14 @@ class dlg_FormBearDist(QDialog):
         # check direction
         if forward: 
             # check that a reference beacon was specified
-            if str(self.lnedt_ref.text()).strip() is "":
-                QMessageBox.information(self, "Empty Reference Beacon", "Please enter a reference beacon.")
+            referenceBeacon = str(self.lnedt_ref.text()).strip()
+            if referenceBeacon is "":
+                QMessageBox.information(
+                    self, 
+                    "Empty Reference Beacon", 
+                    "Please enter a reference beacon."
+                )
                 return
-            referenceBeacon = str(self.lnedt_ref.text())
             # check if reference beacon exists
             if referenceBeacon in self.auto["REFERENCEBEACON"]:
                 # set reference beacon
@@ -897,15 +1020,31 @@ class dlg_FormBearDist(QDialog):
                 # disable self
                 self.setEnabled(False)
                 # present beacon form
-                column_index = self.db.query(self.beardistSql["INDEX_REFERENCEBEACON"])[0][0]
-                frm = dlg_FormBeacon(self.db, self.beaconSchema, self.beaconSql, parent = self)
+                column_index = self.db.query(
+                    self.SQL_BEARDIST["INDEX_REFERENCEBEACON"]
+                )[0][0]
+                # get fields
+                fields = self.db.getSchema(
+                    self.layers[0].table, [
+                    self.layers[0].geometry_column, 
+                    self.layers[0].primary_key
+                ])
+                # display form
+                frm = dlg_FormBeacon(
+                    self.db, 
+                    self.SQL_BEACONS["UNIQUE"],
+                    fields,
+                    parent = self
+                )
                 frm.lnedts[column_index].setText(referenceBeacon)
                 frm.lnedts[column_index].setEnabled(False)
                 frm.show()
                 frm_ret = frm.exec_()
                 if bool(frm_ret):
-                    # save new beacon
-                    self.db.query(self.beaconSql["INSERT"].format(fields = ", ".join([f["NAME"] for f in self.beaconSchema]), values = ", ".join(["%s" for f in self.beaconSchema])), [frm.getReturn()[1][f["NAME"]] for f in self.beaconSchema])[0][0]
+                    # add beacon to database
+                    values_old, values_new = frm.getValues() 
+                    self.db.query(
+                        self.SQL_BEACONS["INSERT"].format(fields = ", ".join(sorted(values_new.keys())), values = ", ".join(["%s" for k in values_new.keys()])), [values_new[k] for k in sorted(values_new.keys())])
                     # set reference beacon
                     self.referenceBeacon = referenceBeacon
                     self.auto["REFERENCEBEACON"].append(referenceBeacon)
@@ -936,7 +1075,10 @@ class dlg_FormBearDist(QDialog):
             # check if survey plan number is predefined
             if self.surveyPlan in self.auto["SURVEYPLAN"]:
                 # get defined bearings and distances
-                records = self.db.query(self.beardistSql["EXIST_BEARDISTCHAINS"], (self.surveyPlan,))
+                records = self.db.query(
+                    self.SQL_BEARDIST["EXIST_BEARDISTCHAINS"], 
+                    (self.surveyPlan,)
+                )
                 if records not in [None, []]:
                     for oid,link in enumerate(records):
                         self.beardistChain.append([list(link), "NULL", oid])
@@ -953,13 +1095,25 @@ class dlg_FormBearDist(QDialog):
         # check direction
         if forward:
             if not bool(self.surveyPlan):
-                QMessageBox.information(self, "No Survey Plan", "Please specify a survey plan number")
+                QMessageBox.information(
+                    self, 
+                    "No Survey Plan", 
+                    "Please specify a survey plan number"
+                )
                 return
             if not bool(self.referenceBeacon):
-                QMessageBox.information(self, "No Reference Beacon", "Please specify a reference beacon")
+                QMessageBox.information(
+                    self, 
+                    "No Reference Beacon", 
+                    "Please specify a reference beacon"
+                )
                 return
             if not bool(self.beardistChain):
-                QMessageBox.information(self, "No Bearing and Distance Chain", "Please capture bearings and distances")
+                QMessageBox.information(
+                    self, 
+                    "No Bearing and Distance Chain", 
+                    "Please capture bearings and distances"
+                )
                 return
             self.accept()
         else:
@@ -1007,17 +1161,29 @@ class dlg_FormBearDist(QDialog):
         items = self.lst_chain.selectedItems()
         # check list is non-empty
         if len(items) == 0:
-            QMessageBox.information(self, "No Link Selected", "Please select a link to edit")
+            QMessageBox.information(
+                self, 
+                "No Link Selected", 
+                "Please select a link to edit"
+            )
             return None
         # check list does not contain more than one item
         if len(items) > 1: 
-            QMessageBox.information(self, "Too Many Links Selected", "Please select only one link to edit")
+            QMessageBox.information(
+                self, 
+                "Too Many Links Selected", 
+                "Please select only one link to edit"
+            )
             return None
         # get item index
         index = self.lst_chain.row(items[0])
         # check that index is of an end link
         if not bool(self.isEndLink(index)):
-            if QMessageBox.question(self, "Non End Link Selected", "The link you selected is not at the end of a chain. Are you sure you want to %s this link?" %(action.lower(),), QMessageBox.Yes, QMessageBox.No) == QMessageBox.No: 
+            if QMessageBox.question(
+                self, 
+                "Non End Link Selected", 
+                "The link you selected is not at the end of a chain. If you {action} this link it will {action} all links that depend on this one. Are you sure you want to {action} this link?".format(action=action.lower()), 
+                QMessageBox.Yes, QMessageBox.No) == QMessageBox.No: 
                 return None
         # return index
         return index
@@ -1031,7 +1197,7 @@ class dlg_FormBearDist(QDialog):
         # populate dependants
         for link in self.beardistChain:
             #QMessageBox.information(self,QString(','.join(link[0][:4])))
-            self.lst_chain.addItem(QString(self.beardistStr %tuple(link[0][:4])))
+            self.lst_chain.addItem(self.beardistStr %tuple(link[0][:4]))
             self.auto["FROMBEACON"].append(link[0][3])
         self.auto["FROMBEACON"].sort()            
 
@@ -1039,15 +1205,20 @@ class dlg_FormBearDist(QDialog):
         """ Add a link to the beardist chain
         """
         while True:
-            dlg = dlg_FormBearDistLink(self.auto["FROMBEACON"], parent = self)
+            dlg = dlg_FormBearDistLink(
+                self.db,
+                self.auto["FROMBEACON"], 
+                self.SQL_BEACONS["UNIQUE"], 
+                parent = self
+            )
             dlg.show()
             dlg_ret = dlg.exec_()
             if bool(dlg_ret):
-                values = dlg.getReturn()
+                values = dlg.getValues()
                 self.beardistChain.append([values, "INSERT", None])
                 self.updateBearDistChainDependants()
             else: break
-        if len(self.beardistChain) == 1: 
+        if len(self.beardistChain) >= 1: 
             self.pshbtn_chain_finish.setEnabled(True)
             self.pshbtn_chain_edt.setEnabled(True)
             self.pshbtn_chain_del.setEnabled(True)
@@ -1060,12 +1231,17 @@ class dlg_FormBearDist(QDialog):
         # check selection
         if index is not None:
             # display dialog
-            dlg = dlg_FormBearDistLink(self.auto["FROMBEACON"], values = self.beardistChain[index][0], parent = self)
+            dlg = dlg_FormBearDistLink(
+                self.db,
+                self.auto["FROMBEACON"],
+                self.SQL_BEACONS["UNIQUE"],
+                values = self.beardistChain[index][0], 
+                parent = self)
             if self.isLastAnchorLink(index): dlg.lnedts[2].setEnabled(False)
             dlg.show()
             dlg_ret = dlg.exec_()
             if bool(dlg_ret):
-                values = dlg.getReturn()
+                values = dlg.getValues()
                 # check if anything was changed
                 if values == self.beardistChain[index][0]: return
                 # check if reference beacon can be found
@@ -1095,7 +1271,11 @@ class dlg_FormBearDist(QDialog):
         if index is not None:
             # prevent last link to use reference beacon from being deleted
             if self.isLastAnchorLink(index):
-                QMessageBox.warning(self, "Last Link To Reference Beacon", "Cannot remove last link to reference beacon")
+                QMessageBox.warning(
+                    self, 
+                    "Last Link To Reference Beacon", 
+                    "Cannot remove last link to reference beacon"
+                )
                 return
             # recursively delete dependant links
             self.deleteLinkDependants(self.beardistChain[index][0][3])
@@ -1250,20 +1430,79 @@ class dlg_FormBearDist(QDialog):
         self.btnbx_options.setObjectName(_fromUtf8("btnbx_options"))
         self.grdlyt_dlg.addWidget(self.btnbx_options, 1, 0, 1, 1)
         # translate ui widgets' text
-        self.setWindowTitle(QApplication.translate("dlg_FormBearDist", "Bearings and Distances Form", None, QApplication.UnicodeUTF8))
-        self.lbl_plan.setText(QApplication.translate("dlg_FormBearDist", "Survey Plan", None, QApplication.UnicodeUTF8))
-        self.pshbtn_plan_next.setText(QApplication.translate("dlg_FormBearDist", "Next", None, QApplication.UnicodeUTF8))
-        self.tlbx.setItemText(self.tlbx.indexOf(self.itm_plan), QApplication.translate("dlg_FormBearDist", "Step 1: Define Survey Plan", None, QApplication.UnicodeUTF8))
-        self.lbl_ref.setText(QApplication.translate("dlg_FormBearDist", "Reference Beacon", None, QApplication.UnicodeUTF8))
-        self.pshbtn_ref_back.setText(QApplication.translate("dlg_FormBearDist", "Back", None, QApplication.UnicodeUTF8))
-        self.pshbtn_ref_next.setText(QApplication.translate("dlg_FormBearDist", "Next", None, QApplication.UnicodeUTF8))
-        self.tlbx.setItemText(self.tlbx.indexOf(self.itm_ref), QApplication.translate("dlg_FormBearDist", "Step 2: Define Reference Beacon", None, QApplication.UnicodeUTF8))
-        self.pshbtn_chain_add.setText(QApplication.translate("dlg_FormBearDist", "Add Link", None, QApplication.UnicodeUTF8))
-        self.pshbtn_chain_edt.setText(QApplication.translate("dlg_FormBearDist", "Edit Link", None, QApplication.UnicodeUTF8))
-        self.pshbtn_chain_del.setText(QApplication.translate("dlg_FormBearDist", "Delete Link", None, QApplication.UnicodeUTF8))
-        self.pshbtn_chain_back.setText(QApplication.translate("dlg_FormBearDist", "Back", None, QApplication.UnicodeUTF8))
-        self.pshbtn_chain_finish.setText(QApplication.translate("dlg_FormBearDist", "Finish", None, QApplication.UnicodeUTF8))
-        self.tlbx.setItemText(self.tlbx.indexOf(self.itm_chain), QApplication.translate("dlg_FormBearDist", "Step 3: Define Bearings and Distances Chain", None, QApplication.UnicodeUTF8))
+        self.setWindowTitle(QApplication.translate(
+            "dlg_FormBearDist", 
+            "Bearings and Distances Form", 
+            None, 
+            QApplication.UnicodeUTF8))
+        self.lbl_plan.setText(QApplication.translate(
+            "dlg_FormBearDist", 
+            "Survey Plan", 
+            None, 
+            QApplication.UnicodeUTF8))
+        self.pshbtn_plan_next.setText(QApplication.translate(
+            "dlg_FormBearDist", 
+            "Next", 
+            None, 
+            QApplication.UnicodeUTF8))
+        self.tlbx.setItemText(self.tlbx.indexOf(self.itm_plan), 
+            QApplication.translate(
+                "dlg_FormBearDist", 
+                "Step 1: Define Survey Plan", 
+                None, 
+                QApplication.UnicodeUTF8))
+        self.lbl_ref.setText(QApplication.translate(
+            "dlg_FormBearDist", 
+            "Reference Beacon", 
+            None, 
+            QApplication.UnicodeUTF8))
+        self.pshbtn_ref_back.setText(QApplication.translate(
+            "dlg_FormBearDist",
+            "Back", 
+            None, 
+            QApplication.UnicodeUTF8))
+        self.pshbtn_ref_next.setText(QApplication.translate(
+            "dlg_FormBearDist",
+            "Next", 
+            None, 
+            QApplication.UnicodeUTF8))
+        self.tlbx.setItemText(self.tlbx.indexOf(self.itm_ref), 
+            QApplication.translate(
+                "dlg_FormBearDist", 
+                "Step 2: Define Reference Beacon", 
+                None, 
+                QApplication.UnicodeUTF8))
+        self.pshbtn_chain_add.setText(QApplication.translate(
+            "dlg_FormBearDist", 
+            "Add Link", 
+            None, 
+            QApplication.UnicodeUTF8))
+        self.pshbtn_chain_edt.setText(QApplication.translate(
+            "dlg_FormBearDist", 
+            "Edit Link", 
+            None, 
+            QApplication.UnicodeUTF8))
+        self.pshbtn_chain_del.setText(QApplication.translate(
+            "dlg_FormBearDist", 
+            "Delete Link", 
+            None, 
+            QApplication.UnicodeUTF8))
+        self.pshbtn_chain_back.setText(QApplication.translate(
+            "dlg_FormBearDist", 
+            "Back",
+            None,
+            QApplication.UnicodeUTF8))
+        self.pshbtn_chain_finish.setText(QApplication.translate(
+            "dlg_FormBearDist", 
+            "Finish", 
+            None, 
+            QApplication.UnicodeUTF8))
+        self.tlbx.setItemText(self.tlbx.indexOf(self.itm_chain), 
+                QApplication.translate(
+                    "dlg_FormBearDist", 
+                    "Step 3: Define Bearings and Distances Chain", 
+                    None, 
+                    QApplication.UnicodeUTF8))
         # connect ui widgets
         self.btnbx_options.accepted.connect(self.accept)
         self.btnbx_options.rejected.connect(self.reject)
@@ -1277,11 +1516,19 @@ class dlg_FormBearDist(QDialog):
         self.pshbtn_chain_del.clicked.connect(self.deleteLink)
         QMetaObject.connectSlotsByName(self)
 
+    def confirmBack(self):
+        return QMessageBox.question(
+            self, 
+            "Going Back", 
+            "Any changes made will be lost. Are your sure that you want to go back?", 
+            QMessageBox.Yes, QMessageBox.No) == QMessageBox.Yes 
+
+
 class dlg_FormBearDistLink(QDialog):
     """ This dialog enables the user to add a bearing and distance link
     """
 
-    def __init__(self, fromBeacons, values=[], parent = None):
+    def __init__(self, db, fromBeacons, query, values=[], parent = None):
         # initialize QDialog class
         super(dlg_FormBearDistLink, self).__init__(parent, Qt.WindowStaysOnTopHint)
         # initialize ui
@@ -1289,11 +1536,14 @@ class dlg_FormBearDistLink(QDialog):
         # initialize instance variables
         self.values_old = values
         self.values_new = []
+        self.db = db
+        self.query = query
         self.fromBeacons = fromBeacons
         self.colours = {
             "EMPTY":"background-color: rgba(255, 107, 107, 150);",
             "TYPE":"background-color: rgba(107, 107, 255, 150);",
-            "BEACON":"background-color: rgba(107, 255, 107, 150);"
+            "BEACON":"background-color: rgba(107, 255, 107, 150);",
+            "UNIQUE":"background-color: rgba(107, 255, 107, 150);"
         }
         # populate form if values are given
         if bool(values): 
@@ -1306,9 +1556,7 @@ class dlg_FormBearDistLink(QDialog):
             if values[index] is not None: 
                 lnedt.setText(str(values[index]))
 
-    def getReturn(self):
-        """ Return intended variable(s) after the dialog has been accepted
-        """
+    def getValues(self):
         return self.values_new
 
     def executeOption(self, button):
@@ -1319,20 +1567,24 @@ class dlg_FormBearDistLink(QDialog):
             # check required fields        
             valid = True
             for index,lnedt in enumerate(self.lnedts):
-                if not self.fields[index]["NULLABLE"]:
+                if self.fields[index].required:
                     if str(lnedt.text()).strip() is "":
                         lnedt.setStyleSheet(self.colours["EMPTY"])
                         valid = False
                     else: lnedt.setStyleSheet("")
             if not valid: 
-                QMessageBox.information(self, "Empty Fields", "Please ensure that all fields are completed.")
+                QMessageBox.information(
+                    self, 
+                    "Empty Required Fields", 
+                    "Please ensure that all required fields are completed."
+                )
                 return
             # check correct field types
             valid = True
             for index,lnedt in enumerate(self.lnedts):
                 try:
-                    cast = self.fields[index]["TYPE"]
-                    txt = str(lnedt.text())
+                    cast = self.fields[index].type
+                    txt = str(lnedt.text()).strip()
                     if txt is "": tmp = None
                     else: tmp = cast(txt)
                     values_new.append(tmp)
@@ -1341,21 +1593,51 @@ class dlg_FormBearDistLink(QDialog):
                     lnedt.setStyleSheet(self.colours["TYPE"])
                     valid = False
             if not valid: 
-                QMessageBox.information(self, "Invalid Field Types", "Please ensure that fields are completed with valid types.")
+                QMessageBox.information(
+                    self, 
+                    "Invalid Field Types", 
+                    "Please ensure that fields are completed with valid types."
+                )
                 return
             # check valid from beacon field
             valid = True
             for index,lnedt in enumerate(self.lnedts):
-                if self.fields[index]["NAME"].lower() == "from":
+                if self.fields[index].name.lower() == "from":
                     if str(lnedt.text()) not in self.fromBeacons:
                         lnedt.setStyleSheet(self.colours["BEACON"])
                         valid = False
-                if not bool(self.values_old) and self.fields[index]["NAME"].lower() == "to":
-                    if str(lnedt.text()) in self.fromBeacons:
-                        lnedt.setStyleSheet(self.colours["BEACON"])
-                        valid = False
             if not valid: 
-                QMessageBox.information(self, "Invalid Reference", "Please ensure that specified beacons is valid.")
+                QMessageBox.information(
+                    self, 
+                    "Invalid Reference", 
+                    "Please ensure that specified beacons are valid."
+                )
+                return
+            # check valid to beacon field
+            valid = True
+            for index,lnedt in enumerate(self.lnedts):
+                if self.fields[index].name.lower() == "to": 
+                    if bool(self.values_old):
+                        if str(lnedt.text()) not in self.values_old:
+                            if str(lnedt.text()) in self.fromBeacons:
+                                lnedt.setStyleSheet(self.colours["UNIQUE"])
+                                valid = False
+                                break
+                    elif not bool(self.values_old):
+                        if str(lnedt.text()) in self.fromBeacons:
+                            lnedt.setStyleSheet(self.colours["UNIQUE"])
+                            valid = False
+                            break
+                    if bool(int(self.db.query(self.query %('beacon', "%s"), (str(lnedt.text()),))[0][0])):
+                        lnedt.setStyleSheet(self.colours["UNIQUE"])
+                        valid = False
+                        break
+            if not valid: 
+                QMessageBox.information(
+                    self, 
+                    "Invalid Reference", 
+                    "Please ensure that the new beacon is unique."
+                )
                 return
             # save values
             self.values_new = values_new
@@ -1376,22 +1658,27 @@ class dlg_FormBearDistLink(QDialog):
         self.lbls = []
         self.lnedts = []
         self.fields = [
-            {"NAME":"Bearing", "TYPE":float, "NULLABLE":False},
-            {"NAME":"Distance", "TYPE":float, "NULLABLE":False},
-            {"NAME":"From", "TYPE":str, "NULLABLE":False},
-            {"NAME":"To", "TYPE":str, "NULLABLE":False},
-            {"NAME":"Location", "TYPE":str, "NULLABLE":True},
-            {"NAME":"Surveyor", "TYPE":str, "NULLABLE":True}
+            Field("Bearing", float, True, False),
+            Field("Distance", float, True, False),
+            Field("From", str, True, False),
+            Field("To", str, True, False),
+            Field("Location", str, False, False),
+            Field("Surveyor", str, False, False)
         ]
-        for index, field in enumerate(self.fields):
+        for index, f in enumerate(self.fields):
             lbl = QLabel(self)
             self.formLayout.setWidget(index, QFormLayout.LabelRole, lbl)
-            lbl.setText(QApplication.translate("dlg_FormBearDistEntry", field["NAME"].title(), None, QApplication.UnicodeUTF8))
+            lbl.setText(QApplication.translate(
+                "dlg_FormBearDistEntry", 
+                ("*" if f.required else "") + f.name.title(), 
+                None, 
+                QApplication.UnicodeUTF8
+            ))
             self.lbls.append(lbl)
             lnedt = QLineEdit(self)
             self.formLayout.setWidget(index, QFormLayout.FieldRole, lnedt)
             self.lnedts.append(lnedt)
-            if field["NAME"].lower() == "from":
+            if f.name.lower() == "from":
                 model = QStringListModel()
                 model.setStringList(fromBeacons)
                 completer = QCompleter()        
@@ -1404,7 +1691,12 @@ class dlg_FormBearDistLink(QDialog):
         self.btnbx_options.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Save)
         self.gridLayout.addWidget(self.btnbx_options, 1, 0, 1, 1)
         # translate ui widgets' text
-        self.setWindowTitle(QApplication.translate("dlg_FormBearDistEntry", "Link Form", None, QApplication.UnicodeUTF8))
+        self.setWindowTitle(QApplication.translate(
+            "dlg_FormBearDistEntry", 
+            "Link Form", 
+            None, 
+            QApplication.UnicodeUTF8
+        ))
         # connect ui widgets
         self.btnbx_options.clicked.connect(self.executeOption)
         QMetaObject.connectSlotsByName(self)
