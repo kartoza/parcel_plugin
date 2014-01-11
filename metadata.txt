@@ -4,7 +4,7 @@
 name=SML Surveyor Plugin
 description=SML Surveyor Plugin
 qgisMinimumVersion=2.0
-version=Version 0.1
+version=Version 0.2
 author=AfriSpatial
 email=robert@afrispatial.co.za
 
