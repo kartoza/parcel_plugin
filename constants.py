@@ -22,6 +22,8 @@ SQL_PARCELS = {
     "AVAILABLE":"SELECT available FROM parcel_lookup WHERE parcel_id = %s;",
     "INSERT":"INSERT INTO parcel_def(parcel_id, beacon, sequence) \
               VALUES (%s, %s, %s);",
+    "INSERT_GENERAL": "INSERT INTO parcel_def(parcel_id, beacon, sequence) \
+              VALUES %s;",
     "DELETE":"DELETE FROM parcel_def WHERE parcel_id = %s;",
 }
 

@@ -95,8 +95,9 @@ class Manager:
                 sql = self.cursor.mogrify(query)
             else:
                 if multi_data:
+                    placeholders = ','.join(['%s' for dummy in data])
+                    query = query % (placeholders)
                     sql = self.cursor.mogrify(query, data)
-                    sql = sql.replace('((', '(').replace('))', ')')
                 else:
                     sql = self.cursor.mogrify(query, data)
             self.disconnect()

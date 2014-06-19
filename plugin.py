@@ -464,11 +464,10 @@ class ParcelManager():
                             points.append(
                                 (frm.getValues()[1]["parcel_id"], beacon, i))
                         sql = self.db.queryPreview(
-                                SQL_PARCELS["INSERT"],
+                                SQL_PARCELS["INSERT_GENERAL"],
                                 data=points,
                                 multi_data=True
                         )
-                        print sql
                         self.db.query(sql)
                         self.iface.mapCanvas().refresh()
                     else:
