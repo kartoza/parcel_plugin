@@ -517,12 +517,15 @@ class ParcelManager():
                             SQL_PARCELS["DELETE"],
                             (frm.getValues()[0]["parcel_id"],)
                         )
-                        sql = ""
+                        points = []
                         for i, beacon in enumerate(frm.getValues()[1]["sequence"]):
-                            sql += self.db.queryPreview(
-                                SQL_PARCELS["INSERT"],
-                                (frm.getValues()[1]["parcel_id"], beacon, i)
-                            )
+                            points.append(
+                                (frm.getValues()[1]["parcel_id"], beacon, i))
+                        sql = self.db.queryPreview(
+                                SQL_PARCELS["INSERT_GENERAL"],
+                                data=points,
+                                multi_data=True
+                        )
                         self.db.query(sql)
                 for l in self.requiredLayers: l.layer.removeSelection()
 
