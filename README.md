@@ -4,7 +4,7 @@ First developed by Afrispatial cc in 2012
 
 Sponsored by: SpatialMatrix, Lagos for Ogun State Government, Nigeria. 
 
-Original authors: Robert Moerman, Gavin Fleming
+Original authors: Robert Moerman, Admire Nyakudya, Gavin Fleming
 
 Maintained by Kartoza (Pty) Ltd 
 
