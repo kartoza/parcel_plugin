@@ -245,3 +245,8 @@ drop view parcels;
 alter table parcel_lookup alter column plot_sn type character varying;
 
 CREATE VIEW parcels ...
+
+--power cut corrupted parcel view? some parcels defined by < 3 beacons in parcel_def. So to remove them:
+
+delete from parcel_def where parcel_id in 
+(select parcel_id from parcel_def group by parcel_id having count(parcel_id) <3)

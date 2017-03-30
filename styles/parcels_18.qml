@@ -3,14 +3,14 @@
   <transparencyLevelInt>255</transparencyLevelInt>
   <renderer-v2 symbollevels="0" type="RuleRenderer">
     <rules>
-      <rule scalemaxdenom="20000" description="Parcel boundaries" filter=" &quot;block&quot; &lt;> 'perimeter' or &quot;block&quot; is null" symbol="0" scalemindenom="1" label="parcels"/>
-      <rule filter=" &quot;block&quot; &lt;> 'perimeter' or &quot;block&quot; is null" symbol="1" scalemindenom="20000" label="parcels"/>
-      <rule filter=" &quot;block&quot; &lt;> 'acquisitionr' or &quot;block&quot; is null" symbol="2" scalemindenom="20000" label="acquisitions"/>
-      <rule description="Scheme perimeters" filter=" &quot;block&quot; = 'perimeter'" symbol="3" label="perimeter"/>
+      <rule scalemaxdenom="32000" description="Parcel boundaries" filter=" &quot;block&quot; &lt;> 'perimeter' or &quot;block&quot; is null" symbol="0" scalemindenom="1" label="parcels"/>
+      <rule filter=" &quot;block&quot; &lt;> 'perimeter' or &quot;block&quot; is null" symbol="1" scalemindenom="32000" label="parcels"/>
+      <rule description="Scheme perimeters" filter=" &quot;block&quot; = 'perimeter'" symbol="2" label="perimeter"/>
+      <rule description="perimeter of government acquisition" filter=" &quot;block&quot; = 'acquisition'" symbol="3" label="acquisition"/>
     </rules>
     <symbols>
       <symbol outputUnit="MM" alpha="0.498039" type="fill" name="0">
-        <layer pass="2" class="SimpleFill" locked="0">
+        <layer pass="1" class="SimpleFill" locked="0">
           <prop k="color" v="255,0,0,255"/>
           <prop k="color_border" v="0,0,0,255"/>
           <prop k="offset" v="0,0"/>
@@ -19,9 +19,9 @@
           <prop k="width_border" v="0.3"/>
         </layer>
       </symbol>
-      <symbol outputUnit="MM" alpha="1" type="fill" name="1">
-        <layer pass="3" class="CentroidFill" locked="0">
-          <symbol outputUnit="MM" alpha="1" type="marker" name="@1@0">
+      <symbol outputUnit="MapUnit" alpha="1" type="fill" name="1">
+        <layer pass="0" class="CentroidFill" locked="0">
+          <symbol outputUnit="MapUnit" alpha="1" type="marker" name="@1@0">
             <layer pass="0" class="SimpleMarker" locked="0">
               <prop k="angle" v="0"/>
               <prop k="color" v="170,85,0,255"/>
@@ -29,28 +29,28 @@
               <prop k="name" v="rectangle"/>
               <prop k="offset" v="0,0"/>
               <prop k="scale_method" v="area"/>
-              <prop k="size" v="0.1"/>
+              <prop k="size" v="1"/>
             </layer>
           </symbol>
         </layer>
       </symbol>
       <symbol outputUnit="MM" alpha="1" type="fill" name="2">
         <layer pass="0" class="SimpleFill" locked="0">
-          <prop k="color" v="86,35,135,255"/>
-          <prop k="color_border" v="170,0,127,255"/>
-          <prop k="offset" v="0,0"/>
-          <prop k="style" v="no"/>
-          <prop k="style_border" v="dot"/>
-          <prop k="width_border" v="0.26"/>
-        </layer>
-      </symbol>
-      <symbol outputUnit="MM" alpha="1" type="fill" name="3">
-        <layer pass="1" class="SimpleFill" locked="0">
           <prop k="color" v="170,0,0,255"/>
           <prop k="color_border" v="170,0,0,255"/>
           <prop k="offset" v="0,0"/>
           <prop k="style" v="no"/>
           <prop k="style_border" v="dash"/>
+          <prop k="width_border" v="0.26"/>
+        </layer>
+      </symbol>
+      <symbol outputUnit="MM" alpha="1" type="fill" name="3">
+        <layer pass="0" class="SimpleFill" locked="0">
+          <prop k="color" v="118,194,108,255"/>
+          <prop k="color_border" v="170,0,255,255"/>
+          <prop k="offset" v="0,0"/>
+          <prop k="style" v="no"/>
+          <prop k="style_border" v="dot"/>
           <prop k="width_border" v="0.26"/>
         </layer>
       </symbol>

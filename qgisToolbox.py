@@ -25,7 +25,7 @@ class featureSelector():
     """ This tool enables the selection of a single feature or multiple features from a vector layer, returning the feature's id or features' ids after each selection via the captured method in the invoking class
     """
     
-    def __init__(self, iface, layer, capturing = True, parent = None):
+    def __init__(self, iface, layer, capturing=True, parent=None):
         # initialize instance valiables
         self.parent = parent # assume parent has a captured method
         self.iface = iface
@@ -64,11 +64,9 @@ class featureSelector():
         """ Append a feature to the list of currently selected features
         """
         # toggle selection 
-        if id in self.selected: del self.selected[self.selected.index(id)]
-        else: self.selected.append(id)
-        self.layer.setSelectedFeatures(self.selected)
+        self.selected.append(id)
         # notify parent of changed selection
-        if self.parent is not None: self.parent.captured(self.selected)
+        self.parent.captured(self.selected)
         
     def capture(self, point, button):
         """ Capture id of feature selected by the selector tool
@@ -76,10 +74,21 @@ class featureSelector():
         # check that capturing has been enabled
         if self.capturing:
             pnt_geom = QgsGeometry.fromPoint(point)
-            pnt_buffer = pnt_geom.buffer((self.iface.mapCanvas().mapUnitsPerPixel()*5),0)
+            pnt_buffer = pnt_geom.buffer((self.iface.mapCanvas().mapUnitsPerPixel()*4),0)
             pnt_rect = pnt_buffer.boundingBox()
-            self.layer.select([], pnt_rect, True, True)
-            feat = QgsFeature()
-            while self.layer.nextFeature(feat):
-                self.appendSelection(feat.id())
-                break
+            self.layer.invertSelectionInRectangle(pnt_rect)
+            if bool(self.layer.selectedFeaturesIds()):
+                for id in self.layer.selectedFeaturesIds():
+                    if id not in self.selected: 
+                        self.selected.append(id)
+                selected = self.selected
+                for id in selected:
+                    if id not in self.layer.selectedFeaturesIds():
+                        self.selected.remove(id)
+                self.parent.captured(self.selected)
+            
+            #self.layer.select([], pnt_rect, True, True)
+            #feat = QgsFeature()
+            #while self.layer.nextFeature(feat):
+            #    self.appendSelection(feat.id())
+            #    break

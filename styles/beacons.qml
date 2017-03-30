@@ -1,5 +1,5 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis version="1.9.0-Master" minimumScale="-4.65661e-10" maximumScale="1e+08" hasScaleBasedVisibilityFlag="0">
+<qgis version="1.8.0-Lisboa" minimumScale="0" maximumScale="10000" hasScaleBasedVisibilityFlag="1">
   <transparencyLevelInt>255</transparencyLevelInt>
   <renderer-v2 symbollevels="0" type="singleSymbol">
     <symbols>
@@ -11,12 +11,12 @@
           <prop k="offset" v="0,0"/>
           <prop k="outline" v="#000000"/>
           <prop k="outline-width" v="1"/>
-          <prop k="size" v="4"/>
+          <prop k="size" v="3"/>
         </layer>
       </symbol>
     </symbols>
     <rotation field=""/>
-    <sizescale field="" scalemethod="area"/>
+    <sizescale field=""/>
   </renderer-v2>
   <customproperties>
     <property key="labeling" value="pal"/>
@@ -27,7 +27,7 @@
     <property key="labeling/bufferColorR" value="255"/>
     <property key="labeling/bufferJoinStyle" value="64"/>
     <property key="labeling/bufferNoFill" value="false"/>
-    <property key="labeling/bufferSize" value="0.5"/>
+    <property key="labeling/bufferSize" value="0"/>
     <property key="labeling/bufferSizeInMapUnits" value="false"/>
     <property key="labeling/bufferTransp" value="0"/>
     <property key="labeling/centroidWhole" value="false"/>
@@ -52,9 +52,24 @@
     <property key="labeling/dataDefined/Strikeout" value=""/>
     <property key="labeling/dataDefined/Underline" value=""/>
     <property key="labeling/dataDefined/Vali" value=""/>
+    <property key="labeling/dataDefinedProperty0" value=""/>
+    <property key="labeling/dataDefinedProperty1" value=""/>
+    <property key="labeling/dataDefinedProperty10" value=""/>
+    <property key="labeling/dataDefinedProperty11" value=""/>
+    <property key="labeling/dataDefinedProperty12" value=""/>
+    <property key="labeling/dataDefinedProperty13" value=""/>
+    <property key="labeling/dataDefinedProperty14" value=""/>
+    <property key="labeling/dataDefinedProperty2" value=""/>
+    <property key="labeling/dataDefinedProperty3" value=""/>
+    <property key="labeling/dataDefinedProperty4" value=""/>
+    <property key="labeling/dataDefinedProperty5" value=""/>
+    <property key="labeling/dataDefinedProperty6" value=""/>
+    <property key="labeling/dataDefinedProperty7" value=""/>
+    <property key="labeling/dataDefinedProperty8" value=""/>
+    <property key="labeling/dataDefinedProperty9" value=""/>
     <property key="labeling/decimals" value="0"/>
     <property key="labeling/displayAll" value="false"/>
-    <property key="labeling/dist" value="0.5"/>
+    <property key="labeling/dist" value="0"/>
     <property key="labeling/distInMapUnits" value="false"/>
     <property key="labeling/enabled" value="true"/>
     <property key="labeling/fieldName" value="beacon"/>
@@ -65,8 +80,8 @@
     <property key="labeling/fontLimitPixelSize" value="false"/>
     <property key="labeling/fontMaxPixelSize" value="200"/>
     <property key="labeling/fontMinPixelSize" value="3"/>
-    <property key="labeling/fontSize" value="4"/>
-    <property key="labeling/fontSizeInMapUnits" value="true"/>
+    <property key="labeling/fontSize" value="7"/>
+    <property key="labeling/fontSizeInMapUnits" value="false"/>
     <property key="labeling/fontStrikeout" value="false"/>
     <property key="labeling/fontUnderline" value="false"/>
     <property key="labeling/fontWeight" value="50"/>
@@ -92,14 +107,14 @@
     <property key="labeling/plussign" value="true"/>
     <property key="labeling/preserveRotation" value="true"/>
     <property key="labeling/previewBkgrdColor" value="#ffffff"/>
-    <property key="labeling/priority" value="0"/>
+    <property key="labeling/priority" value="5"/>
     <property key="labeling/reverseDirectionSymbol" value="false"/>
     <property key="labeling/rightDirectionSymbol" value=">"/>
-    <property key="labeling/scaleMax" value="2000"/>
+    <property key="labeling/scaleMax" value="10000"/>
     <property key="labeling/scaleMin" value="1"/>
     <property key="labeling/textColorB" value="0"/>
     <property key="labeling/textColorG" value="0"/>
-    <property key="labeling/textColorR" value="0"/>
+    <property key="labeling/textColorR" value="85"/>
     <property key="labeling/textTransp" value="0"/>
     <property key="labeling/upsidedownLabels" value="0"/>
     <property key="labeling/wrapChar" value=""/>
@@ -141,8 +156,16 @@
   <editform>.</editform>
   <editforminit></editforminit>
   <annotationform>.</annotationform>
-  <editorlayout>generatedlayout</editorlayout>
-  <excludeAttributesWMS/>
-  <excludeAttributesWFS/>
   <attributeactions/>
+  <overlay display="false" type="diagram">
+    <renderer item_interpretation="linear">
+      <diagramitem size="0" value="0"/>
+      <diagramitem size="0" value="0"/>
+    </renderer>
+    <factory sizeUnits="MM" type="Pie">
+      <wellknownname>Pie</wellknownname>
+      <classificationfield>0</classificationfield>
+    </factory>
+    <scalingAttribute>0</scalingAttribute>
+  </overlay>
 </qgis>

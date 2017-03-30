@@ -1,60 +1,87 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis version="1.9.0-Master" minimumScale="-4.65661e-10" maximumScale="1e+08" hasScaleBasedVisibilityFlag="0">
+<qgis version="1.9.0-Master" minimumScale="0" maximumScale="1e+08" hasScaleBasedVisibilityFlag="0">
   <transparencyLevelInt>255</transparencyLevelInt>
-  <renderer-v2 symbollevels="0" type="RuleRenderer">
-    <rules>
-      <rule scalemaxdenom="20000" description="Parcel boundaries" filter=" &quot;block&quot; &lt;> 'perimeter' or &quot;block&quot; is null" symbol="0" scalemindenom="1" label="parcels"/>
-      <rule filter=" &quot;block&quot; &lt;> 'perimeter' or &quot;block&quot; is null" symbol="1" scalemindenom="20000" label="parcels"/>
-      <rule filter=" &quot;block&quot; &lt;> 'acquisitionr' or &quot;block&quot; is null" symbol="2" scalemindenom="20000" label="acquisitions"/>
-      <rule description="Scheme perimeters" filter=" &quot;block&quot; = 'perimeter'" symbol="3" label="perimeter"/>
-    </rules>
+  <renderer-v2 attr="difference" symbollevels="0" type="graduatedSymbol">
+    <ranges>
+      <range symbol="0" lower="1" upper="1" label="1.0000 - 1.0000"/>
+      <range symbol="1" lower="1" upper="1" label="1.0000 - 1.0000"/>
+      <range symbol="2" lower="1" upper="2" label="1.0000 - 2.0000"/>
+      <range symbol="3" lower="2" upper="18.2" label="2.0000 - 18.2000"/>
+      <range symbol="4" lower="18.2" upper="1240" label="18.2000 - 1240.0000"/>
+    </ranges>
     <symbols>
-      <symbol outputUnit="MM" alpha="0.498039" type="fill" name="0">
-        <layer pass="2" class="SimpleFill" locked="0">
-          <prop k="color" v="255,0,0,255"/>
+      <symbol outputUnit="MM" alpha="1" type="fill" name="0">
+        <layer pass="0" class="SimpleFill" locked="0">
+          <prop k="color" v="255,255,178,255"/>
           <prop k="color_border" v="0,0,0,255"/>
           <prop k="offset" v="0,0"/>
-          <prop k="style" v="diagonal_x"/>
+          <prop k="style" v="solid"/>
           <prop k="style_border" v="solid"/>
-          <prop k="width_border" v="0.3"/>
+          <prop k="width_border" v="0.26"/>
         </layer>
       </symbol>
       <symbol outputUnit="MM" alpha="1" type="fill" name="1">
-        <layer pass="3" class="CentroidFill" locked="0">
-          <symbol outputUnit="MM" alpha="1" type="marker" name="@1@0">
-            <layer pass="0" class="SimpleMarker" locked="0">
-              <prop k="angle" v="0"/>
-              <prop k="color" v="170,85,0,255"/>
-              <prop k="color_border" v="170,85,0,255"/>
-              <prop k="name" v="rectangle"/>
-              <prop k="offset" v="0,0"/>
-              <prop k="scale_method" v="area"/>
-              <prop k="size" v="0.1"/>
-            </layer>
-          </symbol>
+        <layer pass="0" class="SimpleFill" locked="0">
+          <prop k="color" v="254,204,92,255"/>
+          <prop k="color_border" v="0,0,0,255"/>
+          <prop k="offset" v="0,0"/>
+          <prop k="style" v="solid"/>
+          <prop k="style_border" v="solid"/>
+          <prop k="width_border" v="0.26"/>
         </layer>
       </symbol>
       <symbol outputUnit="MM" alpha="1" type="fill" name="2">
         <layer pass="0" class="SimpleFill" locked="0">
-          <prop k="color" v="86,35,135,255"/>
-          <prop k="color_border" v="170,0,127,255"/>
+          <prop k="color" v="253,141,60,255"/>
+          <prop k="color_border" v="0,0,0,255"/>
           <prop k="offset" v="0,0"/>
-          <prop k="style" v="no"/>
-          <prop k="style_border" v="dot"/>
+          <prop k="style" v="solid"/>
+          <prop k="style_border" v="solid"/>
           <prop k="width_border" v="0.26"/>
         </layer>
       </symbol>
       <symbol outputUnit="MM" alpha="1" type="fill" name="3">
-        <layer pass="1" class="SimpleFill" locked="0">
-          <prop k="color" v="170,0,0,255"/>
-          <prop k="color_border" v="170,0,0,255"/>
+        <layer pass="0" class="SimpleFill" locked="0">
+          <prop k="color" v="240,59,32,255"/>
+          <prop k="color_border" v="0,0,0,255"/>
           <prop k="offset" v="0,0"/>
-          <prop k="style" v="no"/>
-          <prop k="style_border" v="dash"/>
+          <prop k="style" v="solid"/>
+          <prop k="style_border" v="solid"/>
+          <prop k="width_border" v="0.26"/>
+        </layer>
+      </symbol>
+      <symbol outputUnit="MM" alpha="1" type="fill" name="4">
+        <layer pass="0" class="SimpleFill" locked="0">
+          <prop k="color" v="189,0,38,255"/>
+          <prop k="color_border" v="0,0,0,255"/>
+          <prop k="offset" v="0,0"/>
+          <prop k="style" v="solid"/>
+          <prop k="style_border" v="solid"/>
           <prop k="width_border" v="0.26"/>
         </layer>
       </symbol>
     </symbols>
+    <source-symbol>
+      <symbol outputUnit="MM" alpha="1" type="fill" name="0">
+        <layer pass="0" class="SimpleFill" locked="0">
+          <prop k="color" v="11,124,194,255"/>
+          <prop k="color_border" v="0,0,0,255"/>
+          <prop k="offset" v="0,0"/>
+          <prop k="style" v="solid"/>
+          <prop k="style_border" v="solid"/>
+          <prop k="width_border" v="0.26"/>
+        </layer>
+      </symbol>
+    </source-symbol>
+    <colorramp type="gradient" name="[source]">
+      <prop k="color1" v="255,255,178,255"/>
+      <prop k="color2" v="189,0,38,255"/>
+      <prop k="discrete" v="0"/>
+      <prop k="stops" v="0.25;254,204,92,255:0.5;253,141,60,255:0.75;240,59,32,255"/>
+    </colorramp>
+    <mode name="quantile"/>
+    <rotation field=""/>
+    <sizescale field="" scalemethod="area"/>
   </renderer-v2>
   <customproperties>
     <property key="labeling" value="pal"/>
@@ -65,8 +92,8 @@
     <property key="labeling/bufferColorR" value="255"/>
     <property key="labeling/bufferJoinStyle" value="64"/>
     <property key="labeling/bufferNoFill" value="false"/>
-    <property key="labeling/bufferSize" value="0.1"/>
-    <property key="labeling/bufferSizeInMapUnits" value="true"/>
+    <property key="labeling/bufferSize" value="0"/>
+    <property key="labeling/bufferSizeInMapUnits" value="false"/>
     <property key="labeling/bufferTransp" value="0"/>
     <property key="labeling/centroidWhole" value="false"/>
     <property key="labeling/dataDefined/AlwaysShow" value=""/>
@@ -94,8 +121,8 @@
     <property key="labeling/displayAll" value="false"/>
     <property key="labeling/dist" value="0"/>
     <property key="labeling/distInMapUnits" value="false"/>
-    <property key="labeling/enabled" value="true"/>
-    <property key="labeling/fieldName" value="case when &quot;block&quot; &lt;> 'perimeter' or &quot;block&quot; is null then (&quot;parcel_number&quot; || '\n' || 'block '||&#xa;case when &quot;block&quot; is not null then &quot;block&quot; else '?' end ||', plot '||&#xa;case when&quot;serial_no&quot; is not null then&quot;serial_no&quot; else '?' end ||'\n'|| &#xa;case when &quot;official_area&quot; is not null then &quot;official_area&quot; else '?' end||'m² (o)'||'\n'||&#xa;&quot;comp_area&quot;||'m² (c)')  else &quot;scheme&quot; end"/>
+    <property key="labeling/enabled" value="false"/>
+    <property key="labeling/fieldName" value="difference"/>
     <property key="labeling/fontCapitals" value="0"/>
     <property key="labeling/fontFamily" value="Ubuntu"/>
     <property key="labeling/fontItalic" value="false"/>
@@ -103,14 +130,14 @@
     <property key="labeling/fontLimitPixelSize" value="false"/>
     <property key="labeling/fontMaxPixelSize" value="10000"/>
     <property key="labeling/fontMinPixelSize" value="3"/>
-    <property key="labeling/fontSize" value="8"/>
+    <property key="labeling/fontSize" value="5"/>
     <property key="labeling/fontSizeInMapUnits" value="false"/>
     <property key="labeling/fontStrikeout" value="false"/>
     <property key="labeling/fontUnderline" value="false"/>
     <property key="labeling/fontWeight" value="50"/>
     <property key="labeling/fontWordSpacing" value="0"/>
     <property key="labeling/formatNumbers" value="false"/>
-    <property key="labeling/isExpression" value="true"/>
+    <property key="labeling/isExpression" value="false"/>
     <property key="labeling/labelOffsetInMapUnits" value="true"/>
     <property key="labeling/labelPerPart" value="false"/>
     <property key="labeling/leftDirectionSymbol" value="&lt;"/>
@@ -121,20 +148,20 @@
     <property key="labeling/mergeLines" value="false"/>
     <property key="labeling/minFeatureSize" value="0"/>
     <property key="labeling/multilineAlign" value="0"/>
-    <property key="labeling/multilineHeight" value="1"/>
+    <property key="labeling/multilineHeight" value="0"/>
     <property key="labeling/namedStyle" value="Regular"/>
     <property key="labeling/obstacle" value="true"/>
     <property key="labeling/placeDirectionSymbol" value="0"/>
-    <property key="labeling/placement" value="5"/>
+    <property key="labeling/placement" value="0"/>
     <property key="labeling/placementFlags" value="0"/>
     <property key="labeling/plussign" value="true"/>
     <property key="labeling/preserveRotation" value="true"/>
     <property key="labeling/previewBkgrdColor" value="#ffffff"/>
-    <property key="labeling/priority" value="10"/>
+    <property key="labeling/priority" value="0"/>
     <property key="labeling/reverseDirectionSymbol" value="false"/>
     <property key="labeling/rightDirectionSymbol" value=">"/>
-    <property key="labeling/scaleMax" value="1500"/>
-    <property key="labeling/scaleMin" value="1"/>
+    <property key="labeling/scaleMax" value="0"/>
+    <property key="labeling/scaleMin" value="0"/>
     <property key="labeling/textColorB" value="0"/>
     <property key="labeling/textColorG" value="0"/>
     <property key="labeling/textColorR" value="0"/>
@@ -169,22 +196,12 @@
     <selectedonly on=""/>
   </labelattributes>
   <edittypes>
-    <edittype editable="1" type="0" name="allocation"/>
-    <edittype editable="1" type="0" name="block"/>
-    <edittype editable="1" type="0" name="comp_area"/>
-    <edittype editable="1" type="0" name="deeds_file"/>
-    <edittype editable="1" type="0" name="file_number"/>
-    <edittype editable="1" type="0" name="id"/>
-    <edittype editable="1" type="0" name="official_area"/>
-    <edittype editable="1" type="0" name="owner"/>
-    <edittype editable="1" type="0" name="parcel_id"/>
-    <edittype editable="1" type="0" name="parcel_number"/>
-    <edittype editable="1" type="0" name="scheme"/>
-    <edittype editable="1" type="0" name="serial_no"/>
+    <edittype type="0" name="difference"/>
+    <edittype type="0" name="parcel_id"/>
   </edittypes>
-  <editform>.</editform>
+  <editform></editform>
   <editforminit></editforminit>
-  <annotationform>.</annotationform>
+  <annotationform></annotationform>
   <editorlayout>generatedlayout</editorlayout>
   <excludeAttributesWMS/>
   <excludeAttributesWFS/>
