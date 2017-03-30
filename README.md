@@ -2,7 +2,7 @@
 
 First developed by Afrispatial cc in 2012
 
-Sponsored by: SpatialMatrix, Lagos for Ogun State Government, Nigeria. 
+Sponsored by: SpatialMatrix, Lagos for Ogun State Government, Nigeria [background presentation](https://drive.google.com/file/d/0B2pxNIZQUjL1TW5wR00zVC1aUjA/view?usp=sharing)
 
 Original authors: Robert Moerman, Admire Nyakudya, Gavin Fleming
 
@@ -36,7 +36,7 @@ This plugin depends on a PostGIS database with a predefined schema including tab
 
 # User manual
 
-http://goo.gl/CY9TYn
+[User manual](http://goo.gl/CY9TYn)
 
 
 # What's Next 
