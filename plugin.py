@@ -170,10 +170,10 @@ class sml_surveyor:
                 conn = None
         # fetch from user if necessary
         if not bool(conn):
-            dlg = dlg_DatabaseConnection()
+            dlg = DatabaseConnectionDialog()
             dlg.show()
             if bool(dlg.exec_()):
-                conn = dlg.getDatabaseConnection()
+                conn = dlg.get_database_connection()
                 settings_plugin.setValue("DatabaseConnection", conn)
         # validate database connection
         if bool(conn):
@@ -301,12 +301,12 @@ class BeaconManager():
         """ Main method
         """
         # display manager dialog
-        mng = dlg_Manager(self.requiredLayers[0])
+        mng = ManagerDialog(self.requiredLayers[0])
         mng.show()
         mng_ret = mng.exec_()
         if bool(mng_ret):
 
-            if mng.getOption() == 0: # create new beacon
+            if mng.get_option() == 0: # create new beacon
                 while True:
                     # get fields
                     fields = self.db.getSchema(
@@ -315,7 +315,7 @@ class BeaconManager():
                         self.requiredLayers[0].primary_key
                     ])
                     # display form
-                    frm = dlg_FormBeacon(
+                    frm = FormBeaconDialog(
                         self.db,
                         SQL_BEACONS["UNIQUE"],
                         fields
@@ -324,17 +324,17 @@ class BeaconManager():
                     frm_ret = frm.exec_()
                     if bool(frm_ret):
                         # add beacon to database
-                        values_old, values_new = frm.getValues()
+                        values_old, values_new = frm.get_values()
                         self.db.query(
                             SQL_BEACONS["INSERT"].format(fields = ", ".join(sorted(values_new.keys())), values = ", ".join(["%s" for k in values_new.keys()])), [values_new[k] for k in sorted(values_new.keys())])
                         self.iface.mapCanvas().refresh()
                     else: break
 
-            elif mng.getOption() == 1: # edit existing beacon
+            elif mng.get_option() == 1: # edit existing beacon
                 # select beacon
                 mode = Mode("EDITOR","EDIT")
                 query = SQL_BEACONS["SELECT"]
-                slc = dlg_Selector(
+                slc = SelectorDialog(
                     self.db,
                     self.iface,
                     self.requiredLayers[0],
@@ -346,7 +346,7 @@ class BeaconManager():
                 slc_ret = slc.exec_()
                 self.iface.mapCanvas().setMapTool(slc.tool)
                 if bool(slc_ret):
-                    featID = slc.getFeatureId()
+                    featID = slc.get_feature_id()
                     # check if defined by a bearing and distance
                     if self.db.query(SQL_BEACONS["BEARDIST"], (featID,))[0][0]:
                         QMessageBox.warning(
@@ -365,7 +365,7 @@ class BeaconManager():
                     # get values
                     values = [v for v in self.db.query(SQL_BEACONS["EDIT"].format(fields = ",".join([f.name for f in fields])), (featID,))[0]]
                     # display form
-                    frm = dlg_FormBeacon(
+                    frm = FormBeaconDialog(
                         self.db,
                         SQL_BEACONS["UNIQUE"],
                         fields,
@@ -380,11 +380,11 @@ class BeaconManager():
                         values_old = []
                         values_new = []
                         for f in fields:
-                            if frm.getValues()[0][f.name] is not None:
+                            if frm.get_values()[0][f.name] is not None:
                                 fields_old.append(f.name)
-                                values_old.append(frm.getValues()[0][f.name])
+                                values_old.append(frm.get_values()[0][f.name])
                             fields_new.append(f.name)
-                            values_new.append(frm.getValues()[1][f.name])
+                            values_new.append(frm.get_values()[1][f.name])
                         set = ", ".join(["{field} = %s".format(field = f) for f in fields_new])
                         where = " AND ".join(["{field} = %s".format(field = f) for f in fields_old])
                         self.db.query(
@@ -395,11 +395,11 @@ class BeaconManager():
                         )
                 for l in self.requiredLayers: l.layer.removeSelection()
 
-            elif mng.getOption() == 2: # delete existing beacon
+            elif mng.get_option() == 2: # delete existing beacon
                 # select beacon
                 mode = Mode("REMOVER","REMOVE")
                 query = SQL_BEACONS["SELECT"]
-                slc = dlg_Selector(
+                slc = SelectorDialog(
                     self.db,
                     self.iface,
                     self.requiredLayers[0],
@@ -411,7 +411,7 @@ class BeaconManager():
                 slc_ret = slc.exec_()
                 self.iface.mapCanvas().setMapTool(slc.tool)
                 if bool(slc_ret):
-                    featID = slc.getFeatureId()
+                    featID = slc.get_feature_id()
                     # check if defined by a bearing and distance
                     if self.db.query(SQL_BEACONS["BEARDIST"], (featID,))[0][0]:
                         QMessageBox.warning(None, "Bearing and Distance Definition", "Cannot delete beacon defined by distance and bearing via this tool")
@@ -435,18 +435,18 @@ class ParcelManager():
         """ Main method
         """
         # display manager dialog
-        mng = dlg_Manager(self.requiredLayers[1])
+        mng = ManagerDialog(self.requiredLayers[1])
         mng.show()
         mng_ret = mng.exec_()
         if bool(mng_ret):
 
-            if mng.getOption() == 0: # create new parcel
+            if mng.get_option() == 0: # create new parcel
                 while True:
                     # show parcel form
                     autocomplete = [str(i[0]) for i in self.db.query(
                         SQL_PARCELS["AUTOCOMPLETE"]
                     )]
-                    frm = dlg_FormParcel(
+                    frm = FormParcelDialog(
                         self.db,
                         self.iface,
                         self.requiredLayers,
@@ -460,9 +460,9 @@ class ParcelManager():
                     if bool(frm_ret):
                         # add parcel to database
                         points = []
-                        for i, beacon in enumerate(frm.getValues()[1]["sequence"]):
+                        for i, beacon in enumerate(frm.get_values()[1]["sequence"]):
                             points.append(
-                                (frm.getValues()[1]["parcel_id"], beacon, i))
+                                (frm.get_values()[1]["parcel_id"], beacon, i))
                         sql = self.db.queryPreview(
                                 SQL_PARCELS["INSERT_GENERAL"],
                                 data=points,
@@ -474,11 +474,11 @@ class ParcelManager():
                         break
                 for l in self.requiredLayers: l.layer.removeSelection()
 
-            elif mng.getOption() == 1: # edit existing parcel
+            elif mng.get_option() == 1: # edit existing parcel
                 # select parcel
                 mode = Mode("EDITOR","EDIT")
                 query = SQL_PARCELS["SELECT"]
-                slc = dlg_Selector(
+                slc = SelectorDialog(
                     self.db,
                     self.iface,
                     self.requiredLayers[1],
@@ -496,10 +496,10 @@ class ParcelManager():
                     )]
                     data = (lambda t: {"parcel_id":t[0], "sequence":t[1]})(
                         self.db.query(
-                            SQL_PARCELS["EDIT"], (slc.getFeatureId(),)
+                            SQL_PARCELS["EDIT"], (slc.get_feature_id(),)
                         )[0]
                     )
-                    frm = dlg_FormParcel(
+                    frm = FormParcelDialog(
                         self.db,
                         self.iface,
                         self.requiredLayers,
@@ -515,12 +515,12 @@ class ParcelManager():
                         # edit parcel in database
                         self.db.query(
                             SQL_PARCELS["DELETE"],
-                            (frm.getValues()[0]["parcel_id"],)
+                            (frm.get_values()[0]["parcel_id"],)
                         )
                         points = []
-                        for i, beacon in enumerate(frm.getValues()[1]["sequence"]):
+                        for i, beacon in enumerate(frm.get_values()[1]["sequence"]):
                             points.append(
-                                (frm.getValues()[1]["parcel_id"], beacon, i))
+                                (frm.get_values()[1]["parcel_id"], beacon, i))
                         sql = self.db.queryPreview(
                                 SQL_PARCELS["INSERT_GENERAL"],
                                 data=points,
@@ -529,11 +529,11 @@ class ParcelManager():
                         self.db.query(sql)
                 for l in self.requiredLayers: l.layer.removeSelection()
 
-            elif mng.getOption() == 2: # delete existing parcel
+            elif mng.get_option() == 2: # delete existing parcel
                 # select parcel
                 mode = Mode("REMOVER","REMOVE")
                 query = SQL_PARCELS["SELECT"]
-                slc = dlg_Selector(
+                slc = SelectorDialog(
                     self.db,
                     self.iface,
                     self.requiredLayers[1],
@@ -546,7 +546,7 @@ class ParcelManager():
                 self.iface.mapCanvas().setMapTool(slc.tool)
                 if bool(slc_ret):
                     # delete parcel from database
-                    featID = slc.getFeatureId()
+                    featID = slc.get_feature_id()
                     self.db.query(SQL_PARCELS["DELETE"], (self.db.query(
                         SQL_PARCELS["SELECT"], (featID,)
                     )[0][0],))
@@ -564,7 +564,7 @@ class BearDistManager():
     def run(self):
         """ Main method
         """
-        dlg = dlg_FormBearDist(
+        dlg = BearingDistanceFormDialog(
             self.db,
             SQL_BEARDIST,
             SQL_BEACONS,
@@ -573,7 +573,7 @@ class BearDistManager():
         dlg.show()
         dlg_ret = dlg.exec_()
         if bool(dlg_ret):
-            surveyPlan, referenceBeacon, beardistChain = dlg.getReturn()
+            surveyPlan, referenceBeacon, beardistChain = dlg.get_return()
             # check whether survey plan is defined otherwise define it
             if not self.db.query(
                 SQL_BEARDIST["IS_SURVEYPLAN"],
