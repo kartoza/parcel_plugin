@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 /***************************************************************************
- sml_surveyor
+ SMLSurveyor
                                  A QGIS plugin
  SML Surveyor Plugin
                              -------------------
@@ -44,6 +44,6 @@ def email():
     return "robert@afrispatial.co.za"
 
 def classFactory(iface):
-    # load sml_surveyor class from file sml_surveyor
-    from plugin import sml_surveyor
-    return sml_surveyor(iface)
+    # load SMLSurveyor class from file SMLSurveyor
+    from plugin import SMLSurveyor
+    return SMLSurveyor(iface)

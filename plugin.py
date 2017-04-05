@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 /***************************************************************************
- sml_surveyor
+ SMLSurveyor
                                  A QGIS plugin
  SML Surveyor Plugin
                               -------------------
@@ -34,18 +34,19 @@ import database
 from constants import *
 from datetime import datetime
 
+
 class RequiredLayer:
 
-    def __init__(self,
-        name,
-        name_plural,
-        table,
-        primary_key,
-        geometry_type,
-        geometry_column='the_geom',
-        schema='public',
-        layer=None
-    ):
+    def __init__(
+            self,
+            name,
+            name_plural,
+            table,
+            primary_key,
+            geometry_type,
+            geometry_column='the_geom',
+            schema='public',
+            layer=None):
         self.name = name
         self.name_plural = name_plural
         self.table = table
@@ -63,7 +64,7 @@ class Mode:
         self.action = action
 
 
-class sml_surveyor:
+class SMLSurveyor:
 
     def __init__(self, iface):
         # save reference to the QGIS interface
@@ -71,115 +72,110 @@ class sml_surveyor:
         # get plugin directory
         self.plugin_dir = os.path.dirname(os.path.realpath(__file__))
         self.uri = None
-        self.db = None
+        self.database = None
         self.datetime = datetime.now()
-        self.requiredLayers = []
+        self.required_layers = []
         # 1. beacons
         # 2. parcels
-        self.requiredLayers.append(RequiredLayer(
+        self.required_layers.append(RequiredLayer(
             'Beacon', 'Beacons', 'beacons', 'gid', 'points'
         ))
-        self.requiredLayers.append(RequiredLayer(
+        self.required_layers.append(RequiredLayer(
             'Parcel', 'Parcels', 'parcels', 'parcel_id', 'polygons'
         ))
 
-
-    def initGui(self):
+    def init_gui(self):
         """ Initialize gui
         """
         # create plugin toolbar
-        self.createPluginToolBar()
-
+        self.create_plugin_toolbar()
 
     def unload(self):
         """ Uninitialize gui
         """
         # remove plugin toolbar
-        self.removePluginToolBar()
+        self.remove_plugin_toolbar()
         # remove layers
-        self.refreshLayers()
-        for l in self.requiredLayers:
+        self.refresh_layers()
+        for l in self.required_layers:
             if bool(l.layer):
-                QgsMapLayerRegistry.instance().removeMapLayers([l.layer.id(),])
+                QgsMapLayerRegistry.instance().removeMapLayers([l.layer.id()])
 
-
-    def createPluginToolBar(self):
+    def create_plugin_toolbar(self):
         """ Create plugin toolbar to house buttons
         """
-         # create plugin toolbar
-        self.pluginToolBar = QToolBar(metadata.name())
-        self.pluginToolBar.setObjectName(metadata.name())
+        # create plugin toolbar
+        self.plugin_toolbar = QToolBar(metadata.name())
+        self.plugin_toolbar.setObjectName(metadata.name())
         # create Beardist button
-        self.actionBearDist = QAction(
+        self.bearing_distance_action = QAction(
             QIcon(os.path.join(self.plugin_dir, "images", "beardist.png")),
             "Manage Bearings and Distances",
-            self.iface.mainWindow()
-        )
-        self.actionBearDist.setWhatsThis("Manage bearings and distances")
-        self.actionBearDist.setStatusTip("Manage bearings and distances")
-        self.actionBearDist.triggered.connect(self.manageBearDist)
+            self.iface.mainWindow())
+        self.bearing_distance_action.setWhatsThis(
+            "Manage bearings and distances")
+        self.bearing_distance_action.setStatusTip(
+            "Manage bearings and distances")
+        self.bearing_distance_action.triggered.connect(
+            self.manage_bearing_distance)
         # create Beacons button
-        self.actionBeacons = QAction(
+        self.beacons_action = QAction(
             QIcon(os.path.join(self.plugin_dir, "images", "beacon.gif")),
             "Manage Beacons",
-            self.iface.mainWindow()
-        )
-        self.actionBeacons.setWhatsThis("Manage beacons")
-        self.actionBeacons.setStatusTip("Manage beacons")
-        self.actionBeacons.triggered.connect(self.manageBeacons)
+            self.iface.mainWindow())
+        self.beacons_action.setWhatsThis("Manage beacons")
+        self.beacons_action.setStatusTip("Manage beacons")
+        self.beacons_action.triggered.connect(self.manage_beacons)
         # create Parcels button
-        self.actionParcels = QAction(
+        self.parcels_action = QAction(
             QIcon(os.path.join(self.plugin_dir, "images", "parcel.png")),
             "Manage Parcels",
-            self.iface.mainWindow()
-        )
-        self.actionParcels.setWhatsThis("Manage parcels")
-        self.actionParcels.setStatusTip("Manage parcels")
-        self.actionParcels.triggered.connect(self.manageParcels)
+            self.iface.mainWindow())
+        self.parcels_action.setWhatsThis("Manage parcels")
+        self.parcels_action.setStatusTip("Manage parcels")
+        self.parcels_action.triggered.connect(self.manage_parcels)
         # populate plugin toolbar
-        self.pluginToolBar.addAction(self.actionBearDist)
-        self.pluginToolBar.addAction(self.actionBeacons)
-        self.pluginToolBar.addAction(self.actionParcels)
+        self.plugin_toolbar.addAction(self.bearing_distance_action)
+        self.plugin_toolbar.addAction(self.beacons_action)
+        self.plugin_toolbar.addAction(self.parcels_action)
         # add plugin toolbar to gui
-        self.iface.mainWindow().addToolBar(self.pluginToolBar)
+        self.iface.mainWindow().addToolBar(self.plugin_toolbar)
 
-
-    def removePluginToolBar(self):
+    def remove_plugin_toolbar(self):
         """ Remove plugin toolbar which houses buttons
         """
         # remove app toolbar from gui
-        if hasattr(self,"pluginToolBar"):
-            self.iface.mainWindow().removeToolBar(self.pluginToolBar)
-            self.pluginToolBar.hide()
+        if hasattr(self, "pluginToolBar"):
+            self.iface.mainWindow().removeToolBar(self.plugin_toolbar)
+            self.plugin_toolbar.hide()
 
-
-    def setDatabaseConnection(self):
+    def set_database_connection(self):
         """ Create a database connection
         """
         # fetch settings
         settings_plugin = QSettings()
         settings_postgis = QSettings()
-        settings_plugin.beginGroup(metadata.name().replace(" ","_"))
+        settings_plugin.beginGroup(metadata.name().replace(" ", "_"))
         settings_postgis.beginGroup('PostgreSQL/connections')
         # fetch pre-chosen database connection
-        conn = settings_plugin.value("DatabaseConnection", None)
+        connection = settings_plugin.value("DatabaseConnection", None)
         # check if still exists
-        if bool(conn):
-            if conn not in settings_postgis.childGroups():
+        if bool(connection):
+            if connection not in settings_postgis.childGroups():
                 settings_plugin.setValue("DatabaseConnection", "")
-                conn = None
+                connection = None
         # fetch from user if necessary
-        if not bool(conn):
-            dlg = DatabaseConnectionDialog()
-            dlg.show()
-            if bool(dlg.exec_()):
-                conn = dlg.get_database_connection()
-                settings_plugin.setValue("DatabaseConnection", conn)
+        if not bool(connection):
+            dialog = DatabaseConnectionDialog()
+            dialog.show()
+            if bool(dialog.exec_()):
+                connection = dialog.get_database_connection()
+                settings_plugin.setValue("DatabaseConnection", connection)
         # validate database connection
-        if bool(conn):
-            db_host = settings_postgis.value(conn+'/host')
-            db_port = settings_postgis.value(conn+'/port')
-            db_name = settings_postgis.value(conn+'/database')
+        if bool(connection):
+            db_host = settings_postgis.value(connection + '/host')
+            db_port = settings_postgis.value(connection + '/port')
+            db_name = settings_postgis.value(connection + '/database')
             db_username = ''
             db_password = ''
             self.uri = QgsDataSourceURI()
@@ -188,35 +184,33 @@ class sml_surveyor:
                 db_port,
                 db_name,
                 db_username,
-                db_password,
-            )
+                db_password)
             max_attempts = 3
             msg = "Please enter the username and password."
             for i in range(max_attempts):
-                ok, db_username, db_password = QgsCredentials.instance().get(
-                    self.uri.connectionInfo(),
-                    db_username,
-                    db_password,
-                    msg
-                )
-                if not ok: break
+                ok, db_username, db_password = (
+                    QgsCredentials.instance().get(self.uri.connectionInfo(),
+                                                  db_username,
+                                                  db_password,
+                                                  msg))
+                if not ok:
+                    break
                 db_username.replace(" ", "")
                 db_password.replace(" ", "")
                 try:
-                    self.db = database.Manager({
-                        "HOST":db_host,
-                        "NAME":db_name,
-                        "PORT":db_port,
-                        "USER":db_username,
-                        "PASSWORD":db_password
+                    self.database = database.Manager({
+                        "HOST": db_host,
+                        "NAME": db_name,
+                        "PORT": db_port,
+                        "USER": db_username,
+                        "PASSWORD": db_password
                     })
                     self.uri.setConnection(
                         db_host,
                         db_port,
                         db_name,
                         db_username,
-                        db_password,
-                    )
+                        db_password)
                     self.datetime = datetime.now()
                     break
                 except Exception as e:
@@ -224,398 +218,422 @@ class sml_surveyor:
         settings_plugin.endGroup()
         settings_postgis.endGroup()
 
-
-    def refreshLayers(self):
+    def refresh_layers(self):
         """ Ensure all required layers exist
         """
-        if bool(self.db):
-            for l in reversed(self.requiredLayers):
+        if bool(self.database):
+            for required_layer in reversed(self.required_layers):
                 for layer in self.iface.legendInterface().layers():
-                    if l.name_plural.lower() == layer.name().lower():
-                        l.layer = layer
+                    if required_layer.name_plural.lower() == \
+                            layer.name().lower():
+                        required_layer.layer = layer
                         break
-                if not bool(l.layer):
+                if not bool(required_layer.layer):
                     self.uri.setDataSource(
-                        l.schema,
-                        l.table,
-                        l.geometry_column,
+                        required_layer.schema,
+                        required_layer.table,
+                        required_layer.geometry_column,
                         '',
-                        l.primary_key
-                    )
+                        required_layer.primary_key)
                     self.iface.addVectorLayer(
                         self.uri.uri(),
-                        l.name_plural,
-                        "postgres"
-                    )
+                        required_layer.name_plural,
+                        "postgres")
                     for layer in self.iface.legendInterface().layers():
-                        if l.name_plural == layer.name(): l.layer = layer
+                        if required_layer.name_plural == layer.name():
+                            required_layer.layer = layer
 
-
-    def manageBeacons(self):
+    def manage_beacons(self):
         """ Portal which enables the management of beacons
         """
-        if self.datetime.date() != datetime.now().date(): self.db = None
-        if self.db is None:
-            self.setDatabaseConnection()
-            if self.db is None: return
-        self.refreshLayers()
-        BeaconManager(self.iface, self.db, self.requiredLayers)
+        if self.datetime.date() != datetime.now().date():
+            self.database = None
+        if self.database is None:
+            self.set_database_connection()
+            if self.database is None:
+                return
+        self.refresh_layers()
+        BeaconManager(self.iface, self.database, self.required_layers)
         self.iface.mapCanvas().refresh()
 
-
-    def manageParcels(self):
+    def manage_parcels(self):
         """ Portal which enables the management of parcels
         """
-        if self.datetime.date() != datetime.now().date(): self.db = None
-        if self.db is None:
-            self.setDatabaseConnection()
-            if self.db is None: return
-        self.refreshLayers()
-        ParcelManager(self.iface, self.db, self.requiredLayers)
+        if self.datetime.date() != datetime.now().date():
+            self.database = None
+        if self.database is None:
+            self.set_database_connection()
+            if self.database is None:
+                return
+        self.refresh_layers()
+        ParcelManager(self.iface, self.database, self.required_layers)
         self.iface.mapCanvas().refresh()
 
-
-    def manageBearDist(self):
+    def manage_bearing_distance(self):
         """ Portal which enables the management of
         bearings and distances
         """
-        if self.datetime.date() != datetime.now().date(): self.db = None
-        if self.db is None:
-            self.setDatabaseConnection()
-            if self.db is None: return
-        self.refreshLayers()
-        BearDistManager(self.iface, self.db, self.requiredLayers)
+        if self.datetime.date() != datetime.now().date():
+            self.database = None
+        if self.database is None:
+            self.set_database_connection()
+            if self.database is None:
+                return
+        self.refresh_layers()
+        BearDistManager(self.iface, self.database, self.required_layers)
         self.iface.mapCanvas().refresh()
 
 
 class BeaconManager():
 
-    def __init__(self, iface, db, requiredLayers):
+    def __init__(self, iface, database, required_layers):
         self.iface = iface
-        self.db = db
-        self.requiredLayers = requiredLayers
+        self.database = database
+        self.required_layers = required_layers
         self.run()
-
 
     def run(self):
         """ Main method
         """
         # display manager dialog
-        mng = ManagerDialog(self.requiredLayers[0])
-        mng.show()
-        mng_ret = mng.exec_()
-        if bool(mng_ret):
+        manager_dialog = ManagerDialog(self.required_layers[0])
+        manager_dialog.show()
+        manager_dialog_ret = manager_dialog.exec_()
+        if bool(manager_dialog_ret):
 
-            if mng.get_option() == 0: # create new beacon
+            if manager_dialog.get_option() == 0:  # create new beacon
                 while True:
                     # get fields
-                    fields = self.db.getSchema(
-                        self.requiredLayers[0].table, [
-                        self.requiredLayers[0].geometry_column,
-                        self.requiredLayers[0].primary_key
+                    fields = self.database.getSchema(
+                        self.required_layers[0].table, [
+                        self.required_layers[0].geometry_column,
+                        self.required_layers[0].primary_key
                     ])
                     # display form
-                    frm = FormBeaconDialog(
-                        self.db,
+                    form_dialog = FormBeaconDialog(
+                        self.database,
                         SQL_BEACONS["UNIQUE"],
                         fields
                     )
-                    frm.show()
-                    frm_ret = frm.exec_()
-                    if bool(frm_ret):
+                    form_dialog.show()
+                    form_dialog_ret = form_dialog.exec_()
+                    if bool(form_dialog_ret):
                         # add beacon to database
-                        values_old, values_new = frm.get_values()
-                        self.db.query(
-                            SQL_BEACONS["INSERT"].format(fields = ", ".join(sorted(values_new.keys())), values = ", ".join(["%s" for k in values_new.keys()])), [values_new[k] for k in sorted(values_new.keys())])
+                        old_values, new_values = form_dialog.get_values()
+                        self.database.query(
+                            SQL_BEACONS["INSERT"].format(
+                                fields=", ".join(sorted(new_values.keys())),
+                                values=", ".join(
+                                    ["%s" for k in new_values.keys()])),
+                            [new_values[k] for k in sorted(new_values.keys())])
                         self.iface.mapCanvas().refresh()
-                    else: break
+                    else:
+                        break
 
-            elif mng.get_option() == 1: # edit existing beacon
+            elif manager_dialog.get_option() == 1:  # edit existing beacon
                 # select beacon
-                mode = Mode("EDITOR","EDIT")
+                mode = Mode("EDITOR", "EDIT")
                 query = SQL_BEACONS["SELECT"]
-                slc = SelectorDialog(
-                    self.db,
+                selector_dialog = SelectorDialog(
+                    self.database,
                     self.iface,
-                    self.requiredLayers[0],
+                    self.required_layers[0],
                     mode,
                     query,
-                    preserve = True
-                )
-                slc.show()
-                slc_ret = slc.exec_()
-                self.iface.mapCanvas().setMapTool(slc.tool)
-                if bool(slc_ret):
-                    featID = slc.get_feature_id()
+                    preserve=True)
+                selector_dialog.show()
+                selector_dialog_ret = selector_dialog.exec_()
+                self.iface.mapCanvas().setMapTool(selector_dialog.tool)
+                if bool(selector_dialog_ret):
+                    feat_id = selector_dialog.get_feature_id()
                     # check if defined by a bearing and distance
-                    if self.db.query(SQL_BEACONS["BEARDIST"], (featID,))[0][0]:
+                    if self.database.query(
+                            SQL_BEACONS["BEARDIST"], (feat_id,))[0][0]:
                         QMessageBox.warning(
                             None,
                             "Bearing and Distance Definition",
-                            "Cannot edit beacon defined by distance and bearing via this tool"
-                        )
-                        for l in self.requiredLayers: l.layer.removeSelection()
+                            "Cannot edit beacon defined by distance "
+                            "and bearing via this tool")
+                        for required_layer in self.required_layers:
+                            required_layer.layer.removeSelection()
                         return
                     # get fields
-                    fields = self.db.getSchema(
-                        self.requiredLayers[0].table, [
-                        self.requiredLayers[0].geometry_column,
-                        self.requiredLayers[0].primary_key
+                    fields = self.database.getSchema(
+                        self.required_layers[0].table, [
+                        self.required_layers[0].geometry_column,
+                        self.required_layers[0].primary_key
                     ])
                     # get values
-                    values = [v for v in self.db.query(SQL_BEACONS["EDIT"].format(fields = ",".join([f.name for f in fields])), (featID,))[0]]
+                    values = [value for value in self.database.query(
+                        SQL_BEACONS["EDIT"].format(
+                            fields=",".join([field.name for field in fields])),
+                        (feat_id,))[0]]
                     # display form
-                    frm = FormBeaconDialog(
-                        self.db,
+                    form_dialog = FormBeaconDialog(
+                        self.database,
                         SQL_BEACONS["UNIQUE"],
                         fields,
-                        values
-                    )
-                    frm.show()
-                    frm_ret = frm.exec_()
-                    if bool(frm_ret):
+                        values)
+                    form_dialog.show()
+                    form_dialog_ret = form_dialog.exec_()
+                    if bool(form_dialog_ret):
                         # edit beacon in database
                         fields_old = []
                         fields_new = []
-                        values_old = []
-                        values_new = []
-                        for f in fields:
-                            if frm.get_values()[0][f.name] is not None:
-                                fields_old.append(f.name)
-                                values_old.append(frm.get_values()[0][f.name])
-                            fields_new.append(f.name)
-                            values_new.append(frm.get_values()[1][f.name])
-                        set = ", ".join(["{field} = %s".format(field = f) for f in fields_new])
-                        where = " AND ".join(["{field} = %s".format(field = f) for f in fields_old])
-                        self.db.query(
+                        old_values = []
+                        new_values = []
+                        for field in fields:
+                            if form_dialog.get_values()[0][field.name] \
+                                    is not None:
+                                fields_old.append(field.name)
+                                old_values.append(
+                                    form_dialog.get_values()[0][field.name])
+                            fields_new.append(field.name)
+                            new_values.append(
+                                form_dialog.get_values()[1][field.name])
+                        set = ", ".join(
+                            ["{field} = %s".format(field=field)
+                             for field in fields_new])
+                        where = " AND ".join(
+                            ["{field} = %s".format(field=field)
+                             for field in fields_old])
+                        self.database.query(
                             SQL_BEACONS["UPDATE"].format(
-                                set = set,
-                                where = where
-                            ), values_new + values_old
-                        )
-                for l in self.requiredLayers: l.layer.removeSelection()
+                                set=set,
+                                where=where),
+                            new_values + old_values)
+                for required_layer in self.required_layers:
+                    required_layer.layer.removeSelection()
 
-            elif mng.get_option() == 2: # delete existing beacon
+            elif manager_dialog.get_option() == 2:  # delete existing beacon
                 # select beacon
-                mode = Mode("REMOVER","REMOVE")
+                mode = Mode("REMOVER", "REMOVE")
                 query = SQL_BEACONS["SELECT"]
-                slc = SelectorDialog(
-                    self.db,
+                selector_dialog = SelectorDialog(
+                    self.database,
                     self.iface,
-                    self.requiredLayers[0],
+                    self.required_layers[0],
                     mode,
                     query,
-                    preserve = True
-                )
-                slc.show()
-                slc_ret = slc.exec_()
-                self.iface.mapCanvas().setMapTool(slc.tool)
-                if bool(slc_ret):
-                    featID = slc.get_feature_id()
+                    preserve=True)
+                selector_dialog.show()
+                selector_dialog_ret = selector_dialog.exec_()
+                self.iface.mapCanvas().setMapTool(selector_dialog.tool)
+                if bool(selector_dialog_ret):
+                    feat_id = selector_dialog.get_feature_id()
                     # check if defined by a bearing and distance
-                    if self.db.query(SQL_BEACONS["BEARDIST"], (featID,))[0][0]:
-                        QMessageBox.warning(None, "Bearing and Distance Definition", "Cannot delete beacon defined by distance and bearing via this tool")
-                        for l in self.requiredLayers: l.layer.removeSelection()
+                    if self.database.query(
+                            SQL_BEACONS["BEARDIST"],
+                            (feat_id,))[0][0]:
+                        QMessageBox.warning(
+                            None,
+                            "Bearing and Distance Definition",
+                            "Cannot delete beacon defined by distance "
+                            "and bearing via this tool")
+                        for required_layer in self.required_layers:
+                            required_layer.layer.removeSelection()
                         return
                     # delete beacon from database
-                    self.db.query(SQL_BEACONS["DELETE"], (featID,))
-                for l in self.requiredLayers: l.layer.removeSelection()
+                    self.database.query(SQL_BEACONS["DELETE"], (feat_id,))
+                for required_layer in self.required_layers:
+                    required_layer.layer.removeSelection()
 
 
 class ParcelManager():
 
-    def __init__(self, iface, db, requiredLayers):
+    def __init__(self, iface, database, required_layers):
         self.iface = iface
-        self.db = db
-        self.requiredLayers = requiredLayers
+        self.database = database
+        self.required_layers = required_layers
         self.run()
-
 
     def run(self):
         """ Main method
         """
         # display manager dialog
-        mng = ManagerDialog(self.requiredLayers[1])
-        mng.show()
-        mng_ret = mng.exec_()
-        if bool(mng_ret):
+        manager_dialog = ManagerDialog(self.required_layers[1])
+        manager_dialog.show()
+        manager_dialog_ret = manager_dialog.exec_()
+        if bool(manager_dialog_ret):
 
-            if mng.get_option() == 0: # create new parcel
+            if manager_dialog.get_option() == 0:  # create new parcel
                 while True:
                     # show parcel form
-                    autocomplete = [str(i[0]) for i in self.db.query(
-                        SQL_PARCELS["AUTOCOMPLETE"]
-                    )]
-                    frm = FormParcelDialog(
-                        self.db,
+                    auto_complete = [
+                        str(i[0]) for i in self.database.query(
+                            SQL_PARCELS["AUTOCOMPLETE"])]
+                    form_dialog = FormParcelDialog(
+                        self.database,
                         self.iface,
-                        self.requiredLayers,
+                        self.required_layers,
                         SQL_BEACONS,
                         SQL_PARCELS,
-                        autocomplete
-                    )
-                    frm.show()
-                    frm_ret = frm.exec_()
-                    self.iface.mapCanvas().setMapTool(frm.tool)
-                    if bool(frm_ret):
+                        auto_complete)
+                    form_dialog.show()
+                    form_dialog_ret = form_dialog.exec_()
+                    self.iface.mapCanvas().setMapTool(form_dialog.tool)
+                    if bool(form_dialog_ret):
                         # add parcel to database
                         points = []
-                        for i, beacon in enumerate(frm.get_values()[1]["sequence"]):
-                            points.append(
-                                (frm.get_values()[1]["parcel_id"], beacon, i))
-                        sql = self.db.queryPreview(
+                        for i, beacon in enumerate(
+                                form_dialog.get_values()[1]["sequence"]):
+                            points.append((
+                                form_dialog.get_values()[1]["parcel_id"],
+                                beacon,
+                                i))
+                        sql = self.database.queryPreview(
                                 SQL_PARCELS["INSERT_GENERAL"],
                                 data=points,
-                                multi_data=True
-                        )
-                        self.db.query(sql)
+                                multi_data=True)
+                        self.database.query(sql)
                         self.iface.mapCanvas().refresh()
                     else:
                         break
-                for l in self.requiredLayers: l.layer.removeSelection()
+                for required_layer in self.required_layers:
+                    required_layer.layer.removeSelection()
 
-            elif mng.get_option() == 1: # edit existing parcel
+            elif manager_dialog.get_option() == 1:  # edit existing parcel
                 # select parcel
-                mode = Mode("EDITOR","EDIT")
+                mode = Mode("EDITOR", "EDIT")
                 query = SQL_PARCELS["SELECT"]
-                slc = SelectorDialog(
-                    self.db,
+                selector_dialog = SelectorDialog(
+                    self.database,
                     self.iface,
-                    self.requiredLayers[1],
+                    self.required_layers[1],
                     mode,
                     query,
-                    preserve = True
-                )
-                slc.show()
-                slc_ret = slc.exec_()
-                self.iface.mapCanvas().setMapTool(slc.tool)
-                if bool(slc_ret):
+                    preserve=True)
+                selector_dialog.show()
+                selector_dialog_ret = selector_dialog.exec_()
+                self.iface.mapCanvas().setMapTool(selector_dialog.tool)
+                if bool(selector_dialog_ret):
                     # show parcel form
-                    autocomplete = [str(i[0]) for i in self.db.query(
-                        SQL_PARCELS["AUTOCOMPLETE"]
-                    )]
-                    data = (lambda t: {"parcel_id":t[0], "sequence":t[1]})(
-                        self.db.query(
-                            SQL_PARCELS["EDIT"], (slc.get_feature_id(),)
-                        )[0]
-                    )
-                    frm = FormParcelDialog(
-                        self.db,
+                    auto_complete = [
+                        str(i[0]) for i in self.database.query(
+                            SQL_PARCELS["AUTOCOMPLETE"])]
+                    data = (lambda t: {"parcel_id": t[0], "sequence": t[1]})(
+                        self.database.query(
+                            SQL_PARCELS["EDIT"],
+                            (selector_dialog.get_feature_id(),))[0])
+                    form_dialog = FormParcelDialog(
+                        self.database,
                         self.iface,
-                        self.requiredLayers,
+                        self.required_layers,
                         SQL_BEACONS,
                         SQL_PARCELS,
-                        autocomplete,
-                        data
-                    )
-                    frm.show()
-                    frm_ret = frm.exec_()
-                    self.iface.mapCanvas().setMapTool(frm.tool)
-                    if bool(frm_ret):
+                        auto_complete,
+                        data)
+                    form_dialog.show()
+                    form_dialog_ret = form_dialog.exec_()
+                    self.iface.mapCanvas().setMapTool(form_dialog.tool)
+                    if bool(form_dialog_ret):
                         # edit parcel in database
-                        self.db.query(
+                        self.database.query(
                             SQL_PARCELS["DELETE"],
-                            (frm.get_values()[0]["parcel_id"],)
-                        )
+                            (form_dialog.get_values()[0]["parcel_id"],))
                         points = []
-                        for i, beacon in enumerate(frm.get_values()[1]["sequence"]):
-                            points.append(
-                                (frm.get_values()[1]["parcel_id"], beacon, i))
-                        sql = self.db.queryPreview(
+                        for i, beacon in enumerate(
+                                form_dialog.get_values()[1]["sequence"]):
+                            points.append((
+                                form_dialog.get_values()[1]["parcel_id"],
+                                beacon,
+                                i))
+                        sql = self.database.queryPreview(
                                 SQL_PARCELS["INSERT_GENERAL"],
                                 data=points,
-                                multi_data=True
-                        )
-                        self.db.query(sql)
-                for l in self.requiredLayers: l.layer.removeSelection()
+                                multi_data=True)
+                        self.database.query(sql)
+                for required_layer in self.required_layers:
+                    required_layer.layer.removeSelection()
 
-            elif mng.get_option() == 2: # delete existing parcel
+            elif manager_dialog.get_option() == 2:  # delete existing parcel
                 # select parcel
-                mode = Mode("REMOVER","REMOVE")
+                mode = Mode("REMOVER", "REMOVE")
                 query = SQL_PARCELS["SELECT"]
-                slc = SelectorDialog(
-                    self.db,
+                selector_dialog = SelectorDialog(
+                    self.database,
                     self.iface,
-                    self.requiredLayers[1],
+                    self.required_layers[1],
                     mode,
                     query,
-                    preserve = True
-                )
-                slc.show()
-                slc_ret = slc.exec_()
-                self.iface.mapCanvas().setMapTool(slc.tool)
-                if bool(slc_ret):
+                    preserve=True)
+                selector_dialog.show()
+                selector_dialog_ret = selector_dialog.exec_()
+                self.iface.mapCanvas().setMapTool(selector_dialog.tool)
+                if bool(selector_dialog_ret):
                     # delete parcel from database
-                    featID = slc.get_feature_id()
-                    self.db.query(SQL_PARCELS["DELETE"], (self.db.query(
-                        SQL_PARCELS["SELECT"], (featID,)
-                    )[0][0],))
-                for l in self.requiredLayers: l.layer.removeSelection()
+                    feat_id = selector_dialog.get_feature_id()
+                    self.database.query(
+                        SQL_PARCELS["DELETE"],
+                        (self.database.query(
+                            SQL_PARCELS["SELECT"],
+                            (feat_id,))[0][0],))
+                for required_layer in self.required_layers:
+                    required_layer.layer.removeSelection()
 
 
 class BearDistManager():
 
-    def __init__(self, iface, db, requiredLayers):
+    def __init__(self, iface, database, required_layers):
         self.iface = iface
-        self.db = db
-        self.requiredLayers = requiredLayers
+        self.database = database
+        self.required_layers = required_layers
         self.run()
 
     def run(self):
         """ Main method
         """
-        dlg = BearingDistanceFormDialog(
-            self.db,
+        dialog = BearingDistanceFormDialog(
+            self.database,
             SQL_BEARDIST,
             SQL_BEACONS,
-            self.requiredLayers
-        )
-        dlg.show()
-        dlg_ret = dlg.exec_()
-        if bool(dlg_ret):
-            surveyPlan, referenceBeacon, beardistChain = dlg.get_return()
+            self.required_layers)
+        dialog.show()
+        dialog_ret = dialog.exec_()
+        if bool(dialog_ret):
+            survey_plan, reference_beacon, beardist_chain = dialog.get_return()
             # check whether survey plan is defined otherwise define it
-            if not self.db.query(
+            if not self.database.query(
                 SQL_BEARDIST["IS_SURVEYPLAN"],
-                (surveyPlan,)
-            )[0][0]:
-                self.db.query(
+                (survey_plan,))[0][0]:
+                self.database.query(
                     SQL_BEARDIST["INSERT_SURVEYPLAN"],
-                    (surveyPlan, referenceBeacon)
-                )
+                    (survey_plan, reference_beacon))
             # get list of existing links
-            beardistChainExisting = []
-            for index, link in enumerate(self.db.query(SQL_BEARDIST["EXIST_BEARDISTCHAINS"],(surveyPlan,))):
-                beardistChainExisting.append([list(link), "NULL", index])
+            existing_chain = []
+            for index, link in enumerate(
+                    self.database.query(
+                        SQL_BEARDIST["EXIST_BEARDISTCHAINS"],
+                        (survey_plan,))):
+                existing_chain.append([list(link), "NULL", index])
             # perform appropriate action for each link in the beardist chain
             new = []
             old = []
-            for link in beardistChain:
-                if link[2] is None: new.append(link)
-                else: old.append(link)
+            for link in beardist_chain:
+                if link[2] is None:
+                    new.append(link)
+                else:
+                    old.append(link)
             # sort out old links
-            tmp = list(beardistChainExisting)
-            for elink in beardistChainExisting:
-                for olink in old:
-                    if elink[2] == olink[2]:
-                        if olink[1] == "NULL":
-                            tmp.remove(elink)
-                            break;
-                        self.db.query(
+            temp = list(existing_chain)
+            for existing_link in existing_chain:
+                for old_link in old:
+                    if existing_link[2] == old_link[2]:
+                        if old_link[1] == "NULL":
+                            temp.remove(existing_link)
+                            break
+                        self.database.query(
                             SQL_BEARDIST["UPDATE_LINK"],
-                            [surveyPlan] + olink[0] + [olink[2]]
-                        )
-                        tmp.remove(elink)
-                        break;
-            beardistChainExisting = tmp
-            for elink in beardistChainExisting:
-                self.db.query(
+                            [survey_plan] + old_link[0] + [old_link[2]])
+                        temp.remove(existing_link)
+                        break
+            existing_chain = temp
+            for existing_link in existing_chain:
+                self.database.query(
                     SQL_BEARDIST["DELETE_LINK"],
-                    (elink[0][3],)
-                )
+                    (existing_link[0][3],))
             # sort out new links
-            for nlink in new:
-                self.db.query(
+            for new_link in new:
+                self.database.query(
                     SQL_BEARDIST["INSERT_LINK"],
-                    [surveyPlan] + nlink[0]
-                )
+                    [survey_plan] + new_link[0])

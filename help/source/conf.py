@@ -40,7 +40,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'sml_surveyor'
+project = u'SMLSurveyor'
 copyright = u'2012, AfriSpatial'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -178,7 +178,7 @@ htmlhelp_basename = 'templateclassdoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'sml_surveyor.tex', u'sml_surveyor Documentation',
+  ('index', 'SMLSurveyor.tex', u'SMLSurveyor Documentation',
    u'AfriSpatial', 'manual'),
 ]
 
@@ -211,6 +211,6 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'templateclass', u'sml_surveyor Documentation',
+    ('index', 'templateclass', u'SMLSurveyor Documentation',
      [u'AfriSpatial'], 1)
 ]
