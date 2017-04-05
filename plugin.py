@@ -84,7 +84,7 @@ class SMLSurveyor:
             'Parcel', 'Parcels', 'parcels', 'parcel_id', 'polygons'
         ))
 
-    def init_gui(self):
+    def initGui(self):
         """ Initialize gui
         """
         # create plugin toolbar
@@ -304,7 +304,7 @@ class BeaconManager():
             if manager_dialog.get_option() == 0:  # create new beacon
                 while True:
                     # get fields
-                    fields = self.database.getSchema(
+                    fields = self.database.get_schema(
                         self.required_layers[0].table, [
                         self.required_layers[0].geometry_column,
                         self.required_layers[0].primary_key
@@ -358,7 +358,7 @@ class BeaconManager():
                             required_layer.layer.removeSelection()
                         return
                     # get fields
-                    fields = self.database.getSchema(
+                    fields = self.database.get_schema(
                         self.required_layers[0].table, [
                         self.required_layers[0].geometry_column,
                         self.required_layers[0].primary_key
@@ -481,7 +481,7 @@ class ParcelManager():
                                 form_dialog.get_values()[1]["parcel_id"],
                                 beacon,
                                 i))
-                        sql = self.database.queryPreview(
+                        sql = self.database.preview_query(
                                 SQL_PARCELS["INSERT_GENERAL"],
                                 data=points,
                                 multi_data=True)
@@ -538,7 +538,7 @@ class ParcelManager():
                                 form_dialog.get_values()[1]["parcel_id"],
                                 beacon,
                                 i))
-                        sql = self.database.queryPreview(
+                        sql = self.database.preview_query(
                                 SQL_PARCELS["INSERT_GENERAL"],
                                 data=points,
                                 multi_data=True)

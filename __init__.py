@@ -25,23 +25,30 @@
 def name():
     return "SML Surveyor"
 
+
 def description():
     return "SML Surveyor Plugin"
+
 
 def version():
     return "Version 0.1"
 
+
 def icon():
     return "icon.png"
+
 
 def qgisMinimumVersion():
     return "2.0"
 
+
 def author():
     return "AfriSpatial"
 
+
 def email():
     return "robert@afrispatial.co.za"
+
 
 def classFactory(iface):
     # load SMLSurveyor class from file SMLSurveyor

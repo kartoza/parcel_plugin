@@ -20,7 +20,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.gui import *
 from qgis.core import *
-from qgisToolbox import featureSelector
+from qgisToolbox import FeatureSelector
 from PyQt4Widgets import XQPushButton, XQDialogButtonBox
 from database import *
 
@@ -170,10 +170,10 @@ class SelectorDialog(QDialog):
         self.confirmed = False
         self.feat_id = None
         # initialize selector tool
-        self.selector = featureSelector(
+        self.selector = FeatureSelector(
             iface, required_layer.layer, True, self)
         # save qgis tool
-        self.tool = self.selector.parentTool
+        self.tool = self.selector.parent_tool
 
     def get_feature_id(self):
         return self.feat_id
@@ -215,7 +215,7 @@ class SelectorDialog(QDialog):
         """ Notify the dialog of a feature selection and disable selecting
         """
         # disable selector tool
-        self.selector.disableCapturing()
+        self.selector.disable_capturing()
         # update dialog
         self.feat_id = selected[0]
         self.lnedt_featID.setText(
@@ -232,9 +232,9 @@ class SelectorDialog(QDialog):
         self.lnedt_featID.setText("")
         self.feat_id = None
         # clear selector tool selection
-        self.selector.clearSelection()
+        self.selector.clear_selection()
         # enable selector tool
-        self.selector.enableCapturing()
+        self.selector.enable_capturing()
 
     def confirm(self, state):
         """ Confirm that the selected feature is correct
@@ -638,10 +638,10 @@ class FormParcelDialog(QDialog):
         self.sequence = []
         self.new_accepted = False
         # initialize selector tool
-        self.selector = featureSelector(
+        self.selector = FeatureSelector(
             iface, required_layers[0].layer, False, self)
         # save qgis tool
-        self.tool = self.selector.parentTool
+        self.tool = self.selector.parent_tool
         # populate form if values are given
         if bool(data):
             self.populate_form(data)
@@ -778,7 +778,7 @@ class FormParcelDialog(QDialog):
         # disable self
         self.setEnabled(False)
         # get fields
-        fields = self.database.getSchema(
+        fields = self.database.get_schema(
             self.layers[0].table, [
             self.layers[0].geometry_column,
             self.layers[0].primary_key
@@ -801,7 +801,7 @@ class FormParcelDialog(QDialog):
                 [new_values[k] for k in sorted(new_values.keys())])[0][0]
             self.iface.mapCanvas().refresh()
             self.highlight_feature(self.layers[0].layer, id)
-            self.selector.appendSelection(id)
+            self.selector.append_selection(id)
         # enable self
         self.setEnabled(True)
 
@@ -809,7 +809,7 @@ class FormParcelDialog(QDialog):
         """ Start sequence capturing
         """
         # enable capturing
-        self.selector.enableCapturing()
+        self.selector.enable_capturing()
         # perform button stuffs
         self.start_pushbutton.setEnabled(False)
         self.reset_pushbutton.setEnabled(False)
@@ -820,7 +820,7 @@ class FormParcelDialog(QDialog):
         """ Stop sequence capturing
         """
         # disable capturing
-        self.selector.disableCapturing()
+        self.selector.disable_capturing()
         # perform button stuffs
         self.stop_pushbutton.setEnabled(False)
         self.new_pushbutton.setEnabled(False)
@@ -839,7 +839,7 @@ class FormParcelDialog(QDialog):
         """ Reset captured sequence
         """
         # clear selection
-        self.selector.clearSelection()
+        self.selector.clear_selection()
         self.sequence = []
         # clear sequence
         self.sequence_listwidget.clear()
@@ -1141,7 +1141,7 @@ class BearingDistanceFormDialog(QDialog):
                 column_index = self.database.query(
                     self.SQL_BEARDIST["INDEX_REFERENCEBEACON"])[0][0]
                 # get fields
-                fields = self.database.getSchema(
+                fields = self.database.get_schema(
                     self.layers[0].table, [
                         self.layers[0].geometry_column,
                         self.layers[0].primary_key])
