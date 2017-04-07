@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/kartoza/parcel_plugin.png?label=ready&title=Ready)](https://waffle.io/kartoza/parcel_plugin)
 # CoGo plugin for QGIS
 
 First developed by Afrispatial cc in 2012
