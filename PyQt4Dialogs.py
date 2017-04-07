@@ -44,7 +44,7 @@ class DatabaseConnectionDialog(QDialog):
             None, Qt.WindowStaysOnTopHint)
         # initialize ui
         self.connection = None
-        self.setupUi()
+        self.setup_ui()
         self.populate_database_choices()
 
     def get_database_connection(self):
@@ -76,7 +76,7 @@ class DatabaseConnectionDialog(QDialog):
             self.connection = connection
             self.accept()
 
-    def setupUi(self):
+    def setup_ui(self):
         """ Initialize ui
         """
         # define ui widgets
@@ -160,7 +160,7 @@ class SelectorDialog(QDialog):
         # initialize QDialog class
         super(SelectorDialog, self).__init__(parent, Qt.WindowStaysOnTopHint)
         # initialize ui
-        self.setupUi(required_layer, mode)
+        self.setup_ui(required_layer, mode)
         self.database = database
         self.iface = iface
         self.layer = required_layer
@@ -242,7 +242,7 @@ class SelectorDialog(QDialog):
         self.pshbtn_re.setEnabled(not bool(state))
         self.confirmed = bool(state)
 
-    def setupUi(self, layer, mode):
+    def setup_ui(self, layer, mode):
         """ Initialize ui
         """
         # define ui widgets
@@ -322,7 +322,7 @@ class ManagerDialog(QDialog):
 
     def __init__(self, required_layer, parent=None):
         super(ManagerDialog, self).__init__(parent, Qt.WindowStaysOnTopHint)
-        self.setupUi(required_layer)
+        self.setup_ui(required_layer)
         self.layer = required_layer
         self.option = None
 
@@ -352,7 +352,7 @@ class ManagerDialog(QDialog):
             # reject dialog
             self.reject()
 
-    def setupUi(self, layer):
+    def setup_ui(self, layer):
         """ Initialize ui
         """
         # define ui widgets
@@ -425,7 +425,7 @@ class FormBeaconDialog(QDialog):
         # initialize QDialog class
         super(FormBeaconDialog, self).__init__(parent, Qt.WindowStaysOnTopHint)
         # initialize ui
-        self.setupUi(fields)
+        self.setup_ui(fields)
         # initialize instance variables
         self.db = database
         self.query = query
@@ -527,7 +527,7 @@ class FormBeaconDialog(QDialog):
             # reject dialog
             self.reject()
 
-    def setupUi(self, fields):
+    def setup_ui(self, fields):
         """ Initialize ui
         """
         # define ui widgets
@@ -847,7 +847,7 @@ class FormParcelDialog(QDialog):
         self.reset_pushbutton.setEnabled(False)
         self.start_pushbutton.setEnabled(True)
 
-    def spacer_item_1(self, autocomplete):
+    def setup_ui(self, autocomplete):
         """ Initialize ui
         """
         # define ui widgets
