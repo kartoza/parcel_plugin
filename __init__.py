@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 /***************************************************************************
- sml_surveyor
+ SMLSurveyor
                                  A QGIS plugin
  SML Surveyor Plugin
                              -------------------
@@ -25,25 +25,32 @@
 def name():
     return "SML Surveyor"
 
+
 def description():
     return "SML Surveyor Plugin"
+
 
 def version():
     return "Version 0.1"
 
+
 def icon():
     return "icon.png"
+
 
 def qgisMinimumVersion():
     return "2.0"
 
+
 def author():
     return "AfriSpatial"
+
 
 def email():
     return "robert@afrispatial.co.za"
 
+
 def classFactory(iface):
-    # load sml_surveyor class from file sml_surveyor
-    from plugin import sml_surveyor
-    return sml_surveyor(iface)
+    # load SMLSurveyor class from file SMLSurveyor
+    from plugin import SMLSurveyor
+    return SMLSurveyor(iface)
