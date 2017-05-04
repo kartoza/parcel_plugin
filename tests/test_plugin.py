@@ -3,9 +3,9 @@
 
 import unittest
 from plugin import SMLSurveyor
-from tests.utilities import get_qgis_app
+from tests.utilities import qgis_iface
 
-QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
+IFACE = qgis_iface()
 
 
 class TestPlugin(unittest.TestCase):

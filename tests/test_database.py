@@ -27,7 +27,7 @@ class TestDatabase(unittest.TestCase):
                 PASSWORD=parameters["PASSWORD"],
                 PORT=parameters["PORT"]))
 
-        # connect to postgesql instance
+        # connect to postgresql instance
 
         connection_manager = Manager(parameters)
         connection_manager.connect(parameters)
