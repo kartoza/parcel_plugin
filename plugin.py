@@ -173,6 +173,7 @@ class SMLSurveyor:
                 settings_plugin.setValue("DatabaseConnection", connection)
         # validate database connection
         if bool(connection):
+            db_service = settings_postgis.value(connection + '/service')
             db_host = settings_postgis.value(connection + '/host')
             db_port = settings_postgis.value(connection + '/port')
             db_name = settings_postgis.value(connection + '/database')
@@ -191,7 +192,12 @@ class SMLSurveyor:
             if db_username and db_password:
                 for i in range(max_attempts):
                     error_message = self.connect_to_db(
-                        db_host, db_port, db_name, db_username, db_password)
+                        db_service,
+                        db_host,
+                        db_port,
+                        db_name,
+                        db_username,
+                        db_password)
                     if error_message:
                         ok, db_username, db_password = (
                             QgsCredentials.instance().get(
@@ -221,11 +227,12 @@ class SMLSurveyor:
         settings_plugin.endGroup()
         settings_postgis.endGroup()
 
-    def connect_to_db(self, host, port, name, username, password):
+    def connect_to_db(self, service, host, port, name, username, password):
         username.replace(" ", "")
         password.replace(" ", "")
         try:
             self.database = database.Manager({
+                "SERVICE": service,
                 "HOST": host,
                 "NAME": name,
                 "PORT": port,
