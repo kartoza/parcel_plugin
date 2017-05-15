@@ -38,7 +38,7 @@ def _from_utf8(s):
 class NewDatabaseConnectionDialog(QDialog, UI_CLASS):
     """Dialog implementation class for new db connection."""
 
-    def __init__(self):
+    def __init__(self, parent):
         """Constructor"""
 
         ssl_disable = {
@@ -69,6 +69,8 @@ class NewDatabaseConnectionDialog(QDialog, UI_CLASS):
         QDialog.__init__(self, None)
         self.setupUi(self)
 
+        self.parent = parent
+
         # add ssl mode option
         self.cbxSSLmode.addItem(
             ssl_disable['name'], ssl_disable['value'])
@@ -93,7 +95,7 @@ class NewDatabaseConnectionDialog(QDialog, UI_CLASS):
         settings.setValue(base_key + "selected", self.txtName.text())
         auth_config = self.auth_config.configId()
 
-        if not auth_config and self.chkStorePassword:
+        if not auth_config and self.chkStorePassword.isChecked():
             message = ("WARNING: You have opted to save your password. "
                        "It will be stored in unsecured plain text in your "
                        "project files and in your home directory "
@@ -159,6 +161,12 @@ class NewDatabaseConnectionDialog(QDialog, UI_CLASS):
             settings.setValue(base_key + "/savePassword", "false")
 
         settings.remove(base_key + "/save")
+
+        self.parent.populate_database_choices()
+        new_index = self.parent.cmbbx_conn.findText(
+            self.txtName.text(), Qt.MatchExactly)
+        if new_index >= 0:
+            self.parent.cmbbx_conn.setCurrentIndex(new_index)
 
         QDialog.accept(self)
 
@@ -283,7 +291,7 @@ class DatabaseConnectionDialog(QDialog):
         QMetaObject.connectSlotsByName(self)
 
     def create_new_connection(self):
-        dialog = NewDatabaseConnectionDialog()
+        dialog = NewDatabaseConnectionDialog(self)
         dialog.exec_()
 
 
