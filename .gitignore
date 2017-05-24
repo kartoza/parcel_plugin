@@ -2,3 +2,4 @@
 *.sw*
 database_params.py
 *~
+.idea/

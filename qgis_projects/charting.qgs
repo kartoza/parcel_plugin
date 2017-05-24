@@ -137,7 +137,7 @@
     <projectlayers layercount="10">
         <maplayer minimumScale="0" maximumScale="1e+08" geometry="No geometry" type="vector" hasScaleBasedVisibilityFlag="0">
             <id>allocation_cat20130211140747501</id>
-            <datasource>service='sml' sslmode=disable key='allocation_cat' table="public"."allocation_cat" sql=</datasource>
+            <datasource>dbname='onemapxaf' host=smlogis01 port=5432 user='gavin' password='s0sten1ble' sslmode=disable key='allocation_cat' table="public"."allocation_cat" sql=</datasource>
             <title></title>
             <abstract></abstract>
             <keywordList>
@@ -180,7 +180,7 @@
         </maplayer>
         <maplayer minimumScale="0" maximumScale="10000" simplifyDrawingHints="1" minLabelScale="1" maxLabelScale="1e+08" simplifyDrawingTol="1" geometry="Point" simplifyMaxScale="1" type="vector" hasScaleBasedVisibilityFlag="1" simplifyLocal="1" scaleBasedLabelVisibilityFlag="0">
             <id>beacons20130221110745981</id>
-            <datasource>service='sml' sslmode=disable key='gid' srid=26331 type=POINT table="public"."beacons" (the_geom) sql=</datasource>
+            <datasource>dbname='onemapxaf' host=smlogis01 port=5432 user='gavin' password='s0sten1ble' sslmode=disable key='gid' srid=26331 type=POINT table="public"."beacons" (the_geom) sql=</datasource>
             <title></title>
             <abstract></abstract>
             <keywordList>
@@ -357,7 +357,7 @@
         </maplayer>
         <maplayer minimumScale="0" maximumScale="1e+08" geometry="No geometry" type="vector" hasScaleBasedVisibilityFlag="0">
             <id>instrument_cat20140917105541821</id>
-            <datasource>service='sml' sslmode=disable key='instrument_cat' table="public"."instrument_cat" sql=</datasource>
+            <datasource>dbname='onemapxaf' host=smlogis01 port=5432 user='gavin' password='s0sten1ble' sslmode=disable key='instrument_cat' table="public"."instrument_cat" sql=</datasource>
             <title></title>
             <abstract></abstract>
             <keywordList>
@@ -400,7 +400,7 @@
         </maplayer>
         <maplayer minimumScale="0" maximumScale="1e+08" geometry="No geometry" type="vector" hasScaleBasedVisibilityFlag="0">
             <id>local_govt20130211140747449</id>
-            <datasource>service='sml' sslmode=disable key='id' table="public"."local_govt" sql=</datasource>
+            <datasource>dbname='onemapxaf' host=smlogis01 port=5432 user='gavin' password='s0sten1ble' sslmode=disable key='id' table="public"."local_govt" sql=</datasource>
             <title></title>
             <abstract></abstract>
             <keywordList>
@@ -443,7 +443,7 @@
         </maplayer>
         <maplayer minimumScale="0" maximumScale="1e+08" geometry="No geometry" type="vector" hasScaleBasedVisibilityFlag="0">
             <id>parcel_lookup20130211140747492</id>
-            <datasource>service='sml' sslmode=disable key='parcel_id' table="public"."parcel_lookup" sql=</datasource>
+            <datasource>dbname='onemapxaf' host=smlogis01 port=5432 user='gavin' password='s0sten1ble' sslmode=disable key='parcel_id' table="public"."parcel_lookup" sql=</datasource>
             <title></title>
             <abstract></abstract>
             <keywordList>
@@ -522,7 +522,7 @@
         </maplayer>
         <maplayer minimumScale="-4.65661e-10" maximumScale="1e+08" simplifyDrawingHints="1" minLabelScale="1" maxLabelScale="1e+08" simplifyDrawingTol="1" geometry="Polygon" simplifyMaxScale="1" type="vector" hasScaleBasedVisibilityFlag="0" simplifyLocal="1" scaleBasedLabelVisibilityFlag="0">
             <id>parcels20130222144011239</id>
-            <datasource>service='sml' sslmode=disable key='parcel_id' srid=26331 type=POLYGON table="public"."parcels" (the_geom) sql=</datasource>
+            <datasource>dbname='onemapxaf' host=smlogis01 port=5432 user='gavin' password='s0sten1ble' sslmode=disable key='parcel_id' srid=26331 type=POLYGON table="public"."parcels" (the_geom) sql=</datasource>
             <title></title>
             <abstract></abstract>
             <keywordList>
@@ -769,7 +769,7 @@
         </maplayer>
         <maplayer minimumScale="0" maximumScale="1e+08" geometry="No geometry" type="vector" hasScaleBasedVisibilityFlag="0">
             <id>prop_types20130211140747471</id>
-            <datasource>service='sml' sslmode=disable key='id' table="public"."prop_types" sql=</datasource>
+            <datasource>dbname='onemapxaf' host=smlogis01 port=5432 user='gavin' password='s0sten1ble' sslmode=disable key='id' table="public"."prop_types" sql=</datasource>
             <title></title>
             <abstract></abstract>
             <keywordList>
@@ -815,7 +815,7 @@
         </maplayer>
         <maplayer minimumScale="0" maximumScale="1e+08" geometry="No geometry" type="vector" hasScaleBasedVisibilityFlag="0">
             <id>schemes20130211140747478</id>
-            <datasource>service='sml' sslmode=disable key='id' table="public"."schemes" sql=</datasource>
+            <datasource>dbname='onemapxaf' host=smlogis01 port=5432 user='gavin' password='s0sten1ble' sslmode=disable key='id' table="public"."schemes" sql=</datasource>
             <title></title>
             <abstract></abstract>
             <keywordList>
@@ -858,7 +858,7 @@
         </maplayer>
         <maplayer minimumScale="0" maximumScale="1e+08" geometry="No geometry" type="vector" hasScaleBasedVisibilityFlag="0">
             <id>survey20130211140747485</id>
-            <datasource>service='sml' sslmode=disable key='id' table="public"."survey" sql=</datasource>
+            <datasource>dbname='onemapxaf' host=smlogis01 port=5432 user='gavin' password='s0sten1ble' sslmode=disable key='id' table="public"."survey" sql=</datasource>
             <title></title>
             <abstract></abstract>
             <keywordList>
@@ -910,7 +910,7 @@
         </maplayer>
         <maplayer minimumScale="-4.65661e-10" maximumScale="1e+08" geometry="No geometry" type="vector" hasScaleBasedVisibilityFlag="0">
             <id>transactions20140917103944610</id>
-            <datasource>service='sml' sslmode=disable key='id' table="public"."transactions" sql=</datasource>
+            <datasource>dbname='onemapxaf' host=smlogis01 port=5432 user='gavin' password='s0sten1ble' sslmode=disable key='id' table="public"."transactions" sql=</datasource>
             <title></title>
             <abstract></abstract>
             <keywordList>
