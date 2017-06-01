@@ -146,14 +146,14 @@ class NewDatabaseConnectionDialog(QDialog, UI_CLASS):
             base_key + "/estimatedMetadata",
             self.cb_useEstimatedMetadata.isChecked())
 
-        if self.chkStoreUsername.isChecked() and not self.auth_config:
+        if self.chkStoreUsername.isChecked():
             settings.setValue(base_key + "/username", self.txtUsername.text())
             settings.setValue(base_key + "/saveUsername", "true")
         else:
             settings.setValue(base_key + "/username", "")
             settings.setValue(base_key + "/saveUsername", "false")
 
-        if self.chkStorePassword.isChecked() and not self.auth_config:
+        if self.chkStorePassword.isChecked():
             settings.setValue(base_key + "/password", self.txtPassword.text())
             settings.setValue(base_key + "/savePassword", "true")
         else:
