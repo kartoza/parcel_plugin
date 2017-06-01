@@ -220,7 +220,12 @@ class SMLSurveyor:
                     if not ok:
                         break
                     error_message = self.connect_to_db(
-                        db_host, db_port, db_name, db_username, db_password)
+                        db_service,
+                        db_host,
+                        db_port,
+                        db_name,
+                        db_username,
+                        db_password)
                     if not error_message:
                         break
 
