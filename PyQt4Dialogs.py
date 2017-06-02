@@ -358,7 +358,7 @@ class ManagerDialog(QDialog):
         # define ui widgets
         self.setObjectName(_from_utf8("ManagerDialog"))
         self.setCursor(QCursor(Qt.ArrowCursor))
-        self.setModal(True)
+        self.setModal(False)
         self.mainlyt = QGridLayout(self)
         self.mainlyt.setSizeConstraint(QLayout.SetFixedSize)
         self.mainlyt.setObjectName(_from_utf8("mainlyt"))
@@ -756,7 +756,8 @@ class FormParcelDialog(QDialog):
             self.new_values["parcel_id"] = parcel_id
             # save sequence
             self.new_values["sequence"] = self.sequence
-            # reset qgis tool
+            # refresh canvas and reset qgis tool
+            self.iface.mapCanvas().refresh()
             self.iface.mapCanvas().setMapTool(self.tool)
             # remove selection
             for layer in self.layers:
