@@ -32,6 +32,7 @@ class Manager:
     def __init__(self, parameters):
         # test db settings
         self.parameters = parameters
+        self.connection_name = parameters.get("CONNECTION")
         self.connect(parameters)
         self.disconnect()
 
