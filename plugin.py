@@ -242,6 +242,9 @@ class SMLSurveyor:
                     for layer in self.iface.legendInterface().layers():
                         if required_layer.name_plural == layer.name():
                             required_layer.layer = layer
+                            self.iface.legendInterface().setLayerVisible(
+                                layer, True)
+                    self.iface.zoomToActiveLayer()
 
     def manage_beacons(self):
         """ Portal which enables the management of beacons
