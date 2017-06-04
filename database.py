@@ -45,7 +45,10 @@ class Manager:
                 if parameters.get("SERVICE"):
                     self.connection = psycopg2.connect(
                         "service='{SERVICE}'".format(
-                            SERVICE=parameters["SERVICE"]))
+                            SERVICE=parameters["SERVICE"],
+                            USER=parameters["USER"],
+                            PASSWORD=parameters["PASSWORD"]
+                        ))
                 else:
                     self.connection = psycopg2.connect(
                         "host='{HOST}' dbname='{NAME}' user='{USER}' "
