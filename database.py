@@ -32,6 +32,7 @@ class Manager:
     def __init__(self, parameters):
         # test db settings
         self.parameters = parameters
+        self.connection_name = parameters.get("CONNECTION")
         self.connect(parameters)
         self.disconnect()
 
@@ -41,15 +42,23 @@ class Manager:
         try:
             # check if connection object exist
             if not hasattr(self, 'conn') or self.connection is None:
-                self.connection = psycopg2.connect(
-                    "host='{HOST}' dbname='{NAME}' user='{USER}' "
-                    "password='{PASSWORD}' port='{PORT}'".format(
-                        HOST=parameters["HOST"],
-                        NAME=parameters["NAME"],
-                        USER=parameters["USER"],
-                        PASSWORD=parameters["PASSWORD"],
-                        PORT=parameters["PORT"]))
-            # check if cursor objet exists
+                if parameters.get("SERVICE"):
+                    self.connection = psycopg2.connect(
+                        "service='{SERVICE}'".format(
+                            SERVICE=parameters["SERVICE"],
+                            USER=parameters["USER"],
+                            PASSWORD=parameters["PASSWORD"]
+                        ))
+                else:
+                    self.connection = psycopg2.connect(
+                        "host='{HOST}' dbname='{NAME}' user='{USER}' "
+                        "password='{PASSWORD}' port='{PORT}'".format(
+                            HOST=parameters["HOST"],
+                            NAME=parameters["NAME"],
+                            USER=parameters["USER"],
+                            PASSWORD=parameters["PASSWORD"],
+                            PORT=parameters["PORT"]))
+            # check if cursor object exists
             if not hasattr(self, 'cursor') or self.cursor is None:
                 self.cursor = self.connection.cursor()
         except Exception as e:

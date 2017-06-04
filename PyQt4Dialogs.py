@@ -23,6 +23,9 @@ from qgis.core import *
 from qgisToolbox import FeatureSelector
 from PyQt4Widgets import XQPushButton, XQDialogButtonBox
 from database import *
+from utilities import images_path, get_ui_class
+
+UI_CLASS = get_ui_class("ui_pgnewconnection.ui")
 
 
 def _from_utf8(s):
@@ -30,6 +33,142 @@ def _from_utf8(s):
 
 # All dialogs using selector tool have a captured function
 # All dialogs have a get_return function
+
+
+class NewDatabaseConnectionDialog(QDialog, UI_CLASS):
+    """Dialog implementation class for new db connection."""
+
+    def __init__(self, parent):
+        """Constructor"""
+
+        ssl_disable = {
+            'name': 'disable',
+            'value': 0
+        }
+        ssl_allow = {
+            'name': 'allow',
+            'value': 1
+        }
+        ssl_prefer = {
+            'name': 'prefer',
+            'value': 2
+        }
+        ssl_require = {
+            'name': 'require',
+            'value': 3
+        }
+        ssl_verify_ca = {
+            'name': 'verify_ca',
+            'value': 4
+        }
+        ssl_verify_full = {
+            'name': 'verify_full',
+            'value': 5
+        }
+
+        QDialog.__init__(self, None)
+        self.setupUi(self)
+
+        self.parent = parent
+
+        # add ssl mode option
+        self.cbxSSLmode.addItem(
+            ssl_disable['name'], ssl_disable['value'])
+        self.cbxSSLmode.addItem(
+            ssl_allow['name'], ssl_allow['value'])
+        self.cbxSSLmode.addItem(
+            ssl_prefer['name'], ssl_prefer['value'])
+        self.cbxSSLmode.addItem(
+            ssl_require['name'], ssl_require['value'])
+        self.cbxSSLmode.addItem(
+            ssl_verify_ca['name'], ssl_verify_ca['value'])
+        self.cbxSSLmode.addItem(
+            ssl_verify_full['name'], ssl_verify_full['value'])
+
+        self.auth_config = QgsAuthConfigSelect(self, "postgres")
+        self.tabAuthentication.insertTab(1, self.auth_config, "Configurations")
+
+    def accept(self):
+
+        settings = QSettings()
+        base_key = "/PostgreSQL/connections/"
+        settings.setValue(base_key + "selected", self.txtName.text())
+        auth_config = self.auth_config.configId()
+
+        if not auth_config and self.chkStorePassword.isChecked():
+            message = ("WARNING: You have opted to save your password. "
+                       "It will be stored in unsecured plain text in your "
+                       "project files and in your home directory "
+                       "(Unix-like OS) or user profile (Windows). "
+                       "If you want to avoid this, press Cancel and "
+                       "either:\n\na) Don't save a password in the connection "
+                       "settings — it will be requested interactively when "
+                       "needed;\nb) Use the Configuration tab to add your "
+                       "credentials in an HTTP Basic Authentication method "
+                       "and store them in an encrypted database.")
+            answer = QMessageBox.question(self,
+                                          "Saving passwords",
+                                          message,
+                                          QMessageBox.Ok | QMessageBox.Cancel)
+            if answer == QMessageBox.Cancel:
+                return
+
+        if settings.contains(base_key + self.txtName.text() + "/service") or \
+                settings.contains(base_key + self.txtName.text() + "/host"):
+            message = ("Should the existing connection %s be overwritten?")
+            answer = QMessageBox.question(self,
+                                          "Saving connection",
+                                          message % (self.txtName.text()),
+                                          QMessageBox.Ok | QMessageBox.Cancel)
+            if answer == QMessageBox.Cancel:
+                return
+
+        base_key += self.txtName.text()
+        settings.setValue(base_key + "/service", self.txtService.text())
+        settings.setValue(base_key + "/host", self.txtHost.text())
+        settings.setValue(base_key + "/port", self.txtPort.text())
+        settings.setValue(base_key + "/database", self.txtDatabase.text())
+        settings.setValue(base_key + "/authcfg", self.auth_config.configId())
+        settings.setValue(
+            base_key + "/publicOnly", self.cb_publicSchemaOnly.isChecked())
+        settings.setValue(
+            base_key + "/geometryColumnsOnly",
+            self.cb_geometryColumnsOnly.isChecked())
+        settings.setValue(
+            base_key + "/dontResolveType", self.cb_dontResolveType.isChecked())
+        settings.setValue(
+            base_key + "/allowGeometrylessTables",
+            self.cb_allowGeometrylessTables.isChecked())
+        settings.setValue(
+            base_key + "/sslmode",
+            self.cbxSSLmode.itemData(self.cbxSSLmode.currentIndex()))
+        settings.setValue(
+            base_key + "/estimatedMetadata",
+            self.cb_useEstimatedMetadata.isChecked())
+
+        if self.chkStoreUsername.isChecked():
+            settings.setValue(base_key + "/username", self.txtUsername.text())
+            settings.setValue(base_key + "/saveUsername", "true")
+        else:
+            settings.setValue(base_key + "/username", "")
+            settings.setValue(base_key + "/saveUsername", "false")
+
+        if self.chkStorePassword.isChecked():
+            settings.setValue(base_key + "/password", self.txtPassword.text())
+            settings.setValue(base_key + "/savePassword", "true")
+        else:
+            settings.setValue(base_key + "/password", "")
+            settings.setValue(base_key + "/savePassword", "false")
+
+        settings.remove(base_key + "/save")
+
+        self.parent.populate_database_choices()
+        new_index = self.parent.cmbbx_conn.findText(
+            self.txtName.text(), Qt.MatchExactly)
+        if new_index >= 0:
+            self.parent.cmbbx_conn.setCurrentIndex(new_index)
+
+        QDialog.accept(self)
 
 
 class DatabaseConnectionDialog(QDialog):
@@ -53,6 +192,7 @@ class DatabaseConnectionDialog(QDialog):
     def populate_database_choices(self):
         """ Populate database connection choices
         """
+        self.cmbbx_conn.clear()
         settings = QSettings()
         settings.beginGroup('PostgreSQL/connections')
         self.cmbbx_conn.addItem(_from_utf8(""))
@@ -101,10 +241,22 @@ class DatabaseConnectionDialog(QDialog):
         self.cmbbx_conn.setObjectName(_from_utf8("cmbbx_conn"))
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.cmbbx_conn)
         self.verticalLayout.addLayout(self.formLayout)
-        self.lbl_aside = QLabel(self)
-        self.lbl_aside.setWordWrap(True)
-        self.lbl_aside.setObjectName(_from_utf8("lbl_aside"))
-        self.verticalLayout.addWidget(self.lbl_aside)
+        self.horizontalLayout = QHBoxLayout()
+        self.btn_new_conn = QPushButton("")
+        self.btn_new_conn.setObjectName(_from_utf8("new_conn"))
+        self.btn_new_conn.setMaximumSize(32, 32)
+        self.btn_new_conn.setIcon(QIcon(images_path("icons", "add.png")))
+        self.btn_refresh_conn = QPushButton("")
+        self.btn_refresh_conn.setObjectName(_from_utf8("refresh_conn"))
+        self.btn_refresh_conn.setMaximumSize(32, 32)
+        self.btn_refresh_conn.setIcon(QIcon(images_path("icons", "refresh.png")))
+        self.horizontalLayout.addWidget(self.btn_new_conn)
+        self.horizontalLayout.addWidget(self.btn_refresh_conn)
+        self.horizontalLayout.setAlignment(Qt.AlignRight)
+        self.formLayout.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+        self.formLayout.setLayout(1, QFormLayout.FieldRole, self.horizontalLayout)
+        self.verticalLayout.addSpacerItem(QSpacerItem(50, 10))
         self.btnbx_options = XQDialogButtonBox(self)
         self.btnbx_options.setOrientation(Qt.Horizontal)
         self.btnbx_options.setStandardButtons(
@@ -124,22 +276,23 @@ class DatabaseConnectionDialog(QDialog):
             "Connection: ",
             None
         ))
-        self.lbl_aside.setText(QApplication.translate(
-            "DatabaseConnectionDialog",
-            "*If your database connection cannot be found above "
-            "then please define it through the PostGIS Connection Manager.",
-            None
-        ))
         self.lbl_instr.setText(QApplication.translate(
             "DatabaseConnectionDialog",
             "A database connection has not yet been selected or "
-            "is no longer valid. Please select a database connection.",
+            "is no longer valid. Please select a database connection or "
+            "define a new connection.",
             None
         ))
         # connect ui widgets
         self.btnbx_options.accepted.connect(self.test_database_connection)
         self.btnbx_options.rejected.connect(self.reject)
+        self.btn_new_conn.clicked.connect(self.create_new_connection)
+        self.btn_refresh_conn.clicked.connect(self.populate_database_choices)
         QMetaObject.connectSlotsByName(self)
+
+    def create_new_connection(self):
+        dialog = NewDatabaseConnectionDialog(self)
+        dialog.exec_()
 
 
 class SelectorDialog(QDialog):

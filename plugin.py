@@ -72,6 +72,7 @@ class SMLSurveyor:
         # get plugin directory
         self.plugin_dir = os.path.dirname(os.path.realpath(__file__))
         self.uri = None
+        self.connection = None
         self.database = None
         self.datetime = datetime.now()
         self.required_layers = []
@@ -107,6 +108,17 @@ class SMLSurveyor:
         # create plugin toolbar
         self.plugin_toolbar = QToolBar(metadata.name())
         self.plugin_toolbar.setObjectName(metadata.name())
+        # create Database Selection button
+        self.select_database_action = QAction(
+            QIcon(os.path.join(self.plugin_dir, "images", "database.png")),
+            "Select Database Connection",
+            self.iface.mainWindow())
+        self.select_database_action.setWhatsThis(
+            "Select database connection")
+        self.select_database_action.setStatusTip(
+            "Select database connection")
+        self.select_database_action.triggered.connect(
+            self.manage_database_connection)
         # create Beardist button
         self.bearing_distance_action = QAction(
             QIcon(os.path.join(self.plugin_dir, "images", "beardist.png")),
@@ -135,6 +147,7 @@ class SMLSurveyor:
         self.parcels_action.setStatusTip("Manage parcels")
         self.parcels_action.triggered.connect(self.manage_parcels)
         # populate plugin toolbar
+        self.plugin_toolbar.addAction(self.select_database_action)
         self.plugin_toolbar.addAction(self.bearing_distance_action)
         self.plugin_toolbar.addAction(self.beacons_action)
         self.plugin_toolbar.addAction(self.parcels_action)
@@ -149,7 +162,7 @@ class SMLSurveyor:
             self.iface.mainWindow().removeToolBar(self.plugin_toolbar)
             self.plugin_toolbar.hide()
 
-    def set_database_connection(self):
+    def set_database_connection(self, connection=None):
         """ Create a database connection
         """
         # fetch settings
@@ -157,27 +170,30 @@ class SMLSurveyor:
         settings_postgis = QSettings()
         settings_plugin.beginGroup(metadata.name().replace(" ", "_"))
         settings_postgis.beginGroup('PostgreSQL/connections')
-        # fetch pre-chosen database connection
-        connection = settings_plugin.value("DatabaseConnection", None)
+        self.connection = connection
+        if not bool(self.connection):
+            # fetch pre-chosen database connection
+            self.connection = settings_plugin.value("DatabaseConnection", None)
         # check if still exists
-        if bool(connection):
-            if connection not in settings_postgis.childGroups():
+        if bool(self.connection):
+            if self.connection not in settings_postgis.childGroups():
                 settings_plugin.setValue("DatabaseConnection", "")
                 connection = None
         # fetch from user if necessary
-        if not bool(connection):
+        if not bool(self.connection):
             dialog = DatabaseConnectionDialog()
             dialog.show()
             if bool(dialog.exec_()):
-                connection = dialog.get_database_connection()
-                settings_plugin.setValue("DatabaseConnection", connection)
+                self.connection = dialog.get_database_connection()
+                settings_plugin.setValue("DatabaseConnection", self.connection)
         # validate database connection
-        if bool(connection):
-            db_host = settings_postgis.value(connection + '/host')
-            db_port = settings_postgis.value(connection + '/port')
-            db_name = settings_postgis.value(connection + '/database')
-            db_username = settings_postgis.value(connection + '/username')
-            db_password = settings_postgis.value(connection + '/password')
+        if bool(self.connection):
+            db_service = settings_postgis.value(self.connection + '/service')
+            db_host = settings_postgis.value(self.connection + '/host')
+            db_port = settings_postgis.value(self.connection + '/port')
+            db_name = settings_postgis.value(self.connection + '/database')
+            db_username = settings_postgis.value(self.connection + '/username')
+            db_password = settings_postgis.value(self.connection + '/password')
 
             max_attempts = 3
             self.uri = QgsDataSourceURI()
@@ -191,7 +207,12 @@ class SMLSurveyor:
             if db_username and db_password:
                 for i in range(max_attempts):
                     error_message = self.connect_to_db(
-                        db_host, db_port, db_name, db_username, db_password)
+                        db_service,
+                        db_host,
+                        db_port,
+                        db_name,
+                        db_username,
+                        db_password)
                     if error_message:
                         ok, db_username, db_password = (
                             QgsCredentials.instance().get(
@@ -214,18 +235,25 @@ class SMLSurveyor:
                     if not ok:
                         break
                     error_message = self.connect_to_db(
-                        db_host, db_port, db_name, db_username, db_password)
+                        db_service,
+                        db_host,
+                        db_port,
+                        db_name,
+                        db_username,
+                        db_password)
                     if not error_message:
                         break
 
         settings_plugin.endGroup()
         settings_postgis.endGroup()
 
-    def connect_to_db(self, host, port, name, username, password):
+    def connect_to_db(self, service, host, port, name, username, password):
         username.replace(" ", "")
         password.replace(" ", "")
         try:
             self.database = database.Manager({
+                "CONNECTION": self.connection,
+                "SERVICE": service,
                 "HOST": host,
                 "NAME": name,
                 "PORT": port,
@@ -312,6 +340,27 @@ class SMLSurveyor:
         self.refresh_layers()
         BearDistManager(self.iface, self.database, self.required_layers)
         self.iface.mapCanvas().refresh()
+
+    def manage_database_connection(self):
+        """ Action to select the db connection to work with.
+        """
+        database_manager = DatabaseManager()
+        connection = database_manager.current_connection
+        self.set_database_connection(connection=connection)
+
+
+class DatabaseManager():
+
+    def __init__(self):
+        self.dialog = DatabaseConnectionDialog()
+        self.dialog.show()
+        self.current_connection = None
+        if bool(self.dialog.exec_()):
+            self.current_connection = self.dialog.get_database_connection()
+            settings_plugin = QSettings()
+            settings_plugin.beginGroup(metadata.name().replace(" ", "_"))
+            settings_plugin.setValue(
+                "DatabaseConnection", self.current_connection)
 
 
 class BeaconManager():
