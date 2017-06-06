@@ -346,7 +346,8 @@ class SMLSurveyor:
         """
         database_manager = DatabaseManager()
         connection = database_manager.current_connection
-        self.set_database_connection(connection=connection)
+        if connection:
+            self.set_database_connection(connection=connection)
 
 
 class DatabaseManager():
