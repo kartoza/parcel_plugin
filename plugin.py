@@ -171,7 +171,7 @@ class SMLSurveyor:
         settings_plugin.beginGroup(metadata.name().replace(" ", "_"))
         settings_postgis.beginGroup('PostgreSQL/connections')
         self.connection = connection
-        self.crs = crs
+        self.crs = QgsCoordinateReferenceSystem(crs.get('auth_id'))
         if not bool(self.connection):
             # fetch pre-chosen database connection
             self.connection = settings_plugin.value("DatabaseConnection", None)
