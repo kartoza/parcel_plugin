@@ -249,13 +249,15 @@ class DatabaseConnectionDialog(QDialog):
         self.btn_refresh_conn = QPushButton("")
         self.btn_refresh_conn.setObjectName(_from_utf8("refresh_conn"))
         self.btn_refresh_conn.setMaximumSize(32, 32)
-        self.btn_refresh_conn.setIcon(QIcon(images_path("icons", "refresh.png")))
+        self.btn_refresh_conn.setIcon(
+            QIcon(images_path("icons", "refresh.png")))
         self.horizontalLayout.addWidget(self.btn_new_conn)
         self.horizontalLayout.addWidget(self.btn_refresh_conn)
         self.horizontalLayout.setAlignment(Qt.AlignRight)
         self.formLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
-        self.formLayout.setLayout(1, QFormLayout.FieldRole, self.horizontalLayout)
+        self.formLayout.setLayout(
+            1, QFormLayout.FieldRole, self.horizontalLayout)
         self.verticalLayout.addSpacerItem(QSpacerItem(50, 10))
         self.btnbx_options = XQDialogButtonBox(self)
         self.btnbx_options.setOrientation(Qt.Horizontal)
