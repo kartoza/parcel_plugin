@@ -183,11 +183,16 @@ class DatabaseConnectionDialog(QDialog):
             None, Qt.WindowStaysOnTopHint)
         # initialize ui
         self.connection = None
+        self.crs = None
         self.setup_ui()
         self.populate_database_choices()
+        self.populate_crs_choices()
 
     def get_database_connection(self):
         return self.connection
+
+    def get_crs(self):
+        return self.crs
 
     def populate_database_choices(self):
         """ Populate database connection choices
@@ -195,13 +200,26 @@ class DatabaseConnectionDialog(QDialog):
         self.cmbbx_conn.clear()
         settings = QSettings()
         settings.beginGroup('PostgreSQL/connections')
-        self.cmbbx_conn.addItem(_from_utf8(""))
-        self.cmbbx_conn.setItemText(0, QApplication.translate(
-                "DatabaseConnectionDialog", "", None))
         for index, database in enumerate(settings.childGroups()):
-            self.cmbbx_conn.addItem(_from_utf8(""))
-            self.cmbbx_conn.setItemText(index + 1, QApplication.translate(
-                "DatabaseConnectionDialog", database, None))
+            self.cmbbx_conn.addItem(database)
+
+    def populate_crs_choices(self):
+        """ Populate crs choices.
+        """
+        crs_options = [
+            {
+                'auth_id': 32631,
+                'crs_name': 'WGS 84 / UTM zone 31N'
+            },
+            {
+                'auth_id': 32632,
+                'crs_name': 'WGS 84 / UTM zone 32N'
+            }
+        ]
+
+        for index, crs_option in enumerate(crs_options):
+            self.combobox_crs.addItem(crs_option['crs_name'])
+            self.combobox_crs.setItemData(index, crs_option, Qt.UserRole)
 
     def test_database_connection(self):
         """ Test database connection has necessary tables
@@ -214,6 +232,17 @@ class DatabaseConnectionDialog(QDialog):
                 "Please select a database connection")
         else:
             self.connection = connection
+
+        crs_index = self.combobox_crs.currentIndex()
+        if not bool(self.combobox_crs.itemData(crs_index, Qt.UserRole)):
+            QMessageBox.information(
+                self,
+                "Coordinate Reference System (CRS)",
+                "Please select a Coordinate Reference System (CRS)")
+        else:
+            self.crs = self.combobox_crs.itemData(crs_index, Qt.UserRole)
+
+        if self.connection and self.crs:
             self.accept()
 
     def setup_ui(self):
@@ -258,6 +287,13 @@ class DatabaseConnectionDialog(QDialog):
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.formLayout.setLayout(
             1, QFormLayout.FieldRole, self.horizontalLayout)
+        # crs combobox start here
+        self.label_crs = QLabel(self)
+        self.label_crs.setObjectName(_from_utf8("label_crs"))
+        self.formLayout.setWidget(2, QFormLayout.LabelRole, self.label_crs)
+        self.combobox_crs = QComboBox(self)
+        self.combobox_crs.setObjectName(_from_utf8("combobox_crs"))
+        self.formLayout.setWidget(2, QFormLayout.FieldRole, self.combobox_crs)
         self.verticalLayout.addSpacerItem(QSpacerItem(50, 10))
         self.btnbx_options = XQDialogButtonBox(self)
         self.btnbx_options.setOrientation(Qt.Horizontal)
@@ -278,11 +314,26 @@ class DatabaseConnectionDialog(QDialog):
             "Connection: ",
             None
         ))
+        self.label_crs.setText(QApplication.translate(
+            "DatabaseConnectionDialog",
+            "CRS: ",
+            None
+        ))
         self.lbl_instr.setText(QApplication.translate(
             "DatabaseConnectionDialog",
             "A database connection has not yet been selected or "
             "is no longer valid. Please select a database connection or "
             "define a new connection.",
+            None
+        ))
+        self.btn_new_conn.setToolTip(QApplication.translate(
+            "DatabaseConnectionDialog",
+            "Add new PostgreSQL connection",
+            None
+        ))
+        self.btn_refresh_conn.setToolTip(QApplication.translate(
+            "DatabaseConnectionDialog",
+            "Refresh available PostgreSQL connection",
             None
         ))
         # connect ui widgets
