@@ -3,3 +3,5 @@
 database_params.py
 *~
 .idea/
+*.qgs.bak
+
