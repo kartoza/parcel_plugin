@@ -99,11 +99,11 @@ CREATE FUNCTION beardistinsert(arg_plan_no character varying, arg_bearing double
   DECLARE
     the_x    double precision;
     the_y    double precision;
-    the_geom geometry(Point,:CRS);
+    the_geom geometry(Point,26332);
   BEGIN
     SELECT x INTO the_x FROM beacons WHERE beacon = arg_beacon_from;
     SELECT y INTO the_y FROM beacons WHERE beacon = arg_beacon_from;
-    the_geom := pointfrombearinganddistance(the_x, the_y, arg_bearing, arg_distance, 3, :CRS);
+    the_geom := pointfrombearinganddistance(the_x, the_y, arg_bearing, arg_distance, 3, 26332);
     INSERT INTO beacons(beacon, y, x, "location", "name")
     VALUES(arg_beacon_to, st_y(the_geom), st_x(the_geom), arg_location, arg_name);
     INSERT INTO beardist(plan_no, bearing, distance, beacon_from, beacon_to)
@@ -112,7 +112,7 @@ CREATE FUNCTION beardistinsert(arg_plan_no character varying, arg_bearing double
 $$;
 
 
-ALTER FUNCTION public.beardistinsert(arg_plan_no character varying, arg_bearing double precision, arg_distance double precision, arg_beacon_from character varying, arg_beacon_to character varying, arg_location character varying, arg_name character varying) OWNER TO docker;
+ALTER FUNCTION public.beardistinsert(arg_plan_no character varying, arg_bearing double precision, arg_distance double precision, arg_beacon_from character varying, arg_beacon_to character varying, arg_location character varying, arg_name character varying) OWNER TO gavinfleming;
 
 --
 -- Name: beardistupdate(character varying, double precision, double precision, character varying, character varying, character varying, character varying, integer); Type: FUNCTION; Schema: public; Owner: docker
@@ -126,7 +126,7 @@ CREATE FUNCTION beardistupdate(arg_plan_no character varying, arg_bearing double
     the_id_beacons  integer;
     the_x           double precision;
     the_y           double precision;
-    the_geom_       geometry(Point, :CRS);
+    the_geom_       geometry(Point, 26332);
   BEGIN
     SELECT i.id INTO the_id_beardist FROM (
       SELECT bd.id, row_number() over(ORDER BY bd.id) -1 as index
@@ -138,7 +138,7 @@ CREATE FUNCTION beardistupdate(arg_plan_no character varying, arg_bearing double
     SELECT gid INTO the_id_beacons FROM beacons b INNER JOIN beardist bd ON b.beacon = bd.beacon_to WHERE bd.id = the_id_beardist;
     SELECT x INTO the_x FROM beacons WHERE beacon = arg_beacon_from;
     SELECT y INTO the_y FROM beacons WHERE beacon = arg_beacon_from;
-    SELECT pointfrombearinganddistance(the_x, the_y, arg_bearing, arg_distance, 3, :CRS) INTO the_geom_;
+    SELECT pointfrombearinganddistance(the_x, the_y, arg_bearing, arg_distance, 3, 26332) INTO the_geom_;
     UPDATE beacons SET
       beacon = arg_beacon_to,
       y = st_y(the_geom_),
@@ -157,7 +157,7 @@ CREATE FUNCTION beardistupdate(arg_plan_no character varying, arg_bearing double
 $$;
 
 
-ALTER FUNCTION public.beardistupdate(arg_plan_no character varying, arg_bearing double precision, arg_distance double precision, arg_beacon_from character varying, arg_beacon_to character varying, arg_location character varying, arg_name character varying, arg_index integer) OWNER TO docker;
+ALTER FUNCTION public.beardistupdate(arg_plan_no character varying, arg_bearing double precision, arg_distance double precision, arg_beacon_from character varying, arg_beacon_to character varying, arg_location character varying, arg_name character varying, arg_index integer) OWNER TO gavinfleming;
 
 --
 -- Name: calc_point(); Type: FUNCTION; Schema: public; Owner: docker
@@ -167,13 +167,13 @@ CREATE FUNCTION calc_point() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
   BEGIN
-    NEW.the_geom:=ST_SetSRID(ST_MakePoint(new.x, new.y), :CRS) ;
+    NEW.the_geom:=ST_SetSRID(ST_MakePoint(new.x, new.y), 26332) ;
   RETURN NEW;
   END
   $$;
 
 
-ALTER FUNCTION public.calc_point() OWNER TO docker;
+ALTER FUNCTION public.calc_point() OWNER TO gavinfleming;
 
 --
 -- Name: fn_beacons_after_insert(); Type: FUNCTION; Schema: public; Owner: postgres
@@ -211,7 +211,7 @@ END;
 $$;
 
 
-ALTER FUNCTION public.fn_beacons_after_insert() OWNER TO postgres;
+ALTER FUNCTION public.fn_beacons_after_insert() OWNER TO gavinfleming;
 
 --
 -- Name: fn_beacons_before_delete(); Type: FUNCTION; Schema: public; Owner: postgres
@@ -249,7 +249,7 @@ END;
 $$;
 
 
-ALTER FUNCTION public.fn_beacons_before_delete() OWNER TO postgres;
+ALTER FUNCTION public.fn_beacons_before_delete() OWNER TO gavinfleming;
 
 --
 -- Name: fn_beacons_before_update(); Type: FUNCTION; Schema: public; Owner: postgres
@@ -287,7 +287,7 @@ END;
 $$;
 
 
-ALTER FUNCTION public.fn_beacons_before_update() OWNER TO postgres;
+ALTER FUNCTION public.fn_beacons_before_update() OWNER TO gavinfleming;
 
 --
 -- Name: fn_updateprintjobs(); Type: FUNCTION; Schema: public; Owner: docker
@@ -308,7 +308,7 @@ END;
 $$;
 
 
-ALTER FUNCTION public.fn_updateprintjobs() OWNER TO docker;
+ALTER FUNCTION public.fn_updateprintjobs() OWNER TO gavinfleming;
 
 --
 -- Name: parcel_lookup_availability_trigger(); Type: FUNCTION; Schema: public; Owner: docker
@@ -325,7 +325,7 @@ CREATE FUNCTION parcel_lookup_availability_trigger() RETURNS trigger
 $$;
 
 
-ALTER FUNCTION public.parcel_lookup_availability_trigger() OWNER TO docker;
+ALTER FUNCTION public.parcel_lookup_availability_trigger() OWNER TO gavinfleming;
 
 --
 -- Name: parcel_lookup_define_parcel_trigger(); Type: FUNCTION; Schema: public; Owner: docker
@@ -343,7 +343,7 @@ CREATE FUNCTION parcel_lookup_define_parcel_trigger() RETURNS trigger
 $$;
 
 
-ALTER FUNCTION public.parcel_lookup_define_parcel_trigger() OWNER TO docker;
+ALTER FUNCTION public.parcel_lookup_define_parcel_trigger() OWNER TO gavinfleming;
 
 --
 -- Name: parcels_matview_refresh_row(integer); Type: FUNCTION; Schema: public; Owner: docker
@@ -360,7 +360,7 @@ END
 $_$;
 
 
-ALTER FUNCTION public.parcels_matview_refresh_row(integer) OWNER TO docker;
+ALTER FUNCTION public.parcels_matview_refresh_row(integer) OWNER TO gavinfleming;
 
 --
 -- Name: pointfrombearinganddistance(double precision, double precision, double precision, double precision, integer, integer); Type: FUNCTION; Schema: public; Owner: docker
@@ -419,13 +419,13 @@ BEGIN
     END IF;
     dende := ddeltae + dstarte;
     dendn := ddeltan + dstartn;
-    RETURN ST_SetSRID(ST_MakePoint(round(dende::numeric, precision), round(dendn::numeric, precision)), :CRS);
+    RETURN ST_SetSRID(ST_MakePoint(round(dende::numeric, precision), round(dendn::numeric, precision)), 26332);
   END;
 END;
 $$;
 
 
-ALTER FUNCTION public.pointfrombearinganddistance(dstarte double precision, dstartn double precision, dbearing double precision, ddistance double precision, "precision" integer, srid integer) OWNER TO docker;
+ALTER FUNCTION public.pointfrombearinganddistance(dstarte double precision, dstartn double precision, dbearing double precision, ddistance double precision, "precision" integer, srid integer) OWNER TO gavinfleming;
 
 SET default_tablespace = '';
 
@@ -445,7 +445,7 @@ CREATE TABLE lut_poi_cat (
 );
 
 
-ALTER TABLE lut_poi_cat OWNER TO docker;
+ALTER TABLE lut_poi_cat OWNER TO gavinfleming;
 
 --
 -- Name: Ogun_state_id_seq; Type: SEQUENCE; Schema: public; Owner: docker
@@ -459,7 +459,7 @@ CREATE SEQUENCE "Ogun_state_id_seq"
     CACHE 1;
 
 
-ALTER TABLE "Ogun_state_id_seq" OWNER TO docker;
+ALTER TABLE "Ogun_state_id_seq" OWNER TO gavinfleming;
 
 --
 -- Name: Ogun_state_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
@@ -483,13 +483,13 @@ CREATE TABLE ogunadmin (
     remarks character varying(100),
     "Shape_Leng" double precision,
     "Shape_Area" double precision,
-    the_geom geometry(Polygon,:CRS),
+    the_geom geometry(Polygon,26332),
     sen_district integer,
     lg_hq integer
 );
 
 
-ALTER TABLE ogunadmin OWNER TO docker;
+ALTER TABLE ogunadmin OWNER TO gavinfleming;
 
 --
 -- Name: Ogunadmin_gid_seq; Type: SEQUENCE; Schema: public; Owner: docker
@@ -503,7 +503,7 @@ CREATE SEQUENCE "Ogunadmin_gid_seq"
     CACHE 1;
 
 
-ALTER TABLE "Ogunadmin_gid_seq" OWNER TO docker;
+ALTER TABLE "Ogunadmin_gid_seq" OWNER TO gavinfleming;
 
 --
 -- Name: Ogunadmin_gid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
@@ -522,7 +522,7 @@ CREATE TABLE allocation_cat (
 );
 
 
-ALTER TABLE allocation_cat OWNER TO docker;
+ALTER TABLE allocation_cat OWNER TO gavinfleming;
 
 --
 -- Name: allocation_cat_id_seq; Type: SEQUENCE; Schema: public; Owner: docker
@@ -536,7 +536,7 @@ CREATE SEQUENCE allocation_cat_id_seq
     CACHE 1;
 
 
-ALTER TABLE allocation_cat_id_seq OWNER TO docker;
+ALTER TABLE allocation_cat_id_seq OWNER TO gavinfleming;
 
 --
 -- Name: allocation_cat_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
@@ -554,14 +554,14 @@ CREATE TABLE beacons (
     beacon character varying(80) NOT NULL,
     y double precision NOT NULL,
     x double precision NOT NULL,
-    the_geom geometry(Point,:CRS) NOT NULL,
+    the_geom geometry(Point,26332) NOT NULL,
     location character varying(180),
     name character varying(100),
     last_modified_by character varying
 );
 
 
-ALTER TABLE beacons OWNER TO docker;
+ALTER TABLE beacons OWNER TO gavinfleming;
 
 --
 -- Name: beacons_extra; Type: TABLE; Schema: public; Owner: docker
@@ -575,7 +575,7 @@ CREATE TABLE beacons_extra (
 );
 
 
-ALTER TABLE beacons_extra OWNER TO docker;
+ALTER TABLE beacons_extra OWNER TO gavinfleming;
 
 --
 -- Name: beacons_gid_seq; Type: SEQUENCE; Schema: public; Owner: docker
@@ -589,7 +589,7 @@ CREATE SEQUENCE beacons_gid_seq
     CACHE 1;
 
 
-ALTER TABLE beacons_gid_seq OWNER TO docker;
+ALTER TABLE beacons_gid_seq OWNER TO gavinfleming;
 
 --
 -- Name: beacons_gid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
@@ -610,7 +610,7 @@ CREATE TABLE parcel_def (
 );
 
 
-ALTER TABLE parcel_def OWNER TO docker;
+ALTER TABLE parcel_def OWNER TO gavinfleming;
 
 --
 -- Name: parcel_lookup; Type: TABLE; Schema: public; Owner: docker
@@ -634,7 +634,7 @@ CREATE TABLE parcel_lookup (
 );
 
 
-ALTER TABLE parcel_lookup OWNER TO docker;
+ALTER TABLE parcel_lookup OWNER TO gavinfleming;
 
 --
 -- Name: COLUMN parcel_lookup.plot_sn; Type: COMMENT; Schema: public; Owner: docker
@@ -663,7 +663,7 @@ CREATE MATERIALIZED VIEW beacons_views AS
   WITH NO DATA;
 
 
-ALTER TABLE beacons_views OWNER TO docker;
+ALTER TABLE beacons_views OWNER TO gavinfleming;
 
 --
 -- Name: deeds; Type: TABLE; Schema: public; Owner: postgres
@@ -682,7 +682,7 @@ CREATE TABLE deeds (
 );
 
 
-ALTER TABLE deeds OWNER TO postgres;
+ALTER TABLE deeds OWNER TO gavinfleming;
 
 --
 -- Name: schemes; Type: TABLE; Schema: public; Owner: docker
@@ -695,7 +695,7 @@ CREATE TABLE schemes (
 );
 
 
-ALTER TABLE schemes OWNER TO docker;
+ALTER TABLE schemes OWNER TO gavinfleming;
 
 --
 -- Name: COLUMN schemes."Scheme"; Type: COMMENT; Schema: public; Owner: docker
@@ -723,7 +723,7 @@ CREATE VIEW parcels AS
     (((('<a href="http://192.168.10.12/geoserver/'::text || (description.deeds_file)::text) || '" target="blank_">'::text) || (description.deeds_file)::text) || '</a>'::text) AS deeds_file,
     description.private
    FROM (( SELECT vl.parcel_id,
-            (st_makepolygon(st_addpoint(st_makeline(vl.the_geom), st_startpoint(st_makeline(vl.the_geom)))))::geometry(Polygon,:CRS) AS the_geom
+            (st_makepolygon(st_addpoint(st_makeline(vl.the_geom), st_startpoint(st_makeline(vl.the_geom)))))::geometry(Polygon,26332) AS the_geom
            FROM ( SELECT pd.id,
                     pd.parcel_id,
                     pd.beacon,
@@ -734,7 +734,7 @@ CREATE VIEW parcels AS
                   ORDER BY pd.parcel_id, pd.sequence) vl
           GROUP BY vl.parcel_id
          HAVING (st_npoints(st_collect(vl.the_geom)) > 1)) parcel
-     JOIN ( SELECT p.parcel_id,
+     LEFT JOIN ( SELECT p.parcel_id,
             ((p.local_govt || (p.prop_type)::text) || p.parcel_id) AS parcel_number,
             p.allocation,
             p.block,
@@ -752,7 +752,7 @@ CREATE VIEW parcels AS
   WHERE st_isvalid(parcel.the_geom);
 
 
-ALTER TABLE parcels OWNER TO docker;
+ALTER TABLE parcels OWNER TO gavinfleming;
 
 --
 -- Name: beacons_intersect; Type: MATERIALIZED VIEW; Schema: public; Owner: docker
@@ -770,7 +770,7 @@ CREATE MATERIALIZED VIEW beacons_intersect AS
   WITH NO DATA;
 
 
-ALTER TABLE beacons_intersect OWNER TO docker;
+ALTER TABLE beacons_intersect OWNER TO gavinfleming;
 
 --
 -- Name: beardist; Type: TABLE; Schema: public; Owner: docker
@@ -786,7 +786,7 @@ CREATE TABLE beardist (
 );
 
 
-ALTER TABLE beardist OWNER TO docker;
+ALTER TABLE beardist OWNER TO gavinfleming;
 
 --
 -- Name: beardist_id_seq; Type: SEQUENCE; Schema: public; Owner: docker
@@ -800,7 +800,7 @@ CREATE SEQUENCE beardist_id_seq
     CACHE 1;
 
 
-ALTER TABLE beardist_id_seq OWNER TO docker;
+ALTER TABLE beardist_id_seq OWNER TO gavinfleming;
 
 --
 -- Name: beardist_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
@@ -840,7 +840,7 @@ CREATE VIEW bearing_labels AS
      JOIN beardist c USING (id));
 
 
-ALTER TABLE bearing_labels OWNER TO docker;
+ALTER TABLE bearing_labels OWNER TO gavinfleming;
 
 --
 -- Name: boundaries; Type: MATERIALIZED VIEW; Schema: public; Owner: docker
@@ -859,7 +859,7 @@ CREATE MATERIALIZED VIEW boundaries AS
         )
  SELECT row_number() OVER () AS id,
     boundaries.parcel_id,
-    (boundaries.geom)::geometry(LineString,:CRS) AS geom,
+    (boundaries.geom)::geometry(LineString,26332) AS geom,
     round((st_length(boundaries.geom))::numeric, 2) AS distance,
     round((degrees(st_azimuth(st_startpoint(boundaries.geom), st_endpoint(boundaries.geom))))::numeric, 2) AS bearing
    FROM boundaries
@@ -867,7 +867,7 @@ CREATE MATERIALIZED VIEW boundaries AS
   WITH NO DATA;
 
 
-ALTER TABLE boundaries OWNER TO docker;
+ALTER TABLE boundaries OWNER TO gavinfleming;
 
 --
 -- Name: boundary_labels; Type: MATERIALIZED VIEW; Schema: public; Owner: docker
@@ -876,7 +876,7 @@ ALTER TABLE boundaries OWNER TO docker;
 CREATE MATERIALIZED VIEW boundary_labels AS
  SELECT row_number() OVER () AS id,
     b.id AS boundary_id,
-    (b.geom)::geometry(LineString,:CRS) AS geom,
+    (b.geom)::geometry(LineString,26332) AS geom,
     c.plan_no,
     c.bearing,
     c.distance,
@@ -904,7 +904,7 @@ CREATE MATERIALIZED VIEW boundary_labels AS
   WITH NO DATA;
 
 
-ALTER TABLE boundary_labels OWNER TO docker;
+ALTER TABLE boundary_labels OWNER TO gavinfleming;
 
 --
 -- Name: conflict_cat; Type: TABLE; Schema: public; Owner: docker
@@ -916,7 +916,7 @@ CREATE TABLE conflict_cat (
 );
 
 
-ALTER TABLE conflict_cat OWNER TO docker;
+ALTER TABLE conflict_cat OWNER TO gavinfleming;
 
 --
 -- Name: conflict_cat_conflict_cat_seq; Type: SEQUENCE; Schema: public; Owner: docker
@@ -930,7 +930,7 @@ CREATE SEQUENCE conflict_cat_conflict_cat_seq
     CACHE 1;
 
 
-ALTER TABLE conflict_cat_conflict_cat_seq OWNER TO docker;
+ALTER TABLE conflict_cat_conflict_cat_seq OWNER TO gavinfleming;
 
 --
 -- Name: conflict_cat_conflict_cat_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
@@ -951,7 +951,7 @@ CREATE SEQUENCE deeds_deed_sn_seq
     CACHE 1;
 
 
-ALTER TABLE deeds_deed_sn_seq OWNER TO postgres;
+ALTER TABLE deeds_deed_sn_seq OWNER TO gavinfleming;
 
 --
 -- Name: deeds_deed_sn_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -977,7 +977,7 @@ CREATE MATERIALIZED VIEW derived_boundaries AS
   WITH NO DATA;
 
 
-ALTER TABLE derived_boundaries OWNER TO docker;
+ALTER TABLE derived_boundaries OWNER TO gavinfleming;
 
 --
 -- Name: hist_beacons; Type: TABLE; Schema: public; Owner: postgres
@@ -989,7 +989,7 @@ CREATE TABLE hist_beacons (
     beacon character varying(80) NOT NULL,
     y double precision NOT NULL,
     x double precision NOT NULL,
-    the_geom geometry(Point,:CRS) NOT NULL,
+    the_geom geometry(Point,26332) NOT NULL,
     location character varying(180),
     name character varying(100),
     hist_user character varying,
@@ -998,7 +998,7 @@ CREATE TABLE hist_beacons (
 );
 
 
-ALTER TABLE hist_beacons OWNER TO postgres;
+ALTER TABLE hist_beacons OWNER TO gavinfleming;
 
 --
 -- Name: hist_beacons_hist_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -1012,7 +1012,7 @@ CREATE SEQUENCE hist_beacons_hist_id_seq
     CACHE 1;
 
 
-ALTER TABLE hist_beacons_hist_id_seq OWNER TO postgres;
+ALTER TABLE hist_beacons_hist_id_seq OWNER TO gavinfleming;
 
 --
 -- Name: hist_beacons_hist_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -1031,7 +1031,7 @@ CREATE TABLE instrument_cat (
 );
 
 
-ALTER TABLE instrument_cat OWNER TO docker;
+ALTER TABLE instrument_cat OWNER TO gavinfleming;
 
 --
 -- Name: instrument_cat_instrument_cat_seq; Type: SEQUENCE; Schema: public; Owner: docker
@@ -1045,7 +1045,7 @@ CREATE SEQUENCE instrument_cat_instrument_cat_seq
     CACHE 1;
 
 
-ALTER TABLE instrument_cat_instrument_cat_seq OWNER TO docker;
+ALTER TABLE instrument_cat_instrument_cat_seq OWNER TO gavinfleming;
 
 --
 -- Name: instrument_cat_instrument_cat_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
@@ -1065,7 +1065,7 @@ CREATE TABLE lg_hqtrs (
 );
 
 
-ALTER TABLE lg_hqtrs OWNER TO docker;
+ALTER TABLE lg_hqtrs OWNER TO gavinfleming;
 
 --
 -- Name: lg_hqtrs_hq_sn_seq; Type: SEQUENCE; Schema: public; Owner: docker
@@ -1079,7 +1079,7 @@ CREATE SEQUENCE lg_hqtrs_hq_sn_seq
     CACHE 1;
 
 
-ALTER TABLE lg_hqtrs_hq_sn_seq OWNER TO docker;
+ALTER TABLE lg_hqtrs_hq_sn_seq OWNER TO gavinfleming;
 
 --
 -- Name: lg_hqtrs_hq_sn_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
@@ -1098,7 +1098,7 @@ CREATE TABLE local_govt (
 );
 
 
-ALTER TABLE local_govt OWNER TO docker;
+ALTER TABLE local_govt OWNER TO gavinfleming;
 
 --
 -- Name: local_govt_id_seq; Type: SEQUENCE; Schema: public; Owner: docker
@@ -1112,7 +1112,7 @@ CREATE SEQUENCE local_govt_id_seq
     CACHE 1;
 
 
-ALTER TABLE local_govt_id_seq OWNER TO docker;
+ALTER TABLE local_govt_id_seq OWNER TO gavinfleming;
 
 --
 -- Name: local_govt_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
@@ -1133,7 +1133,7 @@ CREATE SEQUENCE localmotclass_code_seq
     CACHE 1;
 
 
-ALTER TABLE localmotclass_code_seq OWNER TO postgres;
+ALTER TABLE localmotclass_code_seq OWNER TO gavinfleming;
 
 --
 -- Name: localrdclass_code_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -1147,7 +1147,7 @@ CREATE SEQUENCE localrdclass_code_seq
     CACHE 1;
 
 
-ALTER TABLE localrdclass_code_seq OWNER TO postgres;
+ALTER TABLE localrdclass_code_seq OWNER TO gavinfleming;
 
 --
 -- Name: official_gazzette; Type: TABLE; Schema: public; Owner: docker
@@ -1167,7 +1167,7 @@ CREATE TABLE official_gazzette (
 );
 
 
-ALTER TABLE official_gazzette OWNER TO docker;
+ALTER TABLE official_gazzette OWNER TO gavinfleming;
 
 --
 -- Name: official_gazzette_gid_seq; Type: SEQUENCE; Schema: public; Owner: docker
@@ -1181,7 +1181,7 @@ CREATE SEQUENCE official_gazzette_gid_seq
     CACHE 1;
 
 
-ALTER TABLE official_gazzette_gid_seq OWNER TO docker;
+ALTER TABLE official_gazzette_gid_seq OWNER TO gavinfleming;
 
 --
 -- Name: official_gazzette_gid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
@@ -1206,12 +1206,12 @@ CREATE TABLE ogunroadnetwork (
     rd_hrky character varying(1),
     rdcode numeric(10,0),
     str_name numeric(10,0),
-    the_geom geometry(MultiLineString,:CRS),
+    the_geom geometry(MultiLineString,26332),
     trafdir boolean DEFAULT true
 );
 
 
-ALTER TABLE ogunroadnetwork OWNER TO docker;
+ALTER TABLE ogunroadnetwork OWNER TO gavinfleming;
 
 --
 -- Name: ogunroadnetwork_gid_seq1; Type: SEQUENCE; Schema: public; Owner: docker
@@ -1225,7 +1225,7 @@ CREATE SEQUENCE ogunroadnetwork_gid_seq1
     CACHE 1;
 
 
-ALTER TABLE ogunroadnetwork_gid_seq1 OWNER TO docker;
+ALTER TABLE ogunroadnetwork_gid_seq1 OWNER TO gavinfleming;
 
 --
 -- Name: ogunroadnetwork_gid_seq1; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
@@ -1246,7 +1246,7 @@ CREATE SEQUENCE parcel_def_id_seq
     CACHE 1;
 
 
-ALTER TABLE parcel_def_id_seq OWNER TO docker;
+ALTER TABLE parcel_def_id_seq OWNER TO gavinfleming;
 
 --
 -- Name: parcel_def_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
@@ -1267,7 +1267,7 @@ CREATE SEQUENCE parcel_lookup_id_seq
     CACHE 1;
 
 
-ALTER TABLE parcel_lookup_id_seq OWNER TO docker;
+ALTER TABLE parcel_lookup_id_seq OWNER TO gavinfleming;
 
 --
 -- Name: parcel_lookup_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
@@ -1288,7 +1288,7 @@ CREATE SEQUENCE parcel_lookup_parcel_id_seq
     CACHE 1;
 
 
-ALTER TABLE parcel_lookup_parcel_id_seq OWNER TO docker;
+ALTER TABLE parcel_lookup_parcel_id_seq OWNER TO gavinfleming;
 
 --
 -- Name: parcel_lookup_parcel_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
@@ -1316,7 +1316,7 @@ CREATE VIEW perimeters AS
     (((('<a href="http://192.168.10.12/geoserver/'::text || (description.deeds_file)::text) || '" target="blank_">'::text) || (description.deeds_file)::text) || '</a>'::text) AS deeds_file,
     description.private
    FROM (( SELECT vl.parcel_id,
-            (st_makepolygon(st_addpoint(st_makeline(vl.the_geom), st_startpoint(st_makeline(vl.the_geom)))))::geometry(Polygon,:CRS) AS the_geom
+            (st_makepolygon(st_addpoint(st_makeline(vl.the_geom), st_startpoint(st_makeline(vl.the_geom)))))::geometry(Polygon,26332) AS the_geom
            FROM ( SELECT pd.id,
                     pd.parcel_id,
                     pd.beacon,
@@ -1345,7 +1345,7 @@ CREATE VIEW perimeters AS
   WHERE st_isvalid(parcel.the_geom);
 
 
-ALTER TABLE perimeters OWNER TO docker;
+ALTER TABLE perimeters OWNER TO gavinfleming;
 
 --
 -- Name: parcel_overlap_matviews; Type: MATERIALIZED VIEW; Schema: public; Owner: docker
@@ -1371,7 +1371,7 @@ CREATE MATERIALIZED VIEW parcel_overlap_matviews AS
   WITH NO DATA;
 
 
-ALTER TABLE parcel_overlap_matviews OWNER TO docker;
+ALTER TABLE parcel_overlap_matviews OWNER TO gavinfleming;
 
 --
 -- Name: parcels_intersect; Type: MATERIALIZED VIEW; Schema: public; Owner: docker
@@ -1397,7 +1397,7 @@ CREATE MATERIALIZED VIEW parcels_intersect AS
   WITH NO DATA;
 
 
-ALTER TABLE parcels_intersect OWNER TO docker;
+ALTER TABLE parcels_intersect OWNER TO gavinfleming;
 
 --
 -- Name: parcels_lines; Type: VIEW; Schema: public; Owner: docker
@@ -1416,7 +1416,7 @@ CREATE VIEW parcels_lines AS
   GROUP BY a.parcel_id;
 
 
-ALTER TABLE parcels_lines OWNER TO docker;
+ALTER TABLE parcels_lines OWNER TO gavinfleming;
 
 --
 -- Name: parcels_line_length; Type: VIEW; Schema: public; Owner: docker
@@ -1439,7 +1439,7 @@ CREATE VIEW parcels_line_length AS
   WHERE (segments.geom IS NOT NULL);
 
 
-ALTER TABLE parcels_line_length OWNER TO docker;
+ALTER TABLE parcels_line_length OWNER TO gavinfleming;
 
 --
 -- Name: perimeters_original; Type: VIEW; Schema: public; Owner: docker
@@ -1459,7 +1459,7 @@ CREATE VIEW perimeters_original AS
     description.owner,
     (((('<a href="http://192.168.10.12/geoserver/'::text || (description.deeds_file)::text) || '" target="blank_">'::text) || (description.deeds_file)::text) || '</a>'::text) AS deeds_file
    FROM (( SELECT vl.parcel_id,
-            (st_makepolygon(st_addpoint(st_makeline(vl.the_geom), st_startpoint(st_makeline(vl.the_geom)))))::geometry(Polygon,:CRS) AS the_geom
+            (st_makepolygon(st_addpoint(st_makeline(vl.the_geom), st_startpoint(st_makeline(vl.the_geom)))))::geometry(Polygon,26332) AS the_geom
            FROM ( SELECT pd.id,
                     pd.parcel_id,
                     pd.beacon,
@@ -1488,7 +1488,7 @@ CREATE VIEW perimeters_original AS
  LIMIT 1;
 
 
-ALTER TABLE perimeters_original OWNER TO docker;
+ALTER TABLE perimeters_original OWNER TO gavinfleming;
 
 --
 -- Name: pois; Type: TABLE; Schema: public; Owner: docker
@@ -1527,7 +1527,7 @@ CREATE TABLE pois (
 );
 
 
-ALTER TABLE pois OWNER TO docker;
+ALTER TABLE pois OWNER TO gavinfleming;
 
 --
 -- Name: pois_id_seq; Type: SEQUENCE; Schema: public; Owner: docker
@@ -1541,7 +1541,7 @@ CREATE SEQUENCE pois_id_seq
     CACHE 1;
 
 
-ALTER TABLE pois_id_seq OWNER TO docker;
+ALTER TABLE pois_id_seq OWNER TO gavinfleming;
 
 --
 -- Name: pois_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
@@ -1590,7 +1590,7 @@ CREATE MATERIALIZED VIEW pois_view AS
   WITH NO DATA;
 
 
-ALTER TABLE pois_view OWNER TO docker;
+ALTER TABLE pois_view OWNER TO gavinfleming;
 
 --
 -- Name: print_survey_details; Type: TABLE; Schema: public; Owner: docker
@@ -1608,7 +1608,7 @@ CREATE TABLE print_survey_details (
 );
 
 
-ALTER TABLE print_survey_details OWNER TO docker;
+ALTER TABLE print_survey_details OWNER TO gavinfleming;
 
 --
 -- Name: print_survey_details_id_seq; Type: SEQUENCE; Schema: public; Owner: docker
@@ -1622,7 +1622,7 @@ CREATE SEQUENCE print_survey_details_id_seq
     CACHE 1;
 
 
-ALTER TABLE print_survey_details_id_seq OWNER TO docker;
+ALTER TABLE print_survey_details_id_seq OWNER TO gavinfleming;
 
 --
 -- Name: print_survey_details_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
@@ -1642,7 +1642,7 @@ CREATE TABLE prop_types (
 );
 
 
-ALTER TABLE prop_types OWNER TO docker;
+ALTER TABLE prop_types OWNER TO gavinfleming;
 
 --
 -- Name: prop_types_id_seq; Type: SEQUENCE; Schema: public; Owner: docker
@@ -1656,7 +1656,7 @@ CREATE SEQUENCE prop_types_id_seq
     CACHE 1;
 
 
-ALTER TABLE prop_types_id_seq OWNER TO docker;
+ALTER TABLE prop_types_id_seq OWNER TO gavinfleming;
 
 --
 -- Name: prop_types_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
@@ -1675,13 +1675,13 @@ CREATE TABLE reference_view (
     ref_beacon character varying(20),
     scheme integer,
     parcel_id integer,
-    the_geom geometry(Point,:CRS),
+    the_geom geometry(Point,26332),
     x double precision,
     y double precision
 );
 
 
-ALTER TABLE reference_view OWNER TO docker;
+ALTER TABLE reference_view OWNER TO gavinfleming;
 
 --
 -- Name: schemes_id_seq; Type: SEQUENCE; Schema: public; Owner: docker
@@ -1695,7 +1695,7 @@ CREATE SEQUENCE schemes_id_seq
     CACHE 1;
 
 
-ALTER TABLE schemes_id_seq OWNER TO docker;
+ALTER TABLE schemes_id_seq OWNER TO gavinfleming;
 
 --
 -- Name: schemes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
@@ -1715,7 +1715,7 @@ CREATE TABLE sen_districts (
 );
 
 
-ALTER TABLE sen_districts OWNER TO docker;
+ALTER TABLE sen_districts OWNER TO gavinfleming;
 
 --
 -- Name: sen_district; Type: VIEW; Schema: public; Owner: docker
@@ -1733,7 +1733,7 @@ CREATE VIEW sen_district AS
      JOIN lg_hqtrs c ON ((a.lg_hq = c.hq_code)));
 
 
-ALTER TABLE sen_district OWNER TO docker;
+ALTER TABLE sen_district OWNER TO gavinfleming;
 
 --
 -- Name: sen_districts_sen_id_seq; Type: SEQUENCE; Schema: public; Owner: docker
@@ -1747,7 +1747,7 @@ CREATE SEQUENCE sen_districts_sen_id_seq
     CACHE 1;
 
 
-ALTER TABLE sen_districts_sen_id_seq OWNER TO docker;
+ALTER TABLE sen_districts_sen_id_seq OWNER TO gavinfleming;
 
 --
 -- Name: sen_districts_sen_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
@@ -1768,7 +1768,7 @@ CREATE SEQUENCE speed_code_seq
     CACHE 1;
 
 
-ALTER TABLE speed_code_seq OWNER TO postgres;
+ALTER TABLE speed_code_seq OWNER TO gavinfleming;
 
 --
 -- Name: status_cat; Type: TABLE; Schema: public; Owner: docker
@@ -1780,7 +1780,7 @@ CREATE TABLE status_cat (
 );
 
 
-ALTER TABLE status_cat OWNER TO docker;
+ALTER TABLE status_cat OWNER TO gavinfleming;
 
 --
 -- Name: status_cat_status_cat_seq; Type: SEQUENCE; Schema: public; Owner: docker
@@ -1794,7 +1794,7 @@ CREATE SEQUENCE status_cat_status_cat_seq
     CACHE 1;
 
 
-ALTER TABLE status_cat_status_cat_seq OWNER TO docker;
+ALTER TABLE status_cat_status_cat_seq OWNER TO gavinfleming;
 
 --
 -- Name: status_cat_status_cat_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
@@ -1815,7 +1815,7 @@ CREATE SEQUENCE str_type_strid_seq
     CACHE 1;
 
 
-ALTER TABLE str_type_strid_seq OWNER TO postgres;
+ALTER TABLE str_type_strid_seq OWNER TO gavinfleming;
 
 --
 -- Name: survey; Type: TABLE; Schema: public; Owner: docker
@@ -1830,7 +1830,7 @@ CREATE TABLE survey (
 );
 
 
-ALTER TABLE survey OWNER TO docker;
+ALTER TABLE survey OWNER TO gavinfleming;
 
 --
 -- Name: survey_id_seq; Type: SEQUENCE; Schema: public; Owner: docker
@@ -1844,7 +1844,7 @@ CREATE SEQUENCE survey_id_seq
     CACHE 1;
 
 
-ALTER TABLE survey_id_seq OWNER TO docker;
+ALTER TABLE survey_id_seq OWNER TO gavinfleming;
 
 --
 -- Name: survey_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
@@ -1868,7 +1868,7 @@ CREATE TABLE transactions (
 );
 
 
-ALTER TABLE transactions OWNER TO docker;
+ALTER TABLE transactions OWNER TO gavinfleming;
 
 --
 -- Name: allocation_cat; Type: DEFAULT; Schema: public; Owner: docker
