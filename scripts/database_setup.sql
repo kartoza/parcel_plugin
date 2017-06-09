@@ -72,21 +72,6 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 
 COMMENT ON EXTENSION postgis IS 'PostGIS geometry, geography, and raster spatial types and functions';
 
-
---
--- Name: postgis_topology; Type: EXTENSION; Schema: -; Owner:
---
-
-CREATE EXTENSION IF NOT EXISTS postgis_topology WITH SCHEMA topology;
-
-
---
--- Name: EXTENSION postgis_topology; Type: COMMENT; Schema: -; Owner:
---
-
-COMMENT ON EXTENSION postgis_topology IS 'PostGIS topology spatial types and functions';
-
-
 SET search_path = public, pg_catalog;
 
 --
@@ -244,7 +229,7 @@ BEGIN
 		'DELETE',
 		NOW()
     );
-    RETURN NEW;
+    RETURN OLD;
 END;
 $$;
 
