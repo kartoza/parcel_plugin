@@ -31,8 +31,6 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 COMMENT ON EXTENSION postgis IS 'PostGIS geometry, geography, and raster spatial types and functions';
 
 
-
-
 SET search_path = public, pg_catalog;
 
 --
@@ -119,7 +117,7 @@ CREATE FUNCTION calc_point() RETURNS trigger
 
 
 --
--- Name: fn_beacons_after_insert(); Type: FUNCTION; Schema: public; Owner: postgres
+-- Name: fn_beacons_after_insert(); Type: FUNCTION; Schema: public; Owner: docker
 --
 
 CREATE FUNCTION fn_beacons_after_insert() RETURNS trigger
@@ -156,7 +154,7 @@ $$;
 
 
 --
--- Name: fn_beacons_before_delete(); Type: FUNCTION; Schema: public; Owner: postgres
+-- Name: fn_beacons_before_delete(); Type: FUNCTION; Schema: public; Owner: docker
 --
 
 CREATE FUNCTION fn_beacons_before_delete() RETURNS trigger
@@ -193,7 +191,7 @@ $$;
 
 
 --
--- Name: fn_beacons_before_update(); Type: FUNCTION; Schema: public; Owner: postgres
+-- Name: fn_beacons_before_update(); Type: FUNCTION; Schema: public; Owner: docker
 --
 
 CREATE FUNCTION fn_beacons_before_update() RETURNS trigger
@@ -499,7 +497,7 @@ CREATE MATERIALIZED VIEW beacons_views AS
 
 
 --
--- Name: deeds; Type: TABLE; Schema: public; Owner: postgres
+-- Name: deeds; Type: TABLE; Schema: public; Owner: docker
 --
 
 CREATE TABLE deeds (
@@ -731,7 +729,7 @@ CREATE MATERIALIZED VIEW boundary_labels AS
 
 
 --
--- Name: deeds_deed_sn_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: deeds_deed_sn_seq; Type: SEQUENCE; Schema: public; Owner: docker
 --
 
 CREATE SEQUENCE deeds_deed_sn_seq
@@ -744,7 +742,7 @@ CREATE SEQUENCE deeds_deed_sn_seq
 
 
 --
--- Name: deeds_deed_sn_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: deeds_deed_sn_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
 --
 
 ALTER SEQUENCE deeds_deed_sn_seq OWNED BY deeds.deed_sn;
@@ -769,7 +767,7 @@ CREATE MATERIALIZED VIEW derived_boundaries AS
 
 
 --
--- Name: hist_beacons; Type: TABLE; Schema: public; Owner: postgres
+-- Name: hist_beacons; Type: TABLE; Schema: public; Owner: docker
 --
 
 CREATE TABLE hist_beacons (
@@ -789,7 +787,7 @@ CREATE TABLE hist_beacons (
 
 
 --
--- Name: hist_beacons_hist_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: hist_beacons_hist_id_seq; Type: SEQUENCE; Schema: public; Owner: docker
 --
 
 CREATE SEQUENCE hist_beacons_hist_id_seq
@@ -802,7 +800,7 @@ CREATE SEQUENCE hist_beacons_hist_id_seq
 
 
 --
--- Name: hist_beacons_hist_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: hist_beacons_hist_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
 --
 
 ALTER SEQUENCE hist_beacons_hist_id_seq OWNED BY hist_beacons.hist_id;
@@ -871,7 +869,7 @@ ALTER SEQUENCE local_govt_id_seq OWNED BY local_govt.id;
 
 
 --
--- Name: localmotclass_code_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: localmotclass_code_seq; Type: SEQUENCE; Schema: public; Owner: docker
 --
 
 CREATE SEQUENCE localmotclass_code_seq
@@ -884,7 +882,7 @@ CREATE SEQUENCE localmotclass_code_seq
 
 
 --
--- Name: localrdclass_code_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: localrdclass_code_seq; Type: SEQUENCE; Schema: public; Owner: docker
 --
 
 CREATE SEQUENCE localrdclass_code_seq
@@ -1250,7 +1248,7 @@ ALTER SEQUENCE schemes_id_seq OWNED BY schemes.id;
 
 
 --
--- Name: speed_code_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: speed_code_seq; Type: SEQUENCE; Schema: public; Owner: docker
 --
 
 CREATE SEQUENCE speed_code_seq
@@ -1294,7 +1292,7 @@ ALTER SEQUENCE status_cat_status_cat_seq OWNED BY status_cat.status_cat;
 
 
 --
--- Name: str_type_strid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: str_type_strid_seq; Type: SEQUENCE; Schema: public; Owner: docker
 --
 
 CREATE SEQUENCE str_type_strid_seq
@@ -1378,14 +1376,14 @@ ALTER TABLE ONLY beardist ALTER COLUMN id SET DEFAULT nextval('beardist_id_seq':
 
 
 --
--- Name: deeds deed_sn; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: deeds deed_sn; Type: DEFAULT; Schema: public; Owner: docker
 --
 
 ALTER TABLE ONLY deeds ALTER COLUMN deed_sn SET DEFAULT nextval('deeds_deed_sn_seq'::regclass);
 
 
 --
--- Name: hist_beacons hist_id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: hist_beacons hist_id; Type: DEFAULT; Schema: public; Owner: docker
 --
 
 ALTER TABLE ONLY hist_beacons ALTER COLUMN hist_id SET DEFAULT nextval('hist_beacons_hist_id_seq'::regclass);
@@ -1487,7 +1485,7 @@ ALTER TABLE ONLY beardist
 
 
 --
--- Name: deeds dkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: deeds dkey; Type: CONSTRAINT; Schema: public; Owner: docker
 --
 
 ALTER TABLE ONLY deeds
@@ -1495,7 +1493,7 @@ ALTER TABLE ONLY deeds
 
 
 --
--- Name: hist_beacons hist_beacons_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: hist_beacons hist_beacons_pkey; Type: CONSTRAINT; Schema: public; Owner: docker
 --
 
 ALTER TABLE ONLY hist_beacons
@@ -1694,14 +1692,14 @@ CREATE INDEX fki_transactions_survey_fkey ON transactions USING btree (survey);
 
 
 --
--- Name: hist_beacons_idx1; Type: INDEX; Schema: public; Owner: postgres
+-- Name: hist_beacons_idx1; Type: INDEX; Schema: public; Owner: docker
 --
 
 CREATE INDEX hist_beacons_idx1 ON hist_beacons USING btree (gid);
 
 
 --
--- Name: hist_beacons_idx2; Type: INDEX; Schema: public; Owner: postgres
+-- Name: hist_beacons_idx2; Type: INDEX; Schema: public; Owner: docker
 --
 
 CREATE INDEX hist_beacons_idx2 ON hist_beacons USING btree (hist_time);
@@ -1975,6 +1973,14 @@ ALTER TABLE ONLY transactions
 
 ALTER TABLE ONLY transactions
     ADD CONSTRAINT transactions_survey_fkey FOREIGN KEY (survey) REFERENCES survey(id);
+
+
+--
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO docker;
 
 
 --
