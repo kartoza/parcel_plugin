@@ -184,7 +184,7 @@ BEGIN
     'DELETE',
     NOW()
     );
-    RETURN NEW;
+    RETURN OLD;
 END;
 $$;
 
@@ -1821,7 +1821,7 @@ CREATE TRIGGER trg_beacons_after_insert AFTER INSERT ON beacons FOR EACH ROW EXE
 -- Name: beacons trg_beacons_before_delete; Type: TRIGGER; Schema: public; Owner: docker
 --
 
---CREATE TRIGGER trg_beacons_before_delete BEFORE DELETE ON beacons FOR EACH ROW EXECUTE PROCEDURE fn_beacons_before_delete();
+CREATE TRIGGER trg_beacons_before_delete BEFORE DELETE ON beacons FOR EACH ROW EXECUTE PROCEDURE fn_beacons_before_delete();
 
 
 --
@@ -1979,8 +1979,7 @@ ALTER TABLE ONLY transactions
 -- Name: public; Type: ACL; Schema: -; Owner: postgres
 --
 
-REVOKE ALL ON SCHEMA public FROM postgres;
-GRANT ALL ON SCHEMA public TO docker;
+
 
 
 --
