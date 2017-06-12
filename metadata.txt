@@ -11,3 +11,4 @@ email=gavin@kartoza.com
 ; Optional items:
 experimental=False
 icon=icon.png
+about=Sponsored by SpatialMatrix
