@@ -73,6 +73,7 @@ class SMLSurveyor:
         self.plugin_dir = os.path.dirname(os.path.realpath(__file__))
         self.uri = None
         self.connection = None
+        self.crs = None
         self.database = None
         self.datetime = datetime.now()
         self.required_layers = []
@@ -171,7 +172,6 @@ class SMLSurveyor:
         settings_plugin.beginGroup(metadata.name().replace(" ", "_"))
         settings_postgis.beginGroup('PostgreSQL/connections')
         self.connection = connection
-        self.crs = QgsCoordinateReferenceSystem(crs.get('auth_id'))
         if not bool(self.connection):
             # fetch pre-chosen database connection
             self.connection = settings_plugin.value("DatabaseConnection", None)
@@ -186,8 +186,9 @@ class SMLSurveyor:
             dialog.show()
             if bool(dialog.exec_()):
                 self.connection = dialog.get_database_connection()
-                self.crs = QgsCoordinateReferenceSystem(
-                    dialog.get_crs().get('auth_id'))
+                if dialog.get_crs():
+                    self.crs = QgsCoordinateReferenceSystem(
+                        dialog.get_crs().get('auth_id'))
                 settings_plugin.setValue("DatabaseConnection", self.connection)
         # validate database connection
         if bool(self.connection):
@@ -225,6 +226,8 @@ class SMLSurveyor:
                                 error_message))
                         if not ok:
                             break
+                    else:
+                        break
 
             else:
                 msg = "Please enter the username and password."
