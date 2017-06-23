@@ -23,7 +23,7 @@ from qgis.core import *
 from qgisToolbox import FeatureSelector
 from PyQt4Widgets import XQPushButton, XQDialogButtonBox
 from database import *
-from utilities import images_path, get_ui_class, data_path
+from utilities import images_path, get_ui_class, get_path
 
 UI_CLASS = get_ui_class("ui_pgnewconnection.ui")
 
@@ -298,7 +298,8 @@ class DatabaseConnectionDialog(QDialog):
                     self, "Setup Database Schema", message, items, 0, False)
 
                 if item and ok:
-                    query = open(data_path("sml_database.sql"), "r").read()
+                    query = open(
+                        get_path("scripts","database_setup.sql"), "r").read()
                     query = query.replace(":CRS", "{CRS}")
                     cursor = connection.cursor()
                     cursor.execute(query.format(CRS=crs_options[item]))

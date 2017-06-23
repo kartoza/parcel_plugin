@@ -27,8 +27,8 @@ def images_path(*args):
 
     return path
 
-def data_path(*args):
-    """Get the path to our resources folder.
+def get_path(*args):
+    """Get the path to our specific folder from plugin folder.
 
     .. versionadded:: 3.0
 
@@ -42,8 +42,6 @@ def data_path(*args):
     :rtype: str
     """
     path = os.path.dirname(__file__)
-    path = os.path.abspath(
-        os.path.join(path, 'data'))
     for item in args:
         path = os.path.abspath(os.path.join(path, item))
 
