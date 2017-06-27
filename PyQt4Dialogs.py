@@ -285,9 +285,11 @@ class DatabaseConnectionDialog(QDialog):
 
             if not is_schema_valid:
 
-                message = ("WARNING: There is no cogo schema found in this "
-                           "database. Please select CRS \nand click OK "
-                           "button to setup cogo schema in this database.")
+                message = ("WARNING: The selected database does not contain "
+                           "tables and functions required for use of "
+                           "the plugin. Please select a CRS and click "
+                           "OK to procees setting up a database using "
+                           "the chosen CRS.")
                 crs_options = {
                     'WGS 84 / UTM zone 31N': 32631,
                     'WGS 84 / UTM zone 32N': 32632
