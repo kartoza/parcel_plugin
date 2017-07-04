@@ -291,9 +291,7 @@ class DatabaseConnectionDialog(QDialog):
                            "OK to procees setting up a database using "
                            "the chosen CRS.")
                 crs_options = {
-                    'WGS 84 / UTM zone 31N': 32631,
                     'Minna / UTM zone 31N': 26331,
-                    'WGS 84 / UTM zone 32N': 32632,
                     'Minna / UTM zone 32N': 26332
                 }
                 items = crs_options.keys()
