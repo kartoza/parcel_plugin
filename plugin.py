@@ -73,6 +73,7 @@ class SMLSurveyor:
         self.plugin_dir = os.path.dirname(os.path.realpath(__file__))
         self.uri = None
         self.connection = None
+        self.crs = None
         self.database = None
         self.datetime = datetime.now()
         self.required_layers = []
@@ -162,7 +163,7 @@ class SMLSurveyor:
             self.iface.mainWindow().removeToolBar(self.plugin_toolbar)
             self.plugin_toolbar.hide()
 
-    def set_database_connection(self, connection=None):
+    def set_database_connection(self, connection=None, crs=None):
         """ Create a database connection
         """
         # fetch settings
@@ -178,13 +179,16 @@ class SMLSurveyor:
         if bool(self.connection):
             if self.connection not in settings_postgis.childGroups():
                 settings_plugin.setValue("DatabaseConnection", "")
-                connection = None
+                self.connection = None
         # fetch from user if necessary
         if not bool(self.connection):
             dialog = DatabaseConnectionDialog()
             dialog.show()
             if bool(dialog.exec_()):
                 self.connection = dialog.get_database_connection()
+                if dialog.get_crs():
+                    self.crs = QgsCoordinateReferenceSystem(
+                        dialog.get_crs().get('auth_id'))
                 settings_plugin.setValue("DatabaseConnection", self.connection)
         # validate database connection
         if bool(self.connection):
@@ -222,6 +226,8 @@ class SMLSurveyor:
                                 error_message))
                         if not ok:
                             break
+                    else:
+                        break
 
             else:
                 msg = "Please enter the username and password."
@@ -299,6 +305,8 @@ class SMLSurveyor:
                             required_layer.layer = layer
                             self.iface.legendInterface().setLayerVisible(
                                 layer, True)
+                            if self.crs:
+                                layer.setCrs(self.crs)
                     self.iface.zoomToActiveLayer()
 
     def manage_beacons(self):
@@ -345,9 +353,10 @@ class SMLSurveyor:
         """ Action to select the db connection to work with.
         """
         database_manager = DatabaseManager()
-        connection = database_manager.current_connection
+        connection = database_manager.get_current_connection()
+        crs = database_manager.get_current_crs()
         if connection:
-            self.set_database_connection(connection=connection)
+            self.set_database_connection(connection=connection, crs=crs)
 
 
 class DatabaseManager():
@@ -356,12 +365,22 @@ class DatabaseManager():
         self.dialog = DatabaseConnectionDialog()
         self.dialog.show()
         self.current_connection = None
+        self.current_crs = None
         if bool(self.dialog.exec_()):
             self.current_connection = self.dialog.get_database_connection()
+            self.current_crs = self.dialog.get_crs()
             settings_plugin = QSettings()
             settings_plugin.beginGroup(metadata.name().replace(" ", "_"))
             settings_plugin.setValue(
                 "DatabaseConnection", self.current_connection)
+
+    def get_current_connection(self):
+
+        return self.current_connection
+
+    def get_current_crs(self):
+
+        return self.current_crs
 
 
 class BeaconManager():

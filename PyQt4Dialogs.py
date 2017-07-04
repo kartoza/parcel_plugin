@@ -23,7 +23,7 @@ from qgis.core import *
 from qgisToolbox import FeatureSelector
 from PyQt4Widgets import XQPushButton, XQDialogButtonBox
 from database import *
-from utilities import images_path, get_ui_class
+from utilities import images_path, get_ui_class, get_path
 
 UI_CLASS = get_ui_class("ui_pgnewconnection.ui")
 
@@ -183,11 +183,15 @@ class DatabaseConnectionDialog(QDialog):
             None, Qt.WindowStaysOnTopHint)
         # initialize ui
         self.connection = None
+        self.crs = None
         self.setup_ui()
         self.populate_database_choices()
 
     def get_database_connection(self):
         return self.connection
+
+    def get_crs(self):
+        return self.crs
 
     def populate_database_choices(self):
         """ Populate database connection choices
@@ -195,13 +199,8 @@ class DatabaseConnectionDialog(QDialog):
         self.cmbbx_conn.clear()
         settings = QSettings()
         settings.beginGroup('PostgreSQL/connections')
-        self.cmbbx_conn.addItem(_from_utf8(""))
-        self.cmbbx_conn.setItemText(0, QApplication.translate(
-                "DatabaseConnectionDialog", "", None))
         for index, database in enumerate(settings.childGroups()):
-            self.cmbbx_conn.addItem(_from_utf8(""))
-            self.cmbbx_conn.setItemText(index + 1, QApplication.translate(
-                "DatabaseConnectionDialog", database, None))
+            self.cmbbx_conn.addItem(database)
 
     def test_database_connection(self):
         """ Test database connection has necessary tables
@@ -214,7 +213,103 @@ class DatabaseConnectionDialog(QDialog):
                 "Please select a database connection")
         else:
             self.connection = connection
+
+        if self.connection:
+            ok = self.test_database_schema()
+            if not ok:
+                return
             self.accept()
+
+    def test_database_schema(self):
+        """Test whether co-go schema is applied in the database."""
+        query = "SELECT EXISTS (SELECT 1 AS result FROM pg_tables " \
+                "WHERE schemaname = 'public' AND tablename = 'beacons')"
+
+        settings_postgis = QSettings()
+        settings_postgis.beginGroup('PostgreSQL/connections')
+        max_attempts = 3
+        is_credential_exist = True
+
+        db_service = settings_postgis.value(self.connection + '/service')
+        db_host = settings_postgis.value(self.connection + '/host')
+        db_port = settings_postgis.value(self.connection + '/port')
+        db_name = settings_postgis.value(self.connection + '/database')
+        db_username = settings_postgis.value(self.connection + '/username')
+        db_password = settings_postgis.value(self.connection + '/password')
+
+        uri = QgsDataSourceURI()
+        uri.setConnection(
+            db_host,
+            db_port,
+            db_name,
+            db_username,
+            db_password)
+
+        if not db_username and not db_password:
+            msg = "Please enter the username and password."
+            for i in range(max_attempts):
+                ok, db_username, db_password = (
+                    QgsCredentials.instance().get(
+                        uri.connectionInfo(),
+                        db_username,
+                        db_password,
+                        msg
+                    ))
+
+        connection = None
+        if is_credential_exist:
+            if db_service:
+                connection = psycopg2.connect(
+                    "service='{SERVICE}' user='{USER}' "
+                    "password='{PASSWORD}'".format(
+                        SERVICE=db_service,
+                        USER=db_username,
+                        PASSWORD=db_password
+                    ))
+            else:
+                connection = psycopg2.connect(
+                    "host='{HOST}' dbname='{NAME}' user='{USER}' "
+                    "password='{PASSWORD}' port='{PORT}'".format(
+                        HOST=db_host,
+                        NAME=db_name,
+                        USER=db_username,
+                        PASSWORD=db_password,
+                        PORT=db_port
+                    ))
+
+        if connection:
+            cursor = connection.cursor()
+            cursor.execute(query)
+            is_schema_valid = cursor.fetchall()[0][0]
+            del cursor
+
+            if not is_schema_valid:
+
+                message = ("WARNING: The selected database does not contain "
+                           "tables and functions required for use of "
+                           "the plugin. Please select a CRS and click "
+                           "OK to procees setting up a database using "
+                           "the chosen CRS.")
+                crs_options = {
+                    'WGS 84 / UTM zone 31N': 32631,
+                    'Minna / UTM zone 31N': 26331,
+                    'WGS 84 / UTM zone 32N': 32632,
+                    'Minna / UTM zone 32N': 26332
+                }
+                items = crs_options.keys()
+
+                item, ok = QInputDialog.getItem(
+                    self, "Setup Database Schema", message, items, 0, False)
+
+                if item and ok:
+                    query = open(
+                        get_path("scripts","database_setup.sql"), "r").read()
+                    query = query.replace(":CRS", "{CRS}")
+                    cursor = connection.cursor()
+                    cursor.execute(query.format(CRS=crs_options[item]))
+                    connection.commit()
+
+                return ok
 
     def setup_ui(self):
         """ Initialize ui
@@ -283,6 +378,16 @@ class DatabaseConnectionDialog(QDialog):
             "A database connection has not yet been selected or "
             "is no longer valid. Please select a database connection or "
             "define a new connection.",
+            None
+        ))
+        self.btn_new_conn.setToolTip(QApplication.translate(
+            "DatabaseConnectionDialog",
+            "Add new PostgreSQL connection",
+            None
+        ))
+        self.btn_refresh_conn.setToolTip(QApplication.translate(
+            "DatabaseConnectionDialog",
+            "Refresh available PostgreSQL connection",
             None
         ))
         # connect ui widgets

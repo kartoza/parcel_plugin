@@ -27,6 +27,25 @@ def images_path(*args):
 
     return path
 
+def get_path(*args):
+    """Get the path to our specific folder from plugin folder.
+
+    .. versionadded:: 3.0
+
+    Note that in version 3.0 we removed the use of Qt Resource files in
+    favour of directly accessing on-disk resources.
+
+    :param args List of path elements e.g. ['img', 'logos', 'image.png']
+    :type args: list[str]
+
+    :return: Absolute path to the resources folder.
+    :rtype: str
+    """
+    path = os.path.dirname(__file__)
+    for item in args:
+        path = os.path.abspath(os.path.join(path, item))
+
+    return path
 
 def get_ui_class(ui_file):
     """Get UI Python class from .ui file.

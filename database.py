@@ -44,7 +44,8 @@ class Manager:
             if not hasattr(self, 'conn') or self.connection is None:
                 if parameters.get("SERVICE"):
                     self.connection = psycopg2.connect(
-                        "service='{SERVICE}'".format(
+                        "service='{SERVICE}' user='{USER}' "
+                        "password='{PASSWORD}'".format(
                             SERVICE=parameters["SERVICE"],
                             USER=parameters["USER"],
                             PASSWORD=parameters["PASSWORD"]
