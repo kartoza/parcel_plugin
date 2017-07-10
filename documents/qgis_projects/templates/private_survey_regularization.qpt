@@ -1,0 +1,194 @@
+<Composer title="Private_survey_regulazation" visible="1">
+ <Composition resizeToContentsMarginLeft="0" snapping="0" showPages="1" guidesVisible="1" resizeToContentsMarginTop="0" worldFileMap="" alignmentSnap="1" printResolution="300" paperWidth="210" gridVisible="0" snapGridOffsetX="0" smartGuides="1" snapGridOffsetY="0" resizeToContentsMarginRight="0" snapTolerancePixels="5" printAsRaster="0" generateWorldFile="0" paperHeight="297" numPages="1" snapGridResolution="10" resizeToContentsMarginBottom="0">
+  <symbol alpha="1" clip_to_extent="1" type="fill" name="">
+   <layer pass="0" class="SimpleFill" locked="0">
+    <prop k="border_width_map_unit_scale" v="0,0,0,0,0,0"/>
+    <prop k="color" v="255,255,255,255"/>
+    <prop k="joinstyle" v="miter"/>
+    <prop k="offset" v="0,0"/>
+    <prop k="offset_map_unit_scale" v="0,0,0,0,0,0"/>
+    <prop k="offset_unit" v="MM"/>
+    <prop k="outline_color" v="0,0,0,255"/>
+    <prop k="outline_style" v="no"/>
+    <prop k="outline_width" v="0.26"/>
+    <prop k="outline_width_unit" v="MM"/>
+    <prop k="style" v="solid"/>
+   </layer>
+  </symbol>
+  <ComposerLabel valign="32" marginX="1" marginY="1" labelText="This is to certify that the boundaries shown in red and details in black were surveyed by me in accordance with survey sules and regulations." htmlState="0" halign="1">
+   <LabelFont description="Ubuntu,10,-1,5,50,0,0,0,0,0" style=""/>
+   <FontColor red="0" blue="0" green="0"/>
+   <ComposerItem pagey="245.86" page="1" id="" lastValidViewScaleFactor="-1" positionMode="0" positionLock="false" x="123.433" y="245.86" visibility="1" zValue="12" background="false" transparency="0" frameJoinStyle="miter" blendMode="0" width="83.5188" outlineWidth="0.3" excludeFromExports="0" uuid="{efc455d8-052a-48aa-a6b9-0250a9d21b0f}" height="19.4542" itemRotation="0" frame="false" pagex="123.433">
+    <FrameColor alpha="255" red="0" blue="0" green="0"/>
+    <BackgroundColor alpha="255" red="255" blue="255" green="255"/>
+    <customproperties/>
+   </ComposerItem>
+  </ComposerLabel>
+  <ComposerShape shapeType="0" cornerRadius="0">
+   <symbol alpha="1" clip_to_extent="1" type="fill" name="">
+    <layer pass="0" class="SimpleFill" locked="0">
+     <prop k="border_width_map_unit_scale" v="0,0,0,0,0,0"/>
+     <prop k="color" v="255,255,255,0"/>
+     <prop k="joinstyle" v="miter"/>
+     <prop k="offset" v="0,0"/>
+     <prop k="offset_map_unit_scale" v="0,0,0,0,0,0"/>
+     <prop k="offset_unit" v="MM"/>
+     <prop k="outline_color" v="0,0,0,255"/>
+     <prop k="outline_style" v="solid"/>
+     <prop k="outline_width" v="0.3"/>
+     <prop k="outline_width_unit" v="MM"/>
+     <prop k="style" v="solid"/>
+    </layer>
+   </symbol>
+   <ComposerItem pagey="198.028" page="1" id="" lastValidViewScaleFactor="-1" positionMode="0" positionLock="false" x="184.832" y="198.028" visibility="1" zValue="11" background="true" transparency="0" frameJoinStyle="miter" blendMode="0" width="11.1217" outlineWidth="0.3" excludeFromExports="0" uuid="{7c9c4216-3b62-43fe-9b71-9863d2d094ac}" height="12.1809" itemRotation="0" frame="false" pagex="184.832">
+    <FrameColor alpha="255" red="0" blue="0" green="0"/>
+    <BackgroundColor alpha="255" red="255" blue="255" green="255"/>
+    <customproperties/>
+   </ComposerItem>
+  </ComposerShape>
+  <ComposerLabel valign="128" marginX="1" marginY="1" labelText="[% &quot;survey_authorisation&quot; %]" htmlState="0" halign="4">
+   <LabelFont description="Ubuntu,16,-1,5,75,0,0,0,0,0" style=""/>
+   <FontColor red="0" blue="0" green="0"/>
+   <ComposerItem pagey="194.321" page="1" id="" lastValidViewScaleFactor="-1" positionMode="0" positionLock="false" x="180.727" y="194.321" visibility="1" zValue="10" background="false" transparency="0" frameJoinStyle="miter" blendMode="0" width="19.3306" outlineWidth="0.3" excludeFromExports="0" uuid="{c41bb0b1-73bb-4606-a2b6-00f7068271b8}" height="19.5954" itemRotation="0" frame="false" pagex="180.727">
+    <FrameColor alpha="255" red="0" blue="0" green="0"/>
+    <BackgroundColor alpha="255" red="255" blue="255" green="255"/>
+    <customproperties/>
+   </ComposerItem>
+  </ComposerLabel>
+  <ComposerPicture resizeMode="0" svgBorderWidth="0.6" pictureRotation="0.649776" pictureWidth="22.5191" svgFillColor="0,0,0,255" svgBorderColor="255,255,255,255" northMode="1" file="/gis/src/kartoza_work/parcel_plugin/documents/qgis_projects/Arrow_06.svg" northOffset="0" pictureHeight="22.5191" mapId="0" anchorPoint="0">
+   <ComposerItem pagey="160.276" page="1" id="" lastValidViewScaleFactor="-1" positionMode="0" positionLock="false" x="179.006" y="160.276" visibility="1" zValue="9" background="false" transparency="0" frameJoinStyle="miter" blendMode="0" width="22.773" outlineWidth="0.3" excludeFromExports="0" uuid="{44468c60-6d91-4b2f-a268-383b85826ed6}" height="25.849" itemRotation="0" frame="false" pagex="179.006">
+    <FrameColor alpha="255" red="0" blue="0" green="0"/>
+    <BackgroundColor alpha="255" red="255" blue="255" green="255"/>
+    <dataDefinedSource expr="" field="" active="false" useExpr="true"/>
+    <customproperties/>
+   </ComposerItem>
+  </ComposerPicture>
+  <ComposerLabel valign="32" marginX="1" marginY="1" labelText="U.T.M Co-ordinates of SC/NG&#xa;N 1.054 562.58 m&#xa;E 222.683.90 m&#xa;Origin: U.T.M Zone (MNCSP)&#xa;&#xa;" htmlState="0" halign="1">
+   <LabelFont description="Ubuntu,12,-1,5,50,0,0,0,0,0" style="Regular"/>
+   <FontColor red="0" blue="0" green="0"/>
+   <ComposerItem pagey="249.886" page="1" id="" lastValidViewScaleFactor="-1" positionMode="0" positionLock="false" x="2.34792" y="249.886" visibility="1" zValue="8" background="false" transparency="0" frameJoinStyle="miter" blendMode="0" width="66.7479" outlineWidth="0.3" excludeFromExports="0" uuid="{9647de81-9690-45f1-9cfb-876ad0e09fd3}" height="24.8208" itemRotation="0" frame="false" pagex="2.34792">
+    <FrameColor alpha="255" red="0" blue="0" green="0"/>
+    <BackgroundColor alpha="255" red="255" blue="255" green="255"/>
+    <customproperties/>
+   </ComposerItem>
+  </ComposerLabel>
+  <ComposerLabel valign="32" marginX="1" marginY="1" labelText="&#xa;Drawn by : &#xa;&#xa;Checked by: " htmlState="0" halign="1">
+   <LabelFont description="Ubuntu,10,-1,5,50,0,0,0,0,0" style=""/>
+   <FontColor red="0" blue="0" green="0"/>
+   <ComposerItem pagey="262.296" page="1" id="" lastValidViewScaleFactor="-1" positionMode="0" positionLock="false" x="123.433" y="262.296" visibility="1" zValue="7" background="false" transparency="0" frameJoinStyle="miter" blendMode="0" width="82.8479" outlineWidth="0.3" excludeFromExports="0" uuid="{02864170-cd09-4cb5-94fb-dc0c01ba91fd}" height="20.125" itemRotation="0" frame="false" pagex="123.433">
+    <FrameColor alpha="255" red="0" blue="0" green="0"/>
+    <BackgroundColor alpha="255" red="255" blue="255" green="255"/>
+    <customproperties/>
+   </ComposerItem>
+  </ComposerLabel>
+  <ComposerLabel valign="32" marginX="1" marginY="1" labelText="[% &quot;sheet_no&quot; %]" htmlState="0" halign="1">
+   <LabelFont description="Ubuntu,12,-1,5,75,0,0,0,0,0" style=""/>
+   <FontColor red="0" blue="0" green="0"/>
+   <ComposerItem pagey="282.421" page="1" id="" lastValidViewScaleFactor="-1" positionMode="0" positionLock="false" x="123.433" y="282.421" visibility="1" zValue="6" background="false" transparency="0" frameJoinStyle="miter" blendMode="0" width="47.6292" outlineWidth="0.3" excludeFromExports="0" uuid="{742a4bfc-1437-43c2-9ef3-1d018f0deacf}" height="9.72708" itemRotation="0" frame="false" pagex="123.433">
+    <FrameColor alpha="255" red="0" blue="0" green="0"/>
+    <BackgroundColor alpha="255" red="255" blue="255" green="255"/>
+    <customproperties/>
+   </ComposerItem>
+  </ComposerLabel>
+  <ComposerScaleBar lineCapStyle="square" style="Numeric" numMapUnitsPerScaleBarUnit="1" segmentSizeMode="0" alignment="1" numSegments="4" segmentMillimeters="250" lineJoinStyle="miter" minBarWidth="50" numUnitsPerSegment="50" units="1" labelBarSpace="3" outlineWidth="0.3" numSegmentsLeft="2" maxBarWidth="150" height="3" boxContentSpace="1" mapId="0" unitLabel="m">
+   <scaleBarFont description="Ubuntu,12,-1,5,75,0,0,0,0,0" style=""/>
+   <fillColor alpha="255" red="0" blue="0" green="0"/>
+   <fillColor2 alpha="255" red="255" blue="255" green="255"/>
+   <strokeColor alpha="255" red="0" blue="0" green="0"/>
+   <textColor alpha="255" red="0" blue="0" green="0"/>
+   <ComposerItem pagey="283.091" page="1" id="" lastValidViewScaleFactor="-1" positionMode="0" positionLock="false" x="48.3838" y="283.091" visibility="1" zValue="5" background="false" transparency="0" frameJoinStyle="miter" blendMode="0" width="45.449" outlineWidth="0.3" excludeFromExports="0" uuid="{9f7241e9-fc4f-45e2-bee3-b03695007b8c}" height="9.39208" itemRotation="0" frame="false" pagex="48.3838">
+    <FrameColor alpha="255" red="0" blue="0" green="0"/>
+    <BackgroundColor alpha="255" red="255" blue="255" green="255"/>
+    <customproperties/>
+   </ComposerItem>
+  </ComposerScaleBar>
+  <ComposerLabel valign="128" marginX="1" marginY="1" labelText="Plan No. [% &quot;plan_no&quot; %]" htmlState="0" halign="1">
+   <LabelFont description="Ubuntu,12,-1,5,75,0,0,0,0,0" style=""/>
+   <FontColor red="0" blue="0" green="0"/>
+   <ComposerItem pagey="280.744" page="1" id="" lastValidViewScaleFactor="-1" positionMode="0" positionLock="false" x="2.34792" y="280.744" visibility="1" zValue="4" background="false" transparency="0" frameJoinStyle="miter" blendMode="0" width="47.6292" outlineWidth="0.3" excludeFromExports="0" uuid="{c8012175-a487-420e-9c31-5f8dff9196f5}" height="11.7396" itemRotation="0" frame="false" pagex="2.34792">
+    <FrameColor alpha="255" red="0" blue="0" green="0"/>
+    <BackgroundColor alpha="255" red="255" blue="255" green="255"/>
+    <customproperties/>
+   </ComposerItem>
+  </ComposerLabel>
+  <ComposerLabel valign="32" marginX="1" marginY="1" labelText="SURVEYOR-GENERAL&#xa;[%CASE &#xa;WHEN  month(  now()  )   = 1 THEN 'January'  || ' '  ||  year(  now()  )  &#xa;WHEN  month(  now()  )   = 2 THEN 'February' || ' '  ||  year(  now()  )&#xa;WHEN  month(  now()  )   = 3 THEN 'March' || ' '  ||  year(  now()  )&#xa;WHEN  month(  now()  )   = 4 THEN 'April' || ' '  ||  year(  now()  )&#xa;WHEN  month(  now()  )   = 5 THEN 'May' || ' '  ||  year(  now()  )&#xa;WHEN  month(  now()  )   = 6 THEN 'June' || ' '  ||  year(  now()  )&#xa;WHEN  month(  now()  )   = 7 THEN 'July' || ' '  ||  year(  now()  )&#xa;WHEN  month(  now()  )   = 8 THEN 'August' || ' '  ||  year(  now()  )&#xa;WHEN  month(  now()  )   = 9 THEN 'September' || ' '  ||  year(  now()  )&#xa;WHEN  month(  now()  )   = 10 THEN 'October' || ' '  ||  year(  now()  )&#xa;WHEN  month(  now()  )   = 11 THEN 'November' || ' '  ||  year(  now()  )&#xa;WHEN  month(  now()  )   = 12 THEN 'December' || ' '  ||  year(  now()  ) &#xa;END%]&#xa;     " htmlState="0" halign="4">
+   <LabelFont description="Ubuntu,10,-1,5,50,0,0,0,0,0" style=""/>
+   <FontColor red="0" blue="0" green="0"/>
+   <ComposerItem pagey="43.6042" page="1" id="" lastValidViewScaleFactor="-1" positionMode="0" positionLock="false" x="71.1083" y="43.6042" visibility="1" zValue="3" background="true" transparency="0" frameJoinStyle="miter" blendMode="0" width="48.6354" outlineWidth="0.3" excludeFromExports="0" uuid="{3deb9d54-7b7e-423e-8647-c0cdd828ccbc}" height="13.0813" itemRotation="0" frame="true" pagex="71.1083">
+    <FrameColor alpha="255" red="0" blue="0" green="0"/>
+    <BackgroundColor alpha="255" red="255" blue="255" green="255"/>
+    <customproperties/>
+   </ComposerItem>
+  </ComposerLabel>
+  <ComposerLabel valign="32" marginX="1" marginY="1" labelText="&lt;i>[% &quot;plan_no&quot; %]&lt;/i>&lt;br>&#xa;&lt;b>LAND GRANTED TO MR [%upper( &quot;survey_owner&quot; )%]&lt;/b>&lt;br>&#xa;&lt;i>[% upper(&quot;area_name&quot;) %]&lt;/i>" htmlState="2" halign="4">
+   <LabelFont description="Ubuntu,14,-1,5,50,0,0,0,0,0" style="Regular"/>
+   <FontColor red="0" blue="0" green="0"/>
+   <ComposerItem pagey="6.0375" page="1" id="" lastValidViewScaleFactor="-1" positionMode="0" positionLock="false" x="37.2313" y="6.0375" visibility="1" zValue="2" background="true" transparency="0" frameJoinStyle="miter" blendMode="0" width="124.44" outlineWidth="0.3" excludeFromExports="0" uuid="{09470d24-8cda-4e2d-a002-6fc643662ee8}" height="20.7958" itemRotation="0" frame="true" pagex="37.2313">
+    <FrameColor alpha="255" red="0" blue="0" green="0"/>
+    <BackgroundColor alpha="255" red="255" blue="255" green="255"/>
+    <customproperties/>
+   </ComposerItem>
+  </ComposerLabel>
+  <ComposerMap followPreset="false" mapRotation="0" keepLayerSet="false" followPresetName="" id="0" previewMode="Render" drawCanvasItems="true">
+   <Extent ymin="760679.69201392948161811" xmin="563106.53955822624266148" ymax="761271.69201453332789242" xmax="563526.5395586546510458"/>
+   <LayerSet/>
+   <Grid/>
+   <ComposerMapGrid rightAnnotationDirection="0" gridFramePenColor="0,0,0,255" show="0" bottomAnnotationPosition="1" annotationPrecision="3" showAnnotation="0" topFrameDivisions="0" uuid="{cafab62f-3628-4db4-9810-a7211df5ef35}" leftAnnotationDirection="0" topAnnotationPosition="1" rightAnnotationDisplay="0" offsetX="0" offsetY="0" rightFrameDivisions="0" gridStyle="0" annotationFontColor="0,0,0,255" intervalX="0" gridFrameSideFlags="15" intervalY="0" bottomAnnotationDirection="0" leftAnnotationDisplay="0" leftFrameDivisions="0" frameFillColor1="255,255,255,255" annotationExpression="" frameFillColor2="0,0,0,255" crossLength="3" gridFramePenThickness="0.5" bottomAnnotationDisplay="0" unit="0" topAnnotationDisplay="0" leftAnnotationPosition="1" blendMode="0" gridFrameStyle="0" rightAnnotationPosition="1" gridFrameWidth="2" name="Grid 1" annotationFormat="0" bottomFrameDivisions="0" topAnnotationDirection="0" frameAnnotationDistance="1">
+    <lineStyle>
+     <symbol alpha="1" clip_to_extent="1" type="line" name="">
+      <layer pass="0" class="SimpleLine" locked="0">
+       <prop k="capstyle" v="square"/>
+       <prop k="customdash" v="5;2"/>
+       <prop k="customdash_map_unit_scale" v="0,0,0,0,0,0"/>
+       <prop k="customdash_unit" v="MM"/>
+       <prop k="draw_inside_polygon" v="0"/>
+       <prop k="joinstyle" v="bevel"/>
+       <prop k="line_color" v="0,0,0,255"/>
+       <prop k="line_style" v="solid"/>
+       <prop k="line_width" v="0"/>
+       <prop k="line_width_unit" v="MM"/>
+       <prop k="offset" v="0"/>
+       <prop k="offset_map_unit_scale" v="0,0,0,0,0,0"/>
+       <prop k="offset_unit" v="MM"/>
+       <prop k="use_custom_dash" v="0"/>
+       <prop k="width_map_unit_scale" v="0,0,0,0,0,0"/>
+      </layer>
+     </symbol>
+    </lineStyle>
+    <markerStyle>
+     <symbol alpha="1" clip_to_extent="1" type="marker" name="">
+      <layer pass="0" class="SimpleMarker" locked="0">
+       <prop k="angle" v="0"/>
+       <prop k="color" v="0,0,0,255"/>
+       <prop k="horizontal_anchor_point" v="1"/>
+       <prop k="joinstyle" v="bevel"/>
+       <prop k="name" v="circle"/>
+       <prop k="offset" v="0,0"/>
+       <prop k="offset_map_unit_scale" v="0,0,0,0,0,0"/>
+       <prop k="offset_unit" v="MM"/>
+       <prop k="outline_color" v="0,0,0,255"/>
+       <prop k="outline_style" v="solid"/>
+       <prop k="outline_width" v="0"/>
+       <prop k="outline_width_map_unit_scale" v="0,0,0,0,0,0"/>
+       <prop k="outline_width_unit" v="MM"/>
+       <prop k="scale_method" v="diameter"/>
+       <prop k="size" v="2"/>
+       <prop k="size_map_unit_scale" v="0,0,0,0,0,0"/>
+       <prop k="size_unit" v="MM"/>
+       <prop k="vertical_anchor_point" v="1"/>
+      </layer>
+     </symbol>
+    </markerStyle>
+    <annotationFontProperties description="Ubuntu,11,-1,5,50,0,0,0,0,0" style=""/>
+   </ComposerMapGrid>
+   <AtlasMap scalingMode="2" atlasDriven="1" margin="0.10000000000000001"/>
+   <ComposerItem pagey="1" page="1" id="" lastValidViewScaleFactor="2.98137" positionMode="0" positionLock="false" x="0" y="1" visibility="1" zValue="1" background="true" transparency="0" frameJoinStyle="miter" blendMode="0" width="210" outlineWidth="0.3" excludeFromExports="0" uuid="{6155d893-cbbb-4085-a3c9-7beaa590ab28}" height="296" itemRotation="0" frame="false" pagex="0">
+    <FrameColor alpha="255" red="0" blue="0" green="0"/>
+    <BackgroundColor alpha="255" red="255" blue="255" green="255"/>
+    <customproperties/>
+   </ComposerItem>
+  </ComposerMap>
+  <customproperties/>
+ </Composition>
+ <Atlas hideCoverage="false" coverageLayer="parcels20140407085146002" singleFile="false" filenamePattern="'output_'||@atlas_featurenumber" enabled="true" coverageLayerName="parcels" filterFeatures="false" coverageLayerProvider="postgres" sortFeatures="false" pageNameExpression="" coverageLayerSource="service='sml' sslmode=disable key='parcel_id' srid=26331 type=Polygon table=&quot;public&quot;.&quot;parcels&quot; (the_geom) sql="/>
+</Composer>
