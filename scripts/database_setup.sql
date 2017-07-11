@@ -1977,6 +1977,22 @@ ALTER TABLE ONLY transactions
 ALTER TABLE ONLY transactions
   ADD CONSTRAINT transactions_survey_fkey FOREIGN KEY (survey) REFERENCES survey (id);
 
+CREATE VIEW boundary_labels_degrees as 
+select a.id,a.parcel_id,a.boundary_id,a.bearing,a.distance,st_line_interpolate_point(a.geom,0.9) as geom 
+from boundary_labels as a;
+
+CREATE VIEW boundary_labels_minutes as 
+select a.id,a.parcel_id,a.boundary_id,a.bearing,a.distance,st_line_interpolate_point(a.geom,0.1) as geom 
+from boundary_labels as a;
+
+
+CREATE VIEW derived_boundaries_degrees as
+select a.parcel_id,a.id,a.distance,a.bearing,st_line_interpolate_point(a.geom,0.9) as geom from derived_boundaries as a;
+
+
+CREATE VIEW derived_boundaries_minutes as
+select a.parcel_id,a.id,a.distance,a.bearing,st_line_interpolate_point(a.geom,0.1) as geom from derived_boundaries as a;
+
 --
 -- Name: Refresh all materialized views
 --

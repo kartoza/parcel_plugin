@@ -10,19 +10,19 @@
     </layer-tree-layer>
     <layer-tree-group expanded="1" checked="Qt::Checked" name="Labels">
       <customproperties/>
-      <layer-tree-layer expanded="1" providerKey="postgres" checked="Qt::Checked" id="derived_points20170711113937257" source="service='sml' key='id' table=&quot;(select a.parcel_id,a.id,a.distance,a.bearing,st_line_interpolate_point(a.geom,0.1) as geom from derived_boundaries as a&#xa;)&quot; (geom) sql=" name="derived_boundaries(Minutes)">
+      <layer-tree-layer expanded="1" providerKey="postgres" checked="Qt::Checked" id="derived_boundaries_minutes20170711131615957" source="service='sml' key='id' srid=26332 type=Point table=&quot;public&quot;.&quot;derived_boundaries_minutes&quot; (geom) sql=" name="derived_boundaries(Minutes)">
         <customproperties/>
       </layer-tree-layer>
-      <layer-tree-layer expanded="1" providerKey="postgres" checked="Qt::Checked" id="derived_points20170711112805287" source="service='sml' key='parcel_id' table=&quot;((select a.parcel_id,a.id,a.distance,a.bearing,st_line_interpolate_point(a.geom,0.9) as geom from derived_boundaries as a&#xa;)&#xa;)&quot; (geom) sql=" name="derived_boundaries(Degrees)">
+      <layer-tree-layer expanded="1" providerKey="postgres" checked="Qt::Checked" id="derived_boundaries_degrees20170711131221200" source="service='sml' key='id' srid=26332 type=Point table=&quot;public&quot;.&quot;derived_boundaries_degrees&quot; (geom) sql=" name="derived_boundaries(Degrees)">
         <customproperties/>
       </layer-tree-layer>
-      <layer-tree-layer expanded="1" providerKey="postgres" checked="Qt::Checked" id="boundary_labels__Minutes_20170711120922259" source="service='sml' key='id' table=&quot;(select a.id,a.parcel_id,a.boundary_id,a.bearing,a.distance,st_line_interpolate_point(a.geom,0.1) as geom &#xa;from boundary_labels as a&#xa;)&quot; (geom) sql=" name="boundary_labels (Minutes)">
+      <layer-tree-layer expanded="1" providerKey="postgres" checked="Qt::Checked" id="boundary_labels_minutes20170711125854538" source="service='sml' key='id' srid=26332 type=Point table=&quot;public&quot;.&quot;boundary_labels_minutes&quot; (geom) sql=" name="boundary_labels (Minutes)">
         <customproperties/>
       </layer-tree-layer>
-      <layer-tree-layer expanded="1" providerKey="postgres" checked="Qt::Checked" id="boundary_labels__Degrees_20170711120055883" source="service='sml' key='id' table=&quot;(select a.id,a.parcel_id,a.boundary_id,a.bearing,a.distance,st_line_interpolate_point(a.geom,0.9) as geom &#xa;from boundary_labels as a&#xa;)&quot; (geom) sql=" name="boundary_labels (Degrees)">
+      <layer-tree-layer expanded="1" providerKey="postgres" checked="Qt::Checked" id="boundary_labels_degrees20170711125507457" source="service='sml' key='id' srid=26332 type=Point table=&quot;public&quot;.&quot;boundary_labels_degrees&quot; (geom) sql=" name="boundary_labels (Degrees)">
         <customproperties/>
       </layer-tree-layer>
-      <layer-tree-layer expanded="1" providerKey="postgres" checked="Qt::Checked" id="boundary_labels20170710213834263" source="service='sml' key='id' srid=26332 type=LineString table=&quot;public&quot;.&quot;boundary_labels&quot; (geom) sql=" name="boundary_labels (bearing and distance)">
+      <layer-tree-layer expanded="1" providerKey="postgres" checked="Qt::Checked" id="boundary_labels20170710213834263" source="service='sml' key='id' srid=26332 type=LineString table=&quot;public&quot;.&quot;boundary_labels&quot; (geom) sql=" name="boundary_labels (distance)">
         <customproperties/>
       </layer-tree-layer>
       <layer-tree-layer expanded="1" providerKey="postgres" checked="Qt::Checked" id="derived_boundaries20170710213649838" source="service='sml' key='id' srid=26332 type=LineString table=&quot;public&quot;.&quot;derived_boundaries&quot; (geom) sql=" name="derived_boundaries (distance)">
@@ -67,13 +67,18 @@
       <layer_coordinate_transform destAuthId="EPSG:26332" srcAuthId="EPSG:26332" srcDatumTransform="-1" destDatumTransform="-1" layerid="boundary_labels20170710213834263"/>
       <layer_coordinate_transform destAuthId="EPSG:26332" srcAuthId="EPSG:26332" srcDatumTransform="-1" destDatumTransform="-1" layerid="derived_boundaries20170710213649838"/>
       <layer_coordinate_transform destAuthId="EPSG:26332" srcAuthId="EPSG:26332" srcDatumTransform="-1" destDatumTransform="-1" layerid="test20170711121709797"/>
+      <layer_coordinate_transform destAuthId="EPSG:26332" srcAuthId="EPSG:26332" srcDatumTransform="-1" destDatumTransform="-1" layerid="boundary_labels_degrees20170711125617426"/>
       <layer_coordinate_transform destAuthId="EPSG:26332" srcAuthId="EPSG:26332" srcDatumTransform="-1" destDatumTransform="-1" layerid="parcels20170710213358945"/>
       <layer_coordinate_transform destAuthId="EPSG:26332" srcAuthId="EPSG:26332" srcDatumTransform="-1" destDatumTransform="-1" layerid="derived_points20170711112726937"/>
+      <layer_coordinate_transform destAuthId="EPSG:26332" srcAuthId="EPSG:26332" srcDatumTransform="-1" destDatumTransform="-1" layerid="boundary_labels_minutes20170711125854538"/>
       <layer_coordinate_transform destAuthId="EPSG:26332" srcAuthId="EPSG:26332" srcDatumTransform="-1" destDatumTransform="-1" layerid="derived_points20170711113937257"/>
       <layer_coordinate_transform destAuthId="EPSG:26332" srcAuthId="EPSG:26332" srcDatumTransform="-1" destDatumTransform="-1" layerid="boundary_labels__Minutes_20170711120922259"/>
       <layer_coordinate_transform destAuthId="EPSG:26332" srcAuthId="EPSG:26332" srcDatumTransform="-1" destDatumTransform="-1" layerid="boundary_labels__Degrees_20170711120055883"/>
       <layer_coordinate_transform destAuthId="EPSG:26332" srcAuthId="EPSG:26332" srcDatumTransform="-1" destDatumTransform="-1" layerid="derived_points20170711112805287"/>
       <layer_coordinate_transform destAuthId="EPSG:26332" srcAuthId="EPSG:26332" srcDatumTransform="-1" destDatumTransform="-1" layerid="beacons_intersect20170710221313411"/>
+      <layer_coordinate_transform destAuthId="EPSG:26332" srcAuthId="EPSG:26332" srcDatumTransform="-1" destDatumTransform="-1" layerid="boundary_labels_degrees20170711125507457"/>
+      <layer_coordinate_transform destAuthId="EPSG:26332" srcAuthId="EPSG:26332" srcDatumTransform="-1" destDatumTransform="-1" layerid="derived_boundaries_degrees20170711131221200"/>
+      <layer_coordinate_transform destAuthId="EPSG:26332" srcAuthId="EPSG:26332" srcDatumTransform="-1" destDatumTransform="-1" layerid="derived_boundaries_minutes20170711131615957"/>
       <layer_coordinate_transform destAuthId="EPSG:26332" srcAuthId="EPSG:26332" srcDatumTransform="-1" destDatumTransform="-1" layerid="derived_boundaries20170710213536046"/>
     </layer_coordinate_transform_info>
   </mapcanvas>
@@ -84,10 +89,10 @@
       <item>derived_boundaries20170710213649838</item>
       <item>boundary_labels20170710213834263</item>
       <item>beacons_intersect20170710221313411</item>
-      <item>derived_points20170711112805287</item>
-      <item>derived_points20170711113937257</item>
-      <item>boundary_labels__Degrees_20170711120055883</item>
-      <item>boundary_labels__Minutes_20170711120922259</item>
+      <item>boundary_labels_degrees20170711125507457</item>
+      <item>boundary_labels_minutes20170711125854538</item>
+      <item>derived_boundaries_degrees20170711131221200</item>
+      <item>derived_boundaries_minutes20170711131615957</item>
     </custom-order>
   </layer-tree-canvas>
   <legend updateDrawingOrder="true">
@@ -99,25 +104,25 @@
     <legendgroup open="true" checked="Qt::Checked" name="Labels">
       <legendlayer drawingOrder="-1" open="true" checked="Qt::Checked" name="derived_boundaries(Minutes)" showFeatureCount="0">
         <filegroup open="true" hidden="false">
-          <legendlayerfile isInOverview="0" layerid="derived_points20170711113937257" visible="1"/>
+          <legendlayerfile isInOverview="0" layerid="derived_boundaries_minutes20170711131615957" visible="1"/>
         </filegroup>
       </legendlayer>
       <legendlayer drawingOrder="-1" open="true" checked="Qt::Checked" name="derived_boundaries(Degrees)" showFeatureCount="0">
         <filegroup open="true" hidden="false">
-          <legendlayerfile isInOverview="0" layerid="derived_points20170711112805287" visible="1"/>
+          <legendlayerfile isInOverview="0" layerid="derived_boundaries_degrees20170711131221200" visible="1"/>
         </filegroup>
       </legendlayer>
       <legendlayer drawingOrder="-1" open="true" checked="Qt::Checked" name="boundary_labels (Minutes)" showFeatureCount="0">
         <filegroup open="true" hidden="false">
-          <legendlayerfile isInOverview="0" layerid="boundary_labels__Minutes_20170711120922259" visible="1"/>
+          <legendlayerfile isInOverview="0" layerid="boundary_labels_minutes20170711125854538" visible="1"/>
         </filegroup>
       </legendlayer>
       <legendlayer drawingOrder="-1" open="true" checked="Qt::Checked" name="boundary_labels (Degrees)" showFeatureCount="0">
         <filegroup open="true" hidden="false">
-          <legendlayerfile isInOverview="0" layerid="boundary_labels__Degrees_20170711120055883" visible="1"/>
+          <legendlayerfile isInOverview="0" layerid="boundary_labels_degrees20170711125507457" visible="1"/>
         </filegroup>
       </legendlayer>
-      <legendlayer drawingOrder="-1" open="true" checked="Qt::Checked" name="boundary_labels (bearing and distance)" showFeatureCount="0">
+      <legendlayer drawingOrder="-1" open="true" checked="Qt::Checked" name="boundary_labels (distance)" showFeatureCount="0">
         <filegroup open="true" hidden="false">
           <legendlayerfile isInOverview="0" layerid="boundary_labels20170710213834263" visible="1"/>
         </filegroup>
@@ -1034,7 +1039,7 @@ def my_form_open(dialog, layer, feature):
       <keywordList>
         <value></value>
       </keywordList>
-      <layername>boundary_labels (bearing and distance)</layername>
+      <layername>boundary_labels (distance)</layername>
       <srs>
         <spatialrefsys>
           <proj4>+proj=utm +zone=32 +ellps=clrk80 +towgs84=-92,-93,122,0,0,0,0 +units=m +no_defs</proj4>
@@ -1100,8 +1105,8 @@ def my_form_open(dialog, layer, feature):
         <sizescale scalemethod="diameter"/>
       </renderer-v2>
       <labeling type="rule-based">
-        <rules key="{5d5d2096-0379-4a7e-b56f-7b21d8bde194}">
-          <rule description="Distance" key="{2da13628-8fda-41e4-89ac-1aa3165b8b60}">
+        <rules key="{a514390b-4712-4323-91d3-4048eaef0a1d}">
+          <rule description="Distance" key="{40b5b3be-f11a-48fb-8357-1c6a84b04122}">
             <settings>
               <text-style fontItalic="0" fontFamily="Ubuntu" fontLetterSpacing="0" fontUnderline="0" fontWeight="75" fontStrikeout="0" textTransp="0" previewBkgrdColor="#ffffff" fontCapitals="0" textColor="127,0,0,255" fontSizeInMapUnits="0" isExpression="1" blendMode="0" fontSizeMapUnitScale="0,0,0,0,0,0" fontSize="11" fieldName=" &quot;distance&quot;  || 'm'" namedStyle="Bold" fontWordSpacing="0" useSubstitutions="0">
                 <substitutions/>
@@ -1398,10 +1403,8 @@ def my_form_open(dialog, layer, feature):
       <previewExpression></previewExpression>
     </maplayer>
     <maplayer simplifyAlgorithm="0" minimumScale="0" maximumScale="1e+08" simplifyDrawingHints="0" minLabelScale="0" maxLabelScale="1e+08" simplifyDrawingTol="1" readOnly="0" geometry="Point" simplifyMaxScale="1" type="vector" hasScaleBasedVisibilityFlag="0" simplifyLocal="1" scaleBasedLabelVisibilityFlag="0">
-      <id>boundary_labels__Degrees_20170711120055883</id>
-      <datasource>service='sml' key='id' table="(select a.id,a.parcel_id,a.boundary_id,a.bearing,a.distance,st_line_interpolate_point(a.geom,0.9) as geom 
-from boundary_labels as a
-)" (geom) sql=</datasource>
+      <id>boundary_labels_degrees20170711125507457</id>
+      <datasource>service='sml' key='id' srid=26332 type=Point table="public"."boundary_labels_degrees" (geom) sql=</datasource>
       <keywordList>
         <value></value>
       </keywordList>
@@ -1615,6 +1618,7 @@ from boundary_labels as a
       <SingleCategoryDiagramRenderer diagramType="Histogram" sizeLegend="0" attributeLegend="1">
         <DiagramCategory penColor="#000000" labelPlacementMethod="XHeight" penWidth="0" diagramOrientation="Up" sizeScale="0,0,0,0,0,0" minimumSize="0" barWidth="5" penAlpha="255" maxScaleDenominator="1e+08" backgroundColor="#ffffff" transparency="0" width="15" scaleDependency="Area" backgroundAlpha="255" angleOffset="1440" scaleBasedVisibility="0" enabled="0" height="15" lineSizeScale="0,0,0,0,0,0" sizeType="MM" lineSizeType="MM" minScaleDenominator="inf">
           <fontProperties description="Ubuntu,11,-1,5,50,0,0,0,0,0" style=""/>
+          <attribute field="" color="#000000" label=""/>
         </DiagramCategory>
         <symbol alpha="1" clip_to_extent="1" type="marker" name="sizeSymbol">
           <layer pass="0" class="SimpleMarker" locked="0">
@@ -1640,7 +1644,7 @@ from boundary_labels as a
         </symbol>
       </SingleCategoryDiagramRenderer>
       <DiagramLayerSettings yPosColumn="-1" showColumn="-1" linePlacementFlags="10" placement="0" dist="0" xPosColumn="-1" priority="0" obstacle="0" zIndex="0" showAll="1"/>
-      <annotationform></annotationform>
+      <annotationform>.</annotationform>
       <aliases>
         <alias field="id" index="0" name=""/>
         <alias field="parcel_id" index="1" name=""/>
@@ -1651,7 +1655,7 @@ from boundary_labels as a
       <excludeAttributesWMS/>
       <excludeAttributesWFS/>
       <attributeactions default="-1"/>
-      <attributetableconfig actionWidgetStyle="dropDown" sortExpression="" sortOrder="1953722985">
+      <attributetableconfig actionWidgetStyle="dropDown" sortExpression="" sortOrder="0">
         <columns>
           <column width="-1" hidden="0" type="field" name="id"/>
           <column width="-1" hidden="0" type="field" name="parcel_id"/>
@@ -1661,10 +1665,10 @@ from boundary_labels as a
           <column width="-1" hidden="1" type="actions"/>
         </columns>
       </attributetableconfig>
-      <editform></editform>
+      <editform>.</editform>
       <editforminit/>
       <editforminitcodesource>0</editforminitcodesource>
-      <editforminitfilepath></editforminitfilepath>
+      <editforminitfilepath>.</editforminitfilepath>
       <editforminitcode><![CDATA[# -*- coding: utf-8 -*-
 """
 QGIS forms can have a Python function that is called when the form is
@@ -1699,10 +1703,8 @@ def my_form_open(dialog, layer, feature):
       <previewExpression></previewExpression>
     </maplayer>
     <maplayer simplifyAlgorithm="0" minimumScale="0" maximumScale="1e+08" simplifyDrawingHints="0" minLabelScale="0" maxLabelScale="1e+08" simplifyDrawingTol="1" readOnly="0" geometry="Point" simplifyMaxScale="1" type="vector" hasScaleBasedVisibilityFlag="0" simplifyLocal="1" scaleBasedLabelVisibilityFlag="0">
-      <id>boundary_labels__Minutes_20170711120922259</id>
-      <datasource>service='sml' key='id' table="(select a.id,a.parcel_id,a.boundary_id,a.bearing,a.distance,st_line_interpolate_point(a.geom,0.1) as geom 
-from boundary_labels as a
-)" (geom) sql=</datasource>
+      <id>boundary_labels_minutes20170711125854538</id>
+      <datasource>service='sml' key='id' srid=26332 type=Point table="public"."boundary_labels_minutes" (geom) sql=</datasource>
       <keywordList>
         <value></value>
       </keywordList>
@@ -1916,6 +1918,7 @@ from boundary_labels as a
       <SingleCategoryDiagramRenderer diagramType="Histogram" sizeLegend="0" attributeLegend="1">
         <DiagramCategory penColor="#000000" labelPlacementMethod="XHeight" penWidth="0" diagramOrientation="Up" sizeScale="0,0,0,0,0,0" minimumSize="0" barWidth="5" penAlpha="255" maxScaleDenominator="1e+08" backgroundColor="#ffffff" transparency="0" width="15" scaleDependency="Area" backgroundAlpha="255" angleOffset="1440" scaleBasedVisibility="0" enabled="0" height="15" lineSizeScale="0,0,0,0,0,0" sizeType="MM" lineSizeType="MM" minScaleDenominator="inf">
           <fontProperties description="Ubuntu,11,-1,5,50,0,0,0,0,0" style=""/>
+          <attribute field="" color="#000000" label=""/>
         </DiagramCategory>
         <symbol alpha="1" clip_to_extent="1" type="marker" name="sizeSymbol">
           <layer pass="0" class="SimpleMarker" locked="0">
@@ -1941,7 +1944,7 @@ from boundary_labels as a
         </symbol>
       </SingleCategoryDiagramRenderer>
       <DiagramLayerSettings yPosColumn="-1" showColumn="-1" linePlacementFlags="10" placement="0" dist="0" xPosColumn="-1" priority="0" obstacle="0" zIndex="0" showAll="1"/>
-      <annotationform></annotationform>
+      <annotationform>.</annotationform>
       <aliases>
         <alias field="id" index="0" name=""/>
         <alias field="parcel_id" index="1" name=""/>
@@ -1952,7 +1955,7 @@ from boundary_labels as a
       <excludeAttributesWMS/>
       <excludeAttributesWFS/>
       <attributeactions default="-1"/>
-      <attributetableconfig actionWidgetStyle="dropDown" sortExpression="" sortOrder="121543120">
+      <attributetableconfig actionWidgetStyle="dropDown" sortExpression="" sortOrder="0">
         <columns>
           <column width="-1" hidden="0" type="field" name="id"/>
           <column width="-1" hidden="0" type="field" name="parcel_id"/>
@@ -1962,10 +1965,10 @@ from boundary_labels as a
           <column width="-1" hidden="1" type="actions"/>
         </columns>
       </attributetableconfig>
-      <editform></editform>
+      <editform>.</editform>
       <editforminit/>
       <editforminitcodesource>0</editforminitcodesource>
-      <editforminitfilepath></editforminitfilepath>
+      <editforminitfilepath>.</editforminitfilepath>
       <editforminitcode><![CDATA[# -*- coding: utf-8 -*-
 """
 QGIS forms can have a Python function that is called when the form is
@@ -1997,7 +2000,7 @@ def my_form_open(dialog, layer, feature):
         <default field="bearing" expression=""/>
         <default field="distance" expression=""/>
       </defaults>
-      <previewExpression></previewExpression>
+      <previewExpression>COALESCE( "id", '&lt;NULL>' )</previewExpression>
     </maplayer>
     <maplayer simplifyAlgorithm="0" minimumScale="0" maximumScale="1e+08" simplifyDrawingHints="1" minLabelScale="0" maxLabelScale="1e+08" simplifyDrawingTol="1" readOnly="0" geometry="Line" simplifyMaxScale="1" type="vector" hasScaleBasedVisibilityFlag="0" simplifyLocal="1" scaleBasedLabelVisibilityFlag="0">
       <id>derived_boundaries20170710213649838</id>
@@ -2370,10 +2373,8 @@ def my_form_open(dialog, layer, feature):
       <previewExpression></previewExpression>
     </maplayer>
     <maplayer simplifyAlgorithm="0" minimumScale="0" maximumScale="1e+08" simplifyDrawingHints="0" minLabelScale="0" maxLabelScale="1e+08" simplifyDrawingTol="1" readOnly="0" geometry="Point" simplifyMaxScale="1" type="vector" hasScaleBasedVisibilityFlag="0" simplifyLocal="1" scaleBasedLabelVisibilityFlag="0">
-      <id>derived_points20170711112805287</id>
-      <datasource>service='sml' key='parcel_id' table="((select a.parcel_id,a.id,a.distance,a.bearing,st_line_interpolate_point(a.geom,0.9) as geom from derived_boundaries as a
-)
-)" (geom) sql=</datasource>
+      <id>derived_boundaries_degrees20170711131221200</id>
+      <datasource>service='sml' key='id' srid=26332 type=Point table="public"."derived_boundaries_degrees" (geom) sql=</datasource>
       <keywordList>
         <value></value>
       </keywordList>
@@ -2545,15 +2546,8 @@ def my_form_open(dialog, layer, feature):
       <previewExpression></previewExpression>
     </maplayer>
     <maplayer simplifyAlgorithm="0" minimumScale="0" maximumScale="1e+08" simplifyDrawingHints="0" minLabelScale="0" maxLabelScale="1e+08" simplifyDrawingTol="1" readOnly="0" geometry="Point" simplifyMaxScale="1" type="vector" hasScaleBasedVisibilityFlag="0" simplifyLocal="1" scaleBasedLabelVisibilityFlag="0">
-      <extent>
-        <xmin>229229.30749999999534339</xmin>
-        <ymin>1067894.71189999999478459</ymin>
-        <xmax>229229.30749999999534339</xmax>
-        <ymax>1067894.71189999999478459</ymax>
-      </extent>
-      <id>derived_points20170711113937257</id>
-      <datasource>service='sml' key='id' table="(select a.parcel_id,a.id,a.distance,a.bearing,st_line_interpolate_point(a.geom,0.1) as geom from derived_boundaries as a
-)" (geom) sql=</datasource>
+      <id>derived_boundaries_minutes20170711131615957</id>
+      <datasource>service='sml' key='id' srid=26332 type=Point table="public"."derived_boundaries_minutes" (geom) sql=</datasource>
       <keywordList>
         <value></value>
       </keywordList>
@@ -2764,6 +2758,7 @@ def my_form_open(dialog, layer, feature):
       <SingleCategoryDiagramRenderer diagramType="Histogram" sizeLegend="0" attributeLegend="1">
         <DiagramCategory penColor="#000000" labelPlacementMethod="XHeight" penWidth="0" diagramOrientation="Up" sizeScale="0,0,0,0,0,0" minimumSize="0" barWidth="5" penAlpha="255" maxScaleDenominator="1e+08" backgroundColor="#ffffff" transparency="0" width="15" scaleDependency="Area" backgroundAlpha="255" angleOffset="1440" scaleBasedVisibility="0" enabled="0" height="15" lineSizeScale="0,0,0,0,0,0" sizeType="MM" lineSizeType="MM" minScaleDenominator="inf">
           <fontProperties description="Ubuntu,11,-1,5,50,0,0,0,0,0" style=""/>
+          <attribute field="" color="#000000" label=""/>
         </DiagramCategory>
         <symbol alpha="1" clip_to_extent="1" type="marker" name="sizeSymbol">
           <layer pass="0" class="SimpleMarker" locked="0">
@@ -2789,7 +2784,7 @@ def my_form_open(dialog, layer, feature):
         </symbol>
       </SingleCategoryDiagramRenderer>
       <DiagramLayerSettings yPosColumn="-1" showColumn="-1" linePlacementFlags="10" placement="0" dist="0" xPosColumn="-1" priority="0" obstacle="0" zIndex="0" showAll="1"/>
-      <annotationform></annotationform>
+      <annotationform>.</annotationform>
       <aliases>
         <alias field="parcel_id" index="0" name=""/>
         <alias field="id" index="1" name=""/>
@@ -2799,7 +2794,7 @@ def my_form_open(dialog, layer, feature):
       <excludeAttributesWMS/>
       <excludeAttributesWFS/>
       <attributeactions default="-1"/>
-      <attributetableconfig actionWidgetStyle="dropDown" sortExpression="" sortOrder="1330527588">
+      <attributetableconfig actionWidgetStyle="dropDown" sortExpression="" sortOrder="0">
         <columns>
           <column width="-1" hidden="0" type="field" name="parcel_id"/>
           <column width="-1" hidden="0" type="field" name="id"/>
@@ -2808,10 +2803,10 @@ def my_form_open(dialog, layer, feature):
           <column width="-1" hidden="1" type="actions"/>
         </columns>
       </attributetableconfig>
-      <editform></editform>
+      <editform>.</editform>
       <editforminit/>
       <editforminitcodesource>0</editforminitcodesource>
-      <editforminitfilepath></editforminitfilepath>
+      <editforminitfilepath>.</editforminitfilepath>
       <editforminitcode><![CDATA[# -*- coding: utf-8 -*-
 """
 QGIS forms can have a Python function that is called when the form is
@@ -2842,7 +2837,7 @@ def my_form_open(dialog, layer, feature):
         <default field="distance" expression=""/>
         <default field="bearing" expression=""/>
       </defaults>
-      <previewExpression></previewExpression>
+      <previewExpression>COALESCE( "parcel_id", '&lt;NULL>' )</previewExpression>
     </maplayer>
     <maplayer simplifyAlgorithm="0" minimumScale="0" maximumScale="1e+08" simplifyDrawingHints="1" minLabelScale="0" maxLabelScale="1e+08" simplifyDrawingTol="1" readOnly="0" geometry="Polygon" simplifyMaxScale="1" type="vector" hasScaleBasedVisibilityFlag="0" simplifyLocal="1" scaleBasedLabelVisibilityFlag="0">
       <extent>
@@ -3426,10 +3421,10 @@ def my_form_open(dialog, layer, feature):
         <value>boundary_labels20170710213834263</value>
         <value>derived_boundaries20170710213649838</value>
         <value>parcels20170710213358945</value>
-        <value>derived_points20170711112805287</value>
-        <value>derived_points20170711113937257</value>
-        <value>boundary_labels__Degrees_20170711120055883</value>
-        <value>boundary_labels__Minutes_20170711120922259</value>
+        <value>boundary_labels_degrees20170711125507457</value>
+        <value>boundary_labels_minutes20170711125854538</value>
+        <value>derived_boundaries_degrees20170711131221200</value>
+        <value>derived_boundaries_minutes20170711131615957</value>
       </LayerSnappingList>
       <LayerSnappingEnabledList type="QStringList">
         <value>disabled</value>
