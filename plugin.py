@@ -283,31 +283,53 @@ class SMLSurveyor:
         """ Ensure all required layers exist
         """
         if bool(self.database):
+            # first, we need to check the layer group for the crs used by
+            # current database
+            query = "SELECT Find_SRID('public', 'beacons', 'the_geom');"
+            self.database.connect(self.database.parameters)
+            cursor = self.database.cursor
+            cursor.execute(query)
+            crs_id = int(cursor.fetchall()[0][0])
+            del cursor
+
+            group_name = None
+            for key, value in crs_options.iteritems():
+                if value == crs_id:
+                    group_name = key
+
+            root = QgsProject.instance().layerTreeRoot()
+            target_group = root.findGroup(group_name)
+            if not bool(target_group):
+                target_group = root.insertGroup(0, group_name)
+            target_group.setVisible(Qt.Checked)
+
             for required_layer in reversed(self.required_layers):
-                for layer in self.iface.legendInterface().layers():
+                for layer_node in target_group.findLayers():
+                    layer = layer_node.layer()
                     if required_layer.name_plural.lower() == \
                             layer.name().lower():
+                        target_group.removeLayer(layer)
+
+            for required_layer in reversed(self.required_layers):
+                self.uri.setDataSource(
+                    required_layer.schema,
+                    required_layer.table,
+                    required_layer.geometry_column,
+                    '',
+                    required_layer.primary_key)
+                added_layer = QgsVectorLayer(
+                    self.uri.uri(), required_layer.name_plural, "postgres")
+                QgsMapLayerRegistry.instance().addMapLayer(
+                    added_layer, False)
+                target_group.addLayer(added_layer)
+                for layer_node in target_group.findLayers():
+                    layer = layer_node.layer()
+                    if required_layer.name_plural == layer.name():
                         required_layer.layer = layer
-                        break
-                if not bool(required_layer.layer):
-                    self.uri.setDataSource(
-                        required_layer.schema,
-                        required_layer.table,
-                        required_layer.geometry_column,
-                        '',
-                        required_layer.primary_key)
-                    self.iface.addVectorLayer(
-                        self.uri.uri(),
-                        required_layer.name_plural,
-                        "postgres")
-                    for layer in self.iface.legendInterface().layers():
-                        if required_layer.name_plural == layer.name():
-                            required_layer.layer = layer
-                            self.iface.legendInterface().setLayerVisible(
-                                layer, True)
-                            if self.crs:
-                                layer.setCrs(self.crs)
-                    self.iface.zoomToActiveLayer()
+                        layer_node.setVisible(Qt.Checked)
+                        if self.crs:
+                            layer.setCrs(self.crs)
+                self.iface.zoomToActiveLayer()
 
     def manage_beacons(self):
         """ Portal which enables the management of beacons
