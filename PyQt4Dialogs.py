@@ -302,7 +302,7 @@ class DatabaseConnectionDialog(QDialog):
                 message = ("WARNING: The selected database does not contain "
                            "tables and functions required for use of "
                            "the plugin. \nPlease select a CRS and click "
-                           "OK to procees setting up a database using "
+                           "OK to proceed setting up a database using "
                            "the chosen CRS.")
 
                 items = crs_options.keys()
