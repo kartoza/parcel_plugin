@@ -16,6 +16,7 @@ This is a collection of custom QDialogs.
  ***************************************************************************/
 """
 
+import __init__ as metadata
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.gui import *
@@ -23,7 +24,7 @@ from qgis.core import *
 from qgisToolbox import FeatureSelector
 from PyQt4Widgets import XQPushButton, XQDialogButtonBox
 from database import *
-from utilities import images_path, get_ui_class, get_path
+from utilities import images_path, get_ui_class, get_path, crs_options
 
 UI_CLASS = get_ui_class("ui_pgnewconnection.ui")
 
@@ -197,10 +198,21 @@ class DatabaseConnectionDialog(QDialog):
         """ Populate database connection choices
         """
         self.cmbbx_conn.clear()
-        settings = QSettings()
-        settings.beginGroup('PostgreSQL/connections')
-        for index, database in enumerate(settings.childGroups()):
+        settings_postgres = QSettings()
+        settings_postgres.beginGroup('PostgreSQL/connections')
+        settings_plugin = QSettings()
+        settings_plugin.beginGroup(metadata.name().replace(" ", "_"))
+
+        for index, database in enumerate(settings_postgres.childGroups()):
             self.cmbbx_conn.addItem(database)
+
+        current_connection = settings_plugin.value("DatabaseConnection", None)
+        if current_connection:
+            for myCount in range(0, self.cmbbx_conn.count()):
+                item_text = self.cmbbx_conn.itemText(myCount)
+                if item_text == current_connection:
+                    self.cmbbx_conn.setCurrentIndex(myCount)
+                    break
 
     def test_database_connection(self):
         """ Test database connection has necessary tables
@@ -283,19 +295,17 @@ class DatabaseConnectionDialog(QDialog):
             is_schema_valid = cursor.fetchall()[0][0]
             del cursor
 
-            if not is_schema_valid:
+            if is_schema_valid:
+                return True
 
+            else:
                 message = ("WARNING: The selected database does not contain "
                            "tables and functions required for use of "
-                           "the plugin. Please select a CRS and click "
+                           "the plugin. \nPlease select a CRS and click "
                            "OK to procees setting up a database using "
                            "the chosen CRS.")
-                crs_options = {
-                    'Minna / UTM zone 31N': 26331,
-                    'Minna / UTM zone 32N': 26332
-                }
-                items = crs_options.keys()
 
+                items = crs_options.keys()
                 item, ok = QInputDialog.getItem(
                     self, "Setup Database Schema", message, items, 0, False)
 
