@@ -5,6 +5,11 @@ import os
 from PyQt4 import uic
 
 
+crs_options = {
+    'Minna / UTM zone 31N': 26331,
+    'Minna / UTM zone 32N': 26332
+}
+
 def images_path(*args):
     """Get the path to our resources folder.
 
