@@ -15,6 +15,7 @@ This is a collection of custom QDialogs.
  *                                                                         *
  ***************************************************************************/
 """
+from collections import OrderedDict
 
 import __init__ as metadata
 from PyQt4.QtCore import *
@@ -24,7 +25,7 @@ from qgis.core import *
 from qgisToolbox import FeatureSelector
 from PyQt4Widgets import XQPushButton, XQDialogButtonBox
 from database import *
-from utilities import images_path, get_ui_class, get_path, crs_options
+from utilities import images_path, get_ui_class, get_path, ExtendedComboBox
 
 UI_CLASS = get_ui_class("ui_pgnewconnection.ui")
 
@@ -268,10 +269,10 @@ class DatabaseConnectionDialog(QDialog):
                         msg
                     ))
 
-        connection = None
+        self.db_connection = None
         if is_credential_exist:
             if db_service:
-                connection = psycopg2.connect(
+                self.db_connection = psycopg2.connect(
                     "service='{SERVICE}' user='{USER}' "
                     "password='{PASSWORD}'".format(
                         SERVICE=db_service,
@@ -279,7 +280,7 @@ class DatabaseConnectionDialog(QDialog):
                         PASSWORD=db_password
                     ))
             else:
-                connection = psycopg2.connect(
+                self.db_connection = psycopg2.connect(
                     "host='{HOST}' dbname='{NAME}' user='{USER}' "
                     "password='{PASSWORD}' port='{PORT}'".format(
                         HOST=db_host,
@@ -289,8 +290,8 @@ class DatabaseConnectionDialog(QDialog):
                         PORT=db_port
                     ))
 
-        if connection:
-            cursor = connection.cursor()
+        if self.db_connection:
+            cursor = self.db_connection.cursor()
             cursor.execute(query)
             is_schema_valid = cursor.fetchall()[0][0]
             del cursor
@@ -299,25 +300,22 @@ class DatabaseConnectionDialog(QDialog):
                 return True
 
             else:
-                message = ("WARNING: The selected database does not contain "
-                           "tables and functions required for use of "
-                           "the plugin. \nPlease select a CRS and click "
-                           "OK to proceed setting up a database using "
-                           "the chosen CRS.")
 
-                items = crs_options.keys()
-                item, ok = QInputDialog.getItem(
-                    self, "Setup Database Schema", message, items, 0, False)
+                dialog = CrsSelectorDialog(self)
+                dialog.exec_()
 
-                if item and ok:
+                crs = dialog.selected_srid
+
+                if crs:
                     query = open(
                         get_path("scripts","database_setup.sql"), "r").read()
                     query = query.replace(":CRS", "{CRS}")
-                    cursor = connection.cursor()
-                    cursor.execute(query.format(CRS=crs_options[item]))
-                    connection.commit()
+                    cursor = self.db_connection.cursor()
+                    cursor.execute(query.format(CRS=crs))
+                    self.db_connection.commit()
+                    del cursor
 
-                return ok
+                return True
 
     def setup_ui(self):
         """ Initialize ui
@@ -408,6 +406,107 @@ class DatabaseConnectionDialog(QDialog):
     def create_new_connection(self):
         dialog = NewDatabaseConnectionDialog(self)
         dialog.exec_()
+
+UI_CLASS = get_ui_class("ui_crsselector.ui")
+
+
+class CrsSelectorDialog(QDialog, UI_CLASS):
+    """This dialog enables the user to choose a crs for setting up
+    the database.
+    """
+
+    def __init__(self, parent):
+        """Constructor"""
+        QDialog.__init__(self, None)
+        self.setupUi(self)
+
+        self.parent = parent
+        self.db_connection = parent.db_connection
+        self.selected_srid = None
+
+        self.crs_combobox = ExtendedComboBox()
+        self.verticalLayout_2.addWidget(self.crs_combobox)
+        self.populate_combobox()
+
+        self.default_crs_radio.toggled.connect(self.toggle_crs_selectors)
+        self.toggle_crs_selectors(self.default_crs_radio.isChecked())
+
+    def populate_combobox(self):
+        """Populate the crs combobox with available spatial reference system
+        from PostGIS.
+        """
+        query = "SELECT auth_name, srid FROM public.spatial_ref_sys"
+        cursor = self.db_connection.cursor()
+        cursor.execute(query)
+        results = cursor.fetchall()
+        del cursor
+
+        dict_of_crs = {}
+        for result in results:
+            result = list(result)
+            for index, item in enumerate(result):
+                result[index] = str(item)
+            crs_string = ':'.join(result)
+            srid = int(result[1])
+            dict_of_crs[srid] = crs_string
+
+        ordered_dict_of_crs = OrderedDict(sorted(dict_of_crs.items()))
+        self.crs_combobox.setInsertPolicy(QComboBox.InsertAlphabetically)
+        for key, item in ordered_dict_of_crs.iteritems():
+            self.crs_combobox.addItem(item, key)
+
+    def accept(self):
+        if self.default_crs_radio.isChecked():
+            selected_index = self.crs_combobox.currentIndex()
+            self.selected_srid = self.crs_combobox.itemData(selected_index)
+        else:
+            query = (
+                "INSERT into spatial_ref_sys (srid, auth_name, auth_srid, "
+                "proj4text, srtext) values ( {SRID}, '{AUTH_NAME}', "
+                "{AUTH_SRID}, '{PROJTEXT}', '{SRTEXT}')"
+            )
+            SRID = int(self.crs_custom_srid.text())
+            AUTH_SRID = int(self.crs_custom_auth_srid.text())
+            AUTH_NAME = self.crs_custom_auth_name.text()
+            PROJTEXT = self.crs_custom_proj4text.text()
+            SRTEXT = self.crs_custom_srtext.text()
+
+            cursor = self.db_connection.cursor()
+            try:
+                cursor.execute(
+                    query.format(
+                        SRID=SRID,
+                        AUTH_NAME=AUTH_NAME,
+                        AUTH_SRID=AUTH_SRID,
+                        PROJTEXT=PROJTEXT,
+                        SRTEXT=SRTEXT))
+                self.db_connection.commit()
+                self.selected_srid = SRID
+            except Exception as e:
+                QMessageBox.information(
+                    self,
+                    "Fail to execute",
+                    "The query is failed to be executed with error: "
+                    "{error_message}".format(error_message=e))
+                return
+            del cursor
+        QDialog.accept(self)
+
+    def toggle_crs_selectors(self, checked):
+        if checked:
+            self.crs_combobox.setEnabled(True)
+            self.crs_custom_srid.setEnabled(False)
+            self.crs_custom_auth_srid.setEnabled(False)
+            self.crs_custom_auth_name.setEnabled(False)
+            self.crs_custom_proj4text.setEnabled(False)
+            self.crs_custom_srtext.setEnabled(False)
+        else:
+            self.crs_combobox.setEnabled(False)
+            self.crs_custom_srid.setEnabled(True)
+            self.crs_custom_auth_srid.setEnabled(True)
+            self.crs_custom_auth_name.setEnabled(True)
+            self.crs_custom_proj4text.setEnabled(True)
+            self.crs_custom_srtext.setEnabled(True)
 
 
 class SelectorDialog(QDialog):
