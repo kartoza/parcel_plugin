@@ -283,19 +283,24 @@ class SMLSurveyor:
         """ Ensure all required layers exist
         """
         if bool(self.database):
-            # first, we need to check the layer group for the crs used by
-            # current database
-            query = "SELECT Find_SRID('public', 'beacons', 'the_geom');"
-            self.database.connect(self.database.parameters)
-            cursor = self.database.cursor
-            cursor.execute(query)
-            crs_id = int(cursor.fetchall()[0][0])
-            del cursor
 
-            group_name = None
-            for key, value in crs_options.iteritems():
-                if value == crs_id:
-                    group_name = key
+            # Comment out below section because connection name is better
+            # to be a group name than crs name IMHO.
+
+            # # first, we need to check the layer group for the crs used by
+            # # current database
+            # query = "SELECT Find_SRID('public', 'beacons', 'the_geom');"
+            # self.database.connect(self.database.parameters)
+            # cursor = self.database.cursor
+            # cursor.execute(query)
+            # crs_id = int(cursor.fetchall()[0][0])
+            # del cursor
+            # group_name = None
+            # for key, value in crs_options.iteritems():
+            #     if value == crs_id:
+            #         group_name = key
+
+            group_name = self.connection
 
             root = QgsProject.instance().layerTreeRoot()
             target_group = root.findGroup(group_name)
