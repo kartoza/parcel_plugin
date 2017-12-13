@@ -7,7 +7,6 @@
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = ON;
 SET check_function_bodies = FALSE;
@@ -2112,6 +2111,24 @@ CREATE TRIGGER result_parcels_intersect_views_ref_row
   ON public.parcel_def
   FOR EACH STATEMENT
   EXECUTE PROCEDURE public.result_parcels_intersect_views();
+
+-- Insert sample data into plugin tables
+INSERT INTO public.beacons(
+             beacon, y, x,location, name)
+    VALUES ( 'BA4326D', 1067884.64, 229239.86, 'Sample Data', 'Test');
+
+INSERT INTO public.schemes(
+            scheme_name)
+    VALUES ('Sample');
+
+
+INSERT INTO public.survey(
+             plan_no, ref_beacon, scheme)
+    VALUES ( 'BDG3012', 'BA4326D', 1);
+
+
+
+
 --
 -- PostgreSQL database dump complete
 --
