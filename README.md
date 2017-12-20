@@ -32,7 +32,12 @@ Where bearings and distances are not available, coordinates can be used instead 
 
 ## Dependencies
 
-This plugin depends on a PostGIS database with a predefined schema including tables, materialised views and triggers. This schema will be created on initial setup when first running the plugin.  
+This plugin depends on a PostGIS database with a predefined schema including tables, materialised views and triggers. This schema will be created on initial setup when first running the plugin.
+
+## Sample Data
+
+A sql script is provided which populates all the mandatory tables required by the plugin. In order to use the
+sample data create the database with a CRS: `26332`. A sample survey is provided as a guideline on how to capture records.
 
 # User manual
 
