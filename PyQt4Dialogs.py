@@ -237,6 +237,7 @@ class DatabaseConnectionDialog(QDialog):
         """Test whether co-go schema is applied in the database."""
         query = "SELECT EXISTS (SELECT 1 AS result FROM pg_tables " \
                 "WHERE schemaname = 'public' AND tablename = 'beacons')"
+        extension_query = '''CREATE EXTENSION IF NOT EXISTS postgis ; '''
 
         settings_postgis = QSettings()
         settings_postgis.beginGroup('PostgreSQL/connections')
@@ -292,6 +293,7 @@ class DatabaseConnectionDialog(QDialog):
 
         if self.db_connection:
             cursor = self.db_connection.cursor()
+            cursor.execute(extension_query)
             cursor.execute(query)
             is_schema_valid = cursor.fetchall()[0][0]
             del cursor
