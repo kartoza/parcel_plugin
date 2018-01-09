@@ -71,6 +71,31 @@ def get_ui_class(ui_file):
     )
     return uic.loadUiType(ui_file_path, from_imports=True)[0]
 
+def validate_plugin_actions(toolbar, database):
+    """Check DB schema for actions availability. eg: Manage bearing and
+    distance action needs Beacon to be created first.
+
+    :param database: Database instance
+    :type database: database.Manager
+
+    :param toolbar: plugin toolbar
+    :type toolbar: SMLSurveyor
+
+    :return: Query result
+    :rtype: tuple
+    """
+    query = "select * from survey limit 1;"
+    try:
+        result = database.query(query=query)
+    except Exception as e:
+        raise Exception(
+            'Backend database query failed!\nError raised: %s.' % (str(e),))
+    if result:
+        toolbar.bearing_distance_action.setEnabled(True)
+    else:
+        toolbar.bearing_distance_action.setEnabled(False)
+    return result
+
 
 class ExtendedComboBox(QComboBox):
     """Extended class of QComboBox so we can perform a filtering of items.

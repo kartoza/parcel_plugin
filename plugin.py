@@ -33,6 +33,7 @@ from PyQt4Dialogs import *
 import database
 from constants import *
 from datetime import datetime
+from utilities import validate_plugin_actions
 
 
 class RequiredLayer:
@@ -347,6 +348,7 @@ class SMLSurveyor:
                 return
         self.refresh_layers()
         BeaconManager(self.iface, self.database, self.required_layers)
+        validate_plugin_actions(self, self.database)
         self.iface.mapCanvas().refresh()
 
     def manage_parcels(self):
@@ -360,6 +362,7 @@ class SMLSurveyor:
                 return
         self.refresh_layers()
         ParcelManager(self.iface, self.database, self.required_layers)
+        validate_plugin_actions(self, self.database)
         self.iface.mapCanvas().refresh()
 
     def manage_bearing_distance(self):
@@ -372,8 +375,18 @@ class SMLSurveyor:
             self.set_database_connection()
             if self.database is None:
                 return
-        self.refresh_layers()
-        BearDistManager(self.iface, self.database, self.required_layers)
+
+        result = validate_plugin_actions(self, self.database)
+        if not result:
+            QMessageBox.warning(
+                None,
+                "SML Surveyor",
+                ("No Beacons available in the table. "
+                 "Please use Beacon Manager tool to create a Beacon."))
+        else:
+            self.refresh_layers()
+            BearDistManager(self.iface, self.database, self.required_layers)
+
         self.iface.mapCanvas().refresh()
 
     def manage_database_connection(self):
@@ -384,6 +397,7 @@ class SMLSurveyor:
         crs = database_manager.get_current_crs()
         if connection:
             self.set_database_connection(connection=connection, crs=crs)
+        validate_plugin_actions(self, self.database)
 
 
 class DatabaseManager():
