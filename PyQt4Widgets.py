@@ -21,13 +21,14 @@ from PyQt4.QtGui import *
 from qgis.gui import *
 from qgis.core import *
 
+
 class XQPushButton(QPushButton):
     def __init__(self, parent=None):
         super(XQPushButton, self).__init__(parent)
         self.setCursor(QCursor(Qt.PointingHandCursor))
 
+
 class XQDialogButtonBox(QDialogButtonBox):
     def __init__(self, parent=None):
         super(XQDialogButtonBox, self).__init__(parent)
         self.setCursor(QCursor(Qt.PointingHandCursor))
-
