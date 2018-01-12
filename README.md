@@ -1,19 +1,5 @@
 # CoGo plugin for QGIS
 
-First developed by Afrispatial cc in 2012
-
-Sponsored by: SpatialMatrix, Lagos for Ogun State Government, Nigeria [background presentation](https://drive.google.com/file/d/0B2pxNIZQUjL1TW5wR00zVC1aUjA/view?usp=sharing)
-
-Contributors: Robert Moerman, Admire Nyakudya, Gavin Fleming, Muhammad Rohmat 
-
-Maintained by Kartoza (Pty) Ltd 
-
-Copyright Kartoza 2017
-
-2017 update for Niger State, Nigeria and potentially for general release. 
-
-Licence:
-
 # Description
 
 This plugin was developed to enable efficient bulk capture of coordinate geometry off survey diagrams. 
@@ -46,8 +32,9 @@ sample data create the database with a CRS: `26332`. A sample survey is provided
 
 ## Credits
 
-Cogo plugin was funded by [Spatial Matrix](http://www.spatialmatrix.com/) and 
-developed by Afrispatial and subsequently  [Kartoza](http://www.kartoza.com/)
+Cogo plugin was funded by [Spatial Matrix](http://www.spatialmatrix.com/)  Lagos 
+for Ogun State Government, Nigeria [background presentation](https://drive.google.com/file/d/0B2pxNIZQUjL1TW5wR00zVC1aUjA/view?usp=sharing)
+and was first developed by Afrispatial cc in 2012 and subsequently  [Kartoza](http://www.kartoza.com/)
 
 ## License
 
@@ -75,8 +62,15 @@ all necessary servicing, repair or correction.
 Thank you to the individual contributors who have helped to build cogo plugin:
 
 * Gavin Fleming 
-* Robert Mooerman
+* Robert Moerman
 * Tobi Sowole 
 * Muhammad Yarjuna Rohmat 
 * Admire Nyakudya
+
+Maintained by Kartoza (Pty) Ltd 
+
+Copyright Kartoza 2017
+
+2017 update for Niger State, Nigeria and potentially for general release. 
+
 
