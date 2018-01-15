@@ -23,11 +23,11 @@
 
 
 def name():
-    return "SML Surveyor"
+    return "CoGo Plugin Toolbar"
 
 
 def description():
-    return "SML Surveyor Plugin"
+    return "CoGo Plugin"
 
 
 def version():
