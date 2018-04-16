@@ -346,7 +346,6 @@ class SMLSurveyor:
             self.set_database_connection()
             if self.database is None:
                 return
-        self.refresh_layers()
         BeaconManager(self.iface, self.database, self.required_layers)
         validate_plugin_actions(self, self.database)
         self.iface.mapCanvas().refresh()
@@ -360,7 +359,6 @@ class SMLSurveyor:
             self.set_database_connection()
             if self.database is None:
                 return
-        self.refresh_layers()
         ParcelManager(self.iface, self.database, self.required_layers)
         validate_plugin_actions(self, self.database)
         self.iface.mapCanvas().refresh()
@@ -384,7 +382,6 @@ class SMLSurveyor:
                 ("No Beacons available in the table. "
                  "Please use Beacon Manager tool to create a Beacon."))
         else:
-            self.refresh_layers()
             BearDistManager(self.iface, self.database, self.required_layers)
 
         self.iface.mapCanvas().refresh()
@@ -397,6 +394,7 @@ class SMLSurveyor:
         crs = database_manager.get_current_crs()
         if connection:
             self.set_database_connection(connection=connection, crs=crs)
+            self.refresh_layers()
         validate_plugin_actions(self, self.database)
 
 
