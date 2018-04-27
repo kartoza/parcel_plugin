@@ -1024,7 +1024,9 @@ class FormParcelDialog(QDialog):
         """
         # get values
         def checker(data, key):
-            return lambda data, key: data[key] if key in data.keys() else None
+            func = lambda data, key: data[key] if key in data.keys() else None
+            return func(data, key)
+
         feat_id = checker(data, "parcel_id")
         feat_sequence = checker(data, "sequence")
         # use values
