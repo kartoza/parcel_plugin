@@ -1620,7 +1620,7 @@ class BearingDistanceFormDialog(QDialog):
                 return False
             if beacon_to == beacon_name:
                 return False
-            if beacon_to == self.reference_beacon:
+            if beacon_to in self.auto["FROMBEACON"]:
                 return True
 
     def is_end_linked(self, index):
@@ -2181,13 +2181,12 @@ class BearingDistanceLinkFormDialog(QDialog):
                             line_edit.setStyleSheet(self.colours["UNIQUE"])
                             valid = False
                             break
-                    if bool(
-                            int(self.database.query(
+                        if bool(int(self.database.query(
                                         self.query % ('beacon', "%s"),
-                            (str(line_edit.text()),))[0][0])):
-                        line_edit.setStyleSheet(self.colours["UNIQUE"])
-                        valid = False
-                        break
+                                        (str(line_edit.text()),))[0][0])):
+                            line_edit.setStyleSheet(self.colours["UNIQUE"])
+                            valid = False
+                            break
             if not valid:
                 QMessageBox.information(
                     self,
