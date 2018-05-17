@@ -316,7 +316,7 @@ class SMLSurveyor:
                             layer.name().lower():
                         target_group.removeLayer(layer)
 
-            for required_layer in reversed(self.required_layers):
+            for required_layer in self.required_layers:
                 self.uri.setDataSource(
                     required_layer.schema,
                     required_layer.table,
