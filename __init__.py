@@ -52,5 +52,5 @@ def email():
 
 def classFactory(iface):
     # load SMLSurveyor class from file SMLSurveyor
-    from plugin import SMLSurveyor
+    from .plugin import SMLSurveyor
     return SMLSurveyor(iface)

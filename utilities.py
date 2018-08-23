@@ -1,10 +1,12 @@
 # coding=utf-8
 """This module contains utilities."""
+from builtins import str
 
 import os
-from PyQt4 import uic
-from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QCompleter, QComboBox, QSortFilterProxyModel
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import QCompleter, QComboBox
+from qgis.PyQt.QtCore import QSortFilterProxyModel
 
 
 crs_options = {
@@ -118,7 +120,7 @@ class ExtendedComboBox(QComboBox):
         self.setCompleter(self.completer)
 
         # connect signals
-        self.lineEdit().textEdited[unicode].connect(
+        self.lineEdit().textEdited[str].connect(
             self.pFilterModel.setFilterFixedString)
         self.completer.activated.connect(self.on_completer_activated)
 
