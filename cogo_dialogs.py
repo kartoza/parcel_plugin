@@ -667,24 +667,21 @@ class SelectorDialog(QDialog):
             QApplication.translate(
                 "SelectorDialog",
                 "%s %s" % (layer.name.title(), mode.actor.title()),
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.lbl_featID.setText(
             QApplication.translate(
                 "SelectorDialog",
                 "%s ID" % (layer.name.title()),
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.pshbtn_re.setText(
             QApplication.translate(
-                "SelectorDialog", "Re-select", None, QApplication.UnicodeUTF8))
+                "SelectorDialog", "Re-select", None))
         self.chkbx_confirm.setText(
             QApplication.translate(
                 "SelectorDialog",
                 "I am sure I want to %s this %s" % (
                     mode.action.lower(), layer.name.lower()),
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         # connect ui widgets
         self.pshbtn_re.clicked.connect(self.reselect)
         self.chkbx_confirm.stateChanged.connect(self.confirm)
@@ -769,26 +766,22 @@ class ManagerDialog(QDialog):
             QApplication.translate(
                 "ManagerDialog",
                 "%s Manager" % (layer.name.title()),
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.rdbtn_add.setText(
             QApplication.translate(
                 "ManagerDialog",
                 "Create New %s" % (layer.name.title()),
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.rdbtn_edit.setText(
             QApplication.translate(
                 "ManagerDialog",
                 "Edit Existing %s" % (layer.name.title()),
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.rdbtn_del.setText(
             QApplication.translate(
                 "ManagerDialog",
                 "Delete Existing %s" % (layer.name.title()),
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         # connect ui widgets
         self.btnbx_options.clicked.connect(self.execute_option)
         QMetaObject.connectSlotsByName(self)
@@ -937,15 +930,13 @@ class FormBeaconDialog(QDialog):
                 "FormBeaconDialog",
                 ("*" if bool(self.lnedts[index].property("REQUIRED"))
                  else "") + f.name.title(),
-                None,
-                QApplication.UnicodeUTF8))
+                None))
             lnedt.setProperty(
                 "TYPE",
                 QApplication.translate(
                     "FormBeaconDialog",
                     str(f.type),
-                    None,
-                    QApplication.UnicodeUTF8))
+                    None))
         self.verticalLayout.addLayout(self.formLayout)
         self.line_1 = QFrame(self)
         self.line_1.setFrameShape(QFrame.HLine)
@@ -972,15 +963,13 @@ class FormBeaconDialog(QDialog):
             QApplication.translate(
                 "FormBeaconDialog",
                 "Beacon Form",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.label.setText(
             QApplication.translate(
                 "FormBeaconDialog",
                 "<html><head/><body><p><span style=\" color:#ff0000;\">"
                 "*Required Field</span></p></body></html>",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         # connect ui widgets
         self.options_buttonbox.clicked.connect(self.execute_option)
         QMetaObject.connectSlotsByName(self)
@@ -1312,44 +1301,37 @@ class FormParcelDialog(QDialog):
             QApplication.translate(
                 "FormParcelDialog",
                 "Parcel Form",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.parcel_id_label.setText(
             QApplication.translate(
                 "FormParcelDialog",
                 "Parcel ID",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.sequence_label.setText(
             QApplication.translate(
                 "FormParcelDialog",
                 "Beacon Sequence",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.new_pushbutton.setText(
             QApplication.translate(
                 "FormParcelDialog",
                 "New Beacon",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.start_pushbutton.setText(
             QApplication.translate(
                 "FormParcelDialog",
                 "Start",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.stop_pushbutton.setText(
             QApplication.translate(
                 "FormParcelDialog",
                 "Stop",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.reset_pushbutton.setText(
             QApplication.translate(
                 "FormParcelDialog",
                 "Reset",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         # connect ui widgets
         self.new_pushbutton.clicked.connect(self.new_beacon)
         self.start_pushbutton.clicked.connect(self.start_sequence)
@@ -1973,89 +1955,75 @@ class BearingDistanceFormDialog(QDialog):
             QApplication.translate(
                 "BearingDistanceFormDialog",
                 "Bearings and Distances Form",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.plan_label.setText(
             QApplication.translate(
                 "BearingDistanceFormDialog",
                 "Survey Plan",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.plan_next_pushbutton.setText(
             QApplication.translate(
                 "BearingDistanceFormDialog",
                 "Next",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.toolbox.setItemText(
             self.toolbox.indexOf(self.plan_widget),
             QApplication.translate(
                 "BearingDistanceFormDialog",
                 "Step 1: Define Survey Plan",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.reference_layout.setText(
             QApplication.translate(
                 "BearingDistanceFormDialog",
                 "Reference Beacon",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.reference_back_pushbutton.setText(
             QApplication.translate(
                 "BearingDistanceFormDialog",
                 "Back",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.reference_next_pushbutton.setText(
             QApplication.translate(
                 "BearingDistanceFormDialog",
                 "Next",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.toolbox.setItemText(
             self.toolbox.indexOf(self.reference_widget),
             QApplication.translate(
                 "BearingDistanceFormDialog",
                 "Step 2: Define Reference Beacon",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.chain_add_pushbutton.setText(
             QApplication.translate(
                 "BearingDistanceFormDialog",
                 "Add Link",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.chain_edit_pushbutton.setText(
             QApplication.translate(
                 "BearingDistanceFormDialog",
                 "Edit Link",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.chain_delete_pushbutton.setText(
             QApplication.translate(
                 "BearingDistanceFormDialog",
                 "Delete Link",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.chain_back_pushbutton.setText(
             QApplication.translate(
                 "BearingDistanceFormDialog",
                 "Back",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.chain_finish_pushbutton.setText(
             QApplication.translate(
                 "BearingDistanceFormDialog",
                 "Finish",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.toolbox.setItemText(
             self.toolbox.indexOf(self.chain_widget),
             QApplication.translate(
                 "BearingDistanceFormDialog",
                 "Step 3: Define Bearings and Distances Chain",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         # connect ui widgets
         self.options_buttonbox.accepted.connect(self.accept)
         self.options_buttonbox.rejected.connect(self.reject)
@@ -2234,8 +2202,7 @@ class BearingDistanceLinkFormDialog(QDialog):
             label.setText(QApplication.translate(
                 "dlg_FormBearDistEntry",
                 ("*" if field.required else "") + field.name.title(),
-                None,
-                QApplication.UnicodeUTF8))
+                None))
             self.labels.append(label)
             line_edit = QLineEdit(self)
             self.form_layout.setWidget(index, QFormLayout.FieldRole, line_edit)
@@ -2257,8 +2224,7 @@ class BearingDistanceLinkFormDialog(QDialog):
         self.setWindowTitle(QApplication.translate(
             "dlg_FormBearDistEntry",
             "Link Form",
-            None,
-            QApplication.UnicodeUTF8))
+            None))
         # connect ui widgets
         self.options_buttonbox.clicked.connect(self.execute_option)
         QMetaObject.connectSlotsByName(self)

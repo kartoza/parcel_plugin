@@ -76,12 +76,12 @@ class FeatureSelector(object):
         """
         # check that capturing has been enabled
         if self.capturing:
-            point_geometry = QgsGeometry.fromMultiPointXY(point)
+            point_geometry = QgsGeometry.fromPointXY(point)
             point_buffer = point_geometry.buffer(
                 (self.iface.mapCanvas().mapUnitsPerPixel() * 4), 0)
             point_rectangle = point_buffer.boundingBox()
             self.layer.invertSelectionInRectangle(point_rectangle)
-            if bool(self.layer.selectedFeaturesIds()):
+            if bool(self.layer.selectedFeatureIds()):
                 for id in self.layer.selectedFeaturesIds():
                     if id not in self.selected:
                         self.selected.append(id)
