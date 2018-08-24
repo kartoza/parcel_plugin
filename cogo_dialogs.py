@@ -15,22 +15,24 @@ This is a collection of custom QDialogs.
  *                                                                         *
  ***************************************************************************/
 """
+from __future__ import absolute_import
+
+from builtins import range
 from collections import OrderedDict
 
-from PyQt5 import Qt
 from PyQt5.QtCore import QSettings, QMetaObject, QStringListModel
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QCursor, QIcon
-from PyQt5.QtWidgets import QDialog, QMessageBox, QDialogButtonBox, QApplication, QCompleter, QFormLayout, QLineEdit, \
-    QLabel, QGridLayout, QVBoxLayout, QComboBox, QHBoxLayout, QPushButton, QLayout, QSizePolicy, QSpacerItem, \
-    QListWidget, QWidget, QFrame, QToolBox, QRadioButton, QCheckBox, QSplitter
-from qgis._gui import QgsAuthConfigSelect
+from PyQt5.QtWidgets import QDialog, QMessageBox, QGridLayout, QVBoxLayout, QLabel, QFormLayout, QComboBox, QHBoxLayout, \
+    QPushButton, QSpacerItem, QApplication, QDialogButtonBox, QLayout, QSplitter, QWidget, QLineEdit, QCheckBox, \
+    QRadioButton, QFrame, QCompleter, QSizePolicy, QListWidget, QToolBox
 from qgis.core import QgsCredentials, QgsDataSourceUri
+from qgis.gui import QgsAuthConfigSelect
 
-import __init__ as metadata
-from database import *
-from qgisToolbox import FeatureSelector
-from utilities import images_path, get_ui_class, get_path, ExtendedComboBox
-from .PyQt4Widgets import XQPushButton, XQDialogButtonBox
+from .cogo_widgets import XQPushButton, XQDialogButtonBox
+from .database import *
+from .qgisToolbox import FeatureSelector
+from .utilities import images_path, get_ui_class, get_path, ExtendedComboBox
 
 UI_CLASS = get_ui_class("ui_pgnewconnection.ui")
 
@@ -123,7 +125,7 @@ class NewDatabaseConnectionDialog(QDialog, UI_CLASS):
 
         if settings.contains(base_key + self.txtName.text() + "/service") or \
                 settings.contains(base_key + self.txtName.text() + "/host"):
-            message = ("Should the existing connection %s be overwritten?")
+            message = "Should the existing connection %s be overwritten?"
             answer = QMessageBox.question(self,
                                           "Saving connection",
                                           message % (self.txtName.text()),
@@ -208,7 +210,7 @@ class DatabaseConnectionDialog(QDialog):
         settings_postgres = QSettings()
         settings_postgres.beginGroup('PostgreSQL/connections')
         settings_plugin = QSettings()
-        settings_plugin.beginGroup(metadata.name().replace(" ", "_"))
+        settings_plugin.beginGroup('CoGo Plugin')
 
         for index, database in enumerate(settings_postgres.childGroups()):
             self.cmbbx_conn.addItem(database)
@@ -257,7 +259,7 @@ class DatabaseConnectionDialog(QDialog):
         db_username = settings_postgis.value(self.connection + '/username')
         db_password = settings_postgis.value(self.connection + '/password')
 
-        uri =  QgsDataSourceUri()
+        uri = QgsDataSourceUri()
         uri.setConnection(
             db_host,
             db_port,
@@ -379,8 +381,7 @@ class DatabaseConnectionDialog(QDialog):
         self.setWindowTitle(QApplication.translate(
             "DatabaseConnectionDialog",
             "Database Connection",
-            None,
-            QApplication.UnicodeUTF8
+            None
         ))
         self.lbl_conn.setText(QApplication.translate(
             "DatabaseConnectionDialog",
@@ -461,7 +462,7 @@ class CrsSelectorDialog(QDialog, UI_CLASS):
 
         ordered_dict_of_crs = OrderedDict(sorted(dict_of_crs.items()))
         self.crs_combobox.setInsertPolicy(QComboBox.InsertAlphabetically)
-        for key, item in ordered_dict_of_crs.iteritems():
+        for key, item in ordered_dict_of_crs.items():
             self.crs_combobox.addItem(item, key)
 
     def accept(self):
@@ -878,7 +879,7 @@ class FormBeaconDialog(QDialog):
                 if str(line_edit.text()).strip() is "":
                     continue
                 if bool(line_edit.property("UNIQUE")):
-                    if self.fields[index].name in self.old_values.keys() and \
+                    if self.fields[index].name in list(self.old_values.keys()) and \
                             values_new[self.fields[index].name] == \
                             self.old_values[self.fields[index].name]:
                         line_edit.setStyleSheet("")
@@ -1032,7 +1033,7 @@ class FormParcelDialog(QDialog):
 
         # get values
         def checker(data, key):
-            func = lambda data, key: data[key] if key in data.keys() else None
+            func = lambda data, key: data[key] if key in list(data.keys()) else None
             return func(data, key)
 
         feat_id = checker(data, "parcel_id")
@@ -1098,7 +1099,7 @@ class FormParcelDialog(QDialog):
                     "Please enter a number for the parcel ID.")
                 return
             # check that parcel id is valid (i.e. current, unique, available)
-            if "parcel_id" in self.old_values.keys() and \
+            if "parcel_id" in list(self.old_values.keys()) and \
                     str(self.old_values["parcel_id"]) == parcel_id:
                 pass
             elif not bool(
@@ -1177,7 +1178,7 @@ class FormParcelDialog(QDialog):
             id = self.database.query(
                 self.SQL_BEACONS["INSERT"].format(
                     fields=", ".join(sorted(new_values.keys())),
-                    values=", ".join(["%s" for k in new_values.keys()])),
+                    values=", ".join(["%s" for k in list(new_values.keys())])),
                 [new_values[k] for k in sorted(new_values.keys())])[0][0]
             self.iface.mapCanvas().refresh()
             self.highlight_feature(self.layers[0].layer, id)
@@ -1542,7 +1543,7 @@ class BearingDistanceFormDialog(QDialog):
                         self.SQL_BEACONS["INSERT"].format(
                             fields=", ".join(sorted(new_values.keys())),
                             values=", ".join(
-                                ["%s" for index in new_values.keys()])),
+                                ["%s" for index in list(new_values.keys())])),
                         [new_values[index] for index in (
                             sorted(new_values.keys()))])
                     # set reference beacon
@@ -1628,7 +1629,7 @@ class BearingDistanceFormDialog(QDialog):
                 return False
             if beacon_to == beacon_name:
                 return False
-            if beacon_to == self.reference_beacon:
+            if beacon_to in self.auto["FROMBEACON"]:
                 return True
 
     def is_end_linked(self, index):
@@ -2189,13 +2190,12 @@ class BearingDistanceLinkFormDialog(QDialog):
                             line_edit.setStyleSheet(self.colours["UNIQUE"])
                             valid = False
                             break
-                    if bool(
-                            int(self.database.query(
+                        if bool(int(self.database.query(
                                 self.query % ('beacon', "%s"),
                                 (str(line_edit.text()),))[0][0])):
-                        line_edit.setStyleSheet(self.colours["UNIQUE"])
-                        valid = False
-                        break
+                            line_edit.setStyleSheet(self.colours["UNIQUE"])
+                            valid = False
+                            break
             if not valid:
                 QMessageBox.information(
                     self,

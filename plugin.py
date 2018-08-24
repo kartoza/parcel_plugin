@@ -30,12 +30,11 @@ from datetime import datetime
 from PyQt5.QtCore import QSettings, Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QToolBar, QAction, QMessageBox
-from qgis.gui import QgsMapLayerActionRegistry
 from qgis.core import QgsCoordinateReferenceSystem, QgsProject, QgsVectorLayer, QgsCredentials, QgsDataSourceUri
 
 # user imports
 
-from .PyQt5Dialogs import BearingDistanceFormDialog, SelectorDialog, FormParcelDialog, ManagerDialog, FormBeaconDialog, \
+from .cogo_dialogs import BearingDistanceFormDialog, SelectorDialog, FormParcelDialog, ManagerDialog, FormBeaconDialog, \
     DatabaseConnectionDialog
 from . import database
 from .constants import *
@@ -108,7 +107,7 @@ class SMLSurveyor(object):
         self.refresh_layers()
         for l in self.required_layers:
             if bool(l.layer):
-                QgsMapLayerActionRegistry.instance().removeMapLayers([l.layer.id()])
+                QgsProject.instance().removeMapLayers([l.layer.id()])
 
     def create_plugin_toolbar(self):
         """ Create plugin toolbar to house buttons
@@ -314,7 +313,7 @@ class SMLSurveyor(object):
             target_group = root.findGroup(group_name)
             if not bool(target_group):
                 target_group = root.insertGroup(0, group_name)
-            target_group.setVisible(Qt.Checked)
+            target_group.setItemVisibilityChecked(Qt.Checked)
 
             for required_layer in reversed(self.required_layers):
                 for layer_node in target_group.findLayers():
@@ -332,14 +331,13 @@ class SMLSurveyor(object):
                     required_layer.primary_key)
                 added_layer = QgsVectorLayer(
                     self.uri.uri(), required_layer.name_plural, "postgres")
-                QgsMapLayerActionRegistry.instance().addMapLayer(
-                    added_layer, False)
+                QgsProject.instance().addMapLayer(added_layer, False)
                 target_group.addLayer(added_layer)
                 for layer_node in target_group.findLayers():
                     layer = layer_node.layer()
                     if required_layer.name_plural == layer.name():
                         required_layer.layer = layer
-                        layer_node.setVisible(Qt.Checked)
+                        layer_node.setItemVisibilityChecked(Qt.Checked)
                         if self.crs:
                             layer.setCrs(self.crs)
                 self.iface.zoomToActiveLayer()
