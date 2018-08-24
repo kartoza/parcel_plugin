@@ -16,7 +16,6 @@ import unittest
 from osgeo import gdal
 from qgis.core import Qgis
 
-
 __author__ = 'etiennetrimaille'
 __revision__ = '$Format:%H$'
 __date__ = '14/06/2016'

@@ -158,7 +158,7 @@ class Manager(object):
                     "ON u.column_name = c.column_name "
                     "WHERE c.table_name = '{table}' "
                     "AND c.column_name NOT IN ({ignore});"
-                    .format(
+                        .format(
                         table=table_name,
                         ignore=", ".join(
                             "'%s'" % (i,) for i in field_ignore))))]

@@ -16,7 +16,6 @@ This is a collection of custom QWidgets.
  ***************************************************************************/
 """
 
-
 from PyQt5.QtGui import QCursor
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QPushButton, QDialogButtonBox
