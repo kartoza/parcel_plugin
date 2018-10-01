@@ -400,7 +400,8 @@ class SMLSurveyor(object):
         if connection:
             self.set_database_connection(connection=connection, crs=crs)
             self.refresh_layers()
-        validate_plugin_actions(self, self.database)
+        if self.database:
+            validate_plugin_actions(self, self.database)
 
 
 class DatabaseManager(object):
