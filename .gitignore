@@ -3,4 +3,5 @@
 database_params.py
 *~
 .idea/
-.DS_Store
+*.qgs.bak
+

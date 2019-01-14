@@ -1,13 +1,27 @@
 ; Mandatory items:
 
 [general]
-name=SML Surveyor Plugin
-description=SML Surveyor Plugin
-qgisMinimumVersion=2.0
-version=Version 0.2
-author=AfriSpatial
-email=robert@afrispatial.co.za
+name=CoGo Plugin
+description=A plugin to capture coordinates, bearings and distances and to use these to construct and manage land parcels.
+qgisMinimumVersion=2.99
+qgisMaximumVersion=3.99
+version=3.0
+author=Kartoza
+email=gavin@kartoza.com
 
 ; Optional items:
 experimental=False
 icon=icon.png
+about=Sponsored by SpatialMatrix
+homepage=https://github.com/kartoza/parcel_plugin/
+tracker=https://github.com/kartoza/parcel_plugin/issues
+repository=https://github.com/kartoza/parcel_plugin/
+
+# deprecated flag (applies to the whole plugin, not just a single version)
+deprecated=False
+
+
+
+
+
+

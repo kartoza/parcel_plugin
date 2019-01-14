@@ -23,11 +23,11 @@
 
 
 def name():
-    return "SML Surveyor"
+    return "CoGo Plugin Toolbar"
 
 
 def description():
-    return "SML Surveyor Plugin"
+    return "CoGo Plugin"
 
 
 def version():
@@ -52,5 +52,5 @@ def email():
 
 def classFactory(iface):
     # load SMLSurveyor class from file SMLSurveyor
-    from plugin import SMLSurveyor
+    from .plugin import SMLSurveyor
     return SMLSurveyor(iface)
