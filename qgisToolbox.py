@@ -82,12 +82,12 @@ class FeatureSelector(object):
             point_rectangle = point_buffer.boundingBox()
             self.layer.invertSelectionInRectangle(point_rectangle)
             if bool(self.layer.selectedFeatureIds()):
-                for id in self.layer.selectedFeaturesIds():
+                for id in self.layer.selectedFeatureIds():
                     if id not in self.selected:
                         self.selected.append(id)
                 selected = self.selected
                 for id in selected:
-                    if id not in self.layer.selectedFeaturesIds():
+                    if id not in self.layer.selectedFeatureIds():
                         self.selected.remove(id)
                 self.parent.captured(self.selected)
 
