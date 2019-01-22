@@ -15,14 +15,12 @@ This is a collection of custom qgis tools.
  *                                                                         *
  ***************************************************************************/
 """
-
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.gui import *
-from qgis.core import*
+from builtins import object
+from qgis.core import QgsGeometry
+from qgis.gui import QgsMapToolEmitPoint
 
 
-class FeatureSelector():
+class FeatureSelector(object):
     """ This tool enables the selection of a single feature or
     multiple features from a vector layer, returning the feature's id or
     features' ids after each selection via the captured method in the
@@ -78,18 +76,18 @@ class FeatureSelector():
         """
         # check that capturing has been enabled
         if self.capturing:
-            point_geometry = QgsGeometry.fromPoint(point)
+            point_geometry = QgsGeometry.fromPointXY(point)
             point_buffer = point_geometry.buffer(
                 (self.iface.mapCanvas().mapUnitsPerPixel() * 4), 0)
             point_rectangle = point_buffer.boundingBox()
             self.layer.invertSelectionInRectangle(point_rectangle)
-            if bool(self.layer.selectedFeaturesIds()):
-                for id in self.layer.selectedFeaturesIds():
+            if bool(self.layer.selectedFeatureIds()):
+                for id in self.layer.selectedFeatureIds():
                     if id not in self.selected:
                         self.selected.append(id)
                 selected = self.selected
                 for id in selected:
-                    if id not in self.layer.selectedFeaturesIds():
+                    if id not in self.layer.selectedFeatureIds():
                         self.selected.remove(id)
                 self.parent.captured(self.selected)
 

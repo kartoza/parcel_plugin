@@ -3,8 +3,8 @@
 [general]
 name=CoGo Plugin
 description=A plugin to capture coordinates, bearings and distances and to use these to construct and manage land parcels.
-qgisMinimumVersion=2.14
-qgisMaximumVersion=2.99
+qgisMinimumVersion=2.99
+qgisMaximumVersion=3.99
 version=3.0
 author=Kartoza
 email=gavin@kartoza.com

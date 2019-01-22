@@ -15,10 +15,12 @@ This is a postgresql database manager.
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
+from builtins import object
 import psycopg2
 
 
-class Field:
+class Field(object):
 
     def __init__(self, name, type, required, unique):
         self.name = name
@@ -27,7 +29,7 @@ class Field:
         self.unique = unique
 
 
-class Manager:
+class Manager(object):
 
     def __init__(self, parameters):
         # test db settings
@@ -156,7 +158,7 @@ class Manager:
                     "ON u.column_name = c.column_name "
                     "WHERE c.table_name = '{table}' "
                     "AND c.column_name NOT IN ({ignore});"
-                    .format(
+                        .format(
                         table=table_name,
                         ignore=", ".join(
                             "'%s'" % (i,) for i in field_ignore))))]

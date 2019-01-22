@@ -16,10 +16,9 @@ This is a collection of custom QWidgets.
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.gui import *
-from qgis.core import *
+from PyQt5.QtGui import QCursor
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QPushButton, QDialogButtonBox
 
 
 class XQPushButton(QPushButton):

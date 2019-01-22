@@ -15,23 +15,31 @@ This is a collection of custom QDialogs.
  *                                                                         *
  ***************************************************************************/
 """
+from __future__ import absolute_import
+
+from builtins import range
 from collections import OrderedDict
 
-import __init__ as metadata
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.gui import *
-from qgis.core import *
-from qgisToolbox import FeatureSelector
-from PyQt4Widgets import XQPushButton, XQDialogButtonBox
-from database import *
-from utilities import images_path, get_ui_class, get_path, ExtendedComboBox
+from PyQt5.QtCore import QSettings, QMetaObject, QStringListModel
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QCursor, QIcon
+from PyQt5.QtWidgets import QDialog, QMessageBox, QGridLayout, QVBoxLayout, QLabel, QFormLayout, QComboBox, QHBoxLayout, \
+    QPushButton, QSpacerItem, QApplication, QDialogButtonBox, QLayout, QSplitter, QWidget, QLineEdit, QCheckBox, \
+    QRadioButton, QFrame, QCompleter, QSizePolicy, QListWidget, QToolBox
+from qgis.core import QgsCredentials, QgsDataSourceUri
+from qgis.gui import QgsAuthConfigSelect
+
+from .cogo_widgets import XQPushButton, XQDialogButtonBox
+from .database import *
+from .qgisToolbox import FeatureSelector
+from .utilities import images_path, get_ui_class, get_path, ExtendedComboBox
 
 UI_CLASS = get_ui_class("ui_pgnewconnection.ui")
 
 
 def _from_utf8(s):
     return s
+
 
 # All dialogs using selector tool have a captured function
 # All dialogs have a get_return function
@@ -117,7 +125,7 @@ class NewDatabaseConnectionDialog(QDialog, UI_CLASS):
 
         if settings.contains(base_key + self.txtName.text() + "/service") or \
                 settings.contains(base_key + self.txtName.text() + "/host"):
-            message = ("Should the existing connection %s be overwritten?")
+            message = "Should the existing connection %s be overwritten?"
             answer = QMessageBox.question(self,
                                           "Saving connection",
                                           message % (self.txtName.text()),
@@ -202,7 +210,7 @@ class DatabaseConnectionDialog(QDialog):
         settings_postgres = QSettings()
         settings_postgres.beginGroup('PostgreSQL/connections')
         settings_plugin = QSettings()
-        settings_plugin.beginGroup(metadata.name().replace(" ", "_"))
+        settings_plugin.beginGroup('CoGo Plugin')
 
         for index, database in enumerate(settings_postgres.childGroups()):
             self.cmbbx_conn.addItem(database)
@@ -251,7 +259,7 @@ class DatabaseConnectionDialog(QDialog):
         db_username = settings_postgis.value(self.connection + '/username')
         db_password = settings_postgis.value(self.connection + '/password')
 
-        uri = QgsDataSourceURI()
+        uri = QgsDataSourceUri()
         uri.setConnection(
             db_host,
             db_port,
@@ -310,7 +318,7 @@ class DatabaseConnectionDialog(QDialog):
 
                 if crs:
                     query = open(
-                        get_path("scripts","database_setup.sql"), "r").read()
+                        get_path("scripts", "database_setup.sql"), "r").read()
                     query = query.replace(":CRS", "{CRS}")
                     cursor = self.db_connection.cursor()
                     cursor.execute(query.format(CRS=crs))
@@ -373,8 +381,7 @@ class DatabaseConnectionDialog(QDialog):
         self.setWindowTitle(QApplication.translate(
             "DatabaseConnectionDialog",
             "Database Connection",
-            None,
-            QApplication.UnicodeUTF8
+            None
         ))
         self.lbl_conn.setText(QApplication.translate(
             "DatabaseConnectionDialog",
@@ -408,6 +415,7 @@ class DatabaseConnectionDialog(QDialog):
     def create_new_connection(self):
         dialog = NewDatabaseConnectionDialog(self)
         dialog.exec_()
+
 
 UI_CLASS = get_ui_class("ui_crsselector.ui")
 
@@ -454,7 +462,7 @@ class CrsSelectorDialog(QDialog, UI_CLASS):
 
         ordered_dict_of_crs = OrderedDict(sorted(dict_of_crs.items()))
         self.crs_combobox.setInsertPolicy(QComboBox.InsertAlphabetically)
-        for key, item in ordered_dict_of_crs.iteritems():
+        for key, item in ordered_dict_of_crs.items():
             self.crs_combobox.addItem(item, key)
 
     def accept(self):
@@ -659,24 +667,21 @@ class SelectorDialog(QDialog):
             QApplication.translate(
                 "SelectorDialog",
                 "%s %s" % (layer.name.title(), mode.actor.title()),
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.lbl_featID.setText(
             QApplication.translate(
                 "SelectorDialog",
                 "%s ID" % (layer.name.title()),
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.pshbtn_re.setText(
             QApplication.translate(
-                "SelectorDialog", "Re-select", None, QApplication.UnicodeUTF8))
+                "SelectorDialog", "Re-select", None))
         self.chkbx_confirm.setText(
             QApplication.translate(
                 "SelectorDialog",
                 "I am sure I want to %s this %s" % (
                     mode.action.lower(), layer.name.lower()),
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         # connect ui widgets
         self.pshbtn_re.clicked.connect(self.reselect)
         self.chkbx_confirm.stateChanged.connect(self.confirm)
@@ -761,26 +766,22 @@ class ManagerDialog(QDialog):
             QApplication.translate(
                 "ManagerDialog",
                 "%s Manager" % (layer.name.title()),
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.rdbtn_add.setText(
             QApplication.translate(
                 "ManagerDialog",
                 "Create New %s" % (layer.name.title()),
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.rdbtn_edit.setText(
             QApplication.translate(
                 "ManagerDialog",
                 "Edit Existing %s" % (layer.name.title()),
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.rdbtn_del.setText(
             QApplication.translate(
                 "ManagerDialog",
                 "Delete Existing %s" % (layer.name.title()),
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         # connect ui widgets
         self.btnbx_options.clicked.connect(self.execute_option)
         QMetaObject.connectSlotsByName(self)
@@ -871,13 +872,13 @@ class FormBeaconDialog(QDialog):
                 if str(line_edit.text()).strip() is "":
                     continue
                 if bool(line_edit.property("UNIQUE")):
-                    if self.fields[index].name in self.old_values.keys() and \
-                                    values_new[self.fields[index].name] == \
-                                    self.old_values[self.fields[index].name]:
+                    if self.fields[index].name in list(self.old_values.keys()) and \
+                            values_new[self.fields[index].name] == \
+                            self.old_values[self.fields[index].name]:
                         line_edit.setStyleSheet("")
                     elif bool(int(self.db.query(self.query % (
                             self.fields[index].name, "%s"),
-                            (values_new[self.fields[index].name],))[0][0])):
+                                                (values_new[self.fields[index].name],))[0][0])):
                         line_edit.setStyleSheet(self.colours["UNIQUE"])
                         valid = False
                     else:
@@ -929,15 +930,13 @@ class FormBeaconDialog(QDialog):
                 "FormBeaconDialog",
                 ("*" if bool(self.lnedts[index].property("REQUIRED"))
                  else "") + f.name.title(),
-                None,
-                QApplication.UnicodeUTF8))
+                None))
             lnedt.setProperty(
                 "TYPE",
                 QApplication.translate(
                     "FormBeaconDialog",
                     str(f.type),
-                    None,
-                    QApplication.UnicodeUTF8))
+                    None))
         self.verticalLayout.addLayout(self.formLayout)
         self.line_1 = QFrame(self)
         self.line_1.setFrameShape(QFrame.HLine)
@@ -964,15 +963,13 @@ class FormBeaconDialog(QDialog):
             QApplication.translate(
                 "FormBeaconDialog",
                 "Beacon Form",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.label.setText(
             QApplication.translate(
                 "FormBeaconDialog",
                 "<html><head/><body><p><span style=\" color:#ff0000;\">"
                 "*Required Field</span></p></body></html>",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         # connect ui widgets
         self.options_buttonbox.clicked.connect(self.execute_option)
         QMetaObject.connectSlotsByName(self)
@@ -1022,9 +1019,10 @@ class FormParcelDialog(QDialog):
     def populate_form(self, data):
         """ Populate form with values given
         """
+
         # get values
         def checker(data, key):
-            func = lambda data, key: data[key] if key in data.keys() else None
+            func = lambda data, key: data[key] if key in list(data.keys()) else None
             return func(data, key)
 
         feat_id = checker(data, "parcel_id")
@@ -1090,18 +1088,18 @@ class FormParcelDialog(QDialog):
                     "Please enter a number for the parcel ID.")
                 return
             # check that parcel id is valid (i.e. current, unique, available)
-            if "parcel_id" in self.old_values.keys() and \
+            if "parcel_id" in list(self.old_values.keys()) and \
                     str(self.old_values["parcel_id"]) == parcel_id:
                 pass
             elif not bool(
                     self.database.query(
                         self.SQL_PARCELS["UNIQUE"], (int(parcel_id),))[0][0]):
                 if not self.new_accepted and QMessageBox.question(
-                    self,
-                    'Confirm New Parcel ID',
-                    "Are you sure you want to create a new parcel ID?",
-                    QMessageBox.Yes,
-                    QMessageBox.No
+                        self,
+                        'Confirm New Parcel ID',
+                        "Are you sure you want to create a new parcel ID?",
+                        QMessageBox.Yes,
+                        QMessageBox.No
                 ) == QMessageBox.No:
                     return
                 self.new_accepted = True
@@ -1152,9 +1150,9 @@ class FormParcelDialog(QDialog):
         # get fields
         fields = self.database.get_schema(
             self.layers[0].table, [
-            self.layers[0].geometry_column,
-            self.layers[0].primary_key
-        ])
+                self.layers[0].geometry_column,
+                self.layers[0].primary_key
+            ])
         # display form
         form = FormBeaconDialog(
             self.database,
@@ -1169,7 +1167,7 @@ class FormParcelDialog(QDialog):
             id = self.database.query(
                 self.SQL_BEACONS["INSERT"].format(
                     fields=", ".join(sorted(new_values.keys())),
-                    values=", ".join(["%s" for k in new_values.keys()])),
+                    values=", ".join(["%s" for k in list(new_values.keys())])),
                 [new_values[k] for k in sorted(new_values.keys())])[0][0]
             self.iface.mapCanvas().refresh()
             self.highlight_feature(self.layers[0].layer, id)
@@ -1303,44 +1301,37 @@ class FormParcelDialog(QDialog):
             QApplication.translate(
                 "FormParcelDialog",
                 "Parcel Form",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.parcel_id_label.setText(
             QApplication.translate(
                 "FormParcelDialog",
                 "Parcel ID",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.sequence_label.setText(
             QApplication.translate(
                 "FormParcelDialog",
                 "Beacon Sequence",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.new_pushbutton.setText(
             QApplication.translate(
                 "FormParcelDialog",
                 "New Beacon",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.start_pushbutton.setText(
             QApplication.translate(
                 "FormParcelDialog",
                 "Start",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.stop_pushbutton.setText(
             QApplication.translate(
                 "FormParcelDialog",
                 "Stop",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.reset_pushbutton.setText(
             QApplication.translate(
                 "FormParcelDialog",
                 "Reset",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         # connect ui widgets
         self.new_pushbutton.clicked.connect(self.new_beacon)
         self.start_pushbutton.clicked.connect(self.start_sequence)
@@ -1362,7 +1353,7 @@ class BearingDistanceFormDialog(QDialog):
             required_layers,
             parent=None):
         # initialize QDialog class
-        super(BearingDistanceFormDialog, self).\
+        super(BearingDistanceFormDialog, self). \
             __init__(parent, Qt.WindowStaysOnTopHint)
         # initialize ui
         self.setupUi()
@@ -1373,17 +1364,17 @@ class BearingDistanceFormDialog(QDialog):
         self.auto = {
             "SURVEYPLAN": self.database.query(
                 SQL_BEARDIST["AUTO_SURVEYPLAN"]
-                )[0][0],
+            )[0][0],
             "REFERENCEBEACON": self.database.query(
                 SQL_BEARDIST["AUTO_REFERENCEBEACON"]
-                )[0][0],
+            )[0][0],
             "FROMBEACON": []
         }
         self.survey_plan = None
         self.reference_beacon = None
         self.bearing_distance_chain = []
         self.bearing_distance_string = (
-            "%s" + u"\u00B0" + " and %sm from %s to %s")
+                "%s" + u"\u00B0" + " and %sm from %s to %s")
         # initialize initial step
         self.init_item_survey_plan()
 
@@ -1534,7 +1525,7 @@ class BearingDistanceFormDialog(QDialog):
                         self.SQL_BEACONS["INSERT"].format(
                             fields=", ".join(sorted(new_values.keys())),
                             values=", ".join(
-                                ["%s" for index in new_values.keys()])),
+                                ["%s" for index in list(new_values.keys())])),
                         [new_values[index] for index in (
                             sorted(new_values.keys()))])
                     # set reference beacon
@@ -1964,89 +1955,75 @@ class BearingDistanceFormDialog(QDialog):
             QApplication.translate(
                 "BearingDistanceFormDialog",
                 "Bearings and Distances Form",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.plan_label.setText(
             QApplication.translate(
                 "BearingDistanceFormDialog",
                 "Survey Plan",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.plan_next_pushbutton.setText(
             QApplication.translate(
                 "BearingDistanceFormDialog",
                 "Next",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.toolbox.setItemText(
             self.toolbox.indexOf(self.plan_widget),
             QApplication.translate(
                 "BearingDistanceFormDialog",
                 "Step 1: Define Survey Plan",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.reference_layout.setText(
             QApplication.translate(
                 "BearingDistanceFormDialog",
                 "Reference Beacon",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.reference_back_pushbutton.setText(
             QApplication.translate(
                 "BearingDistanceFormDialog",
                 "Back",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.reference_next_pushbutton.setText(
             QApplication.translate(
                 "BearingDistanceFormDialog",
                 "Next",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.toolbox.setItemText(
             self.toolbox.indexOf(self.reference_widget),
             QApplication.translate(
                 "BearingDistanceFormDialog",
                 "Step 2: Define Reference Beacon",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.chain_add_pushbutton.setText(
             QApplication.translate(
                 "BearingDistanceFormDialog",
                 "Add Link",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.chain_edit_pushbutton.setText(
             QApplication.translate(
                 "BearingDistanceFormDialog",
                 "Edit Link",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.chain_delete_pushbutton.setText(
             QApplication.translate(
                 "BearingDistanceFormDialog",
                 "Delete Link",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.chain_back_pushbutton.setText(
             QApplication.translate(
                 "BearingDistanceFormDialog",
                 "Back",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.chain_finish_pushbutton.setText(
             QApplication.translate(
                 "BearingDistanceFormDialog",
                 "Finish",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         self.toolbox.setItemText(
             self.toolbox.indexOf(self.chain_widget),
             QApplication.translate(
                 "BearingDistanceFormDialog",
                 "Step 3: Define Bearings and Distances Chain",
-                None,
-                QApplication.UnicodeUTF8))
+                None))
         # connect ui widgets
         self.options_buttonbox.accepted.connect(self.accept)
         self.options_buttonbox.rejected.connect(self.reject)
@@ -2059,7 +2036,7 @@ class BearingDistanceFormDialog(QDialog):
         self.reference_back_pushbutton.clicked.connect(
             lambda: self.check_item_reference_beacon(False))
         self.plan_next_pushbutton.clicked.connect(
-            lambda : self.check_item_survey_plan(True))
+            lambda: self.check_item_survey_plan(True))
         self.chain_add_pushbutton.clicked.connect(self.add_link)
         self.chain_edit_pushbutton.clicked.connect(self.edit_link)
         self.chain_delete_pushbutton.clicked.connect(self.delete_link)
@@ -2080,7 +2057,7 @@ class BearingDistanceLinkFormDialog(QDialog):
 
     def __init__(self, database, from_beacons, query, values=[], parent=None):
         # initialize QDialog class
-        super(BearingDistanceLinkFormDialog, self).\
+        super(BearingDistanceLinkFormDialog, self). \
             __init__(parent, Qt.WindowStaysOnTopHint)
         # initialize ui
         self.setup_ui(from_beacons)
@@ -2182,8 +2159,8 @@ class BearingDistanceLinkFormDialog(QDialog):
                             valid = False
                             break
                         if bool(int(self.database.query(
-                                        self.query % ('beacon', "%s"),
-                                        (str(line_edit.text()),))[0][0])):
+                                self.query % ('beacon', "%s"),
+                                (str(line_edit.text()),))[0][0])):
                             line_edit.setStyleSheet(self.colours["UNIQUE"])
                             valid = False
                             break
@@ -2225,8 +2202,7 @@ class BearingDistanceLinkFormDialog(QDialog):
             label.setText(QApplication.translate(
                 "dlg_FormBearDistEntry",
                 ("*" if field.required else "") + field.name.title(),
-                None,
-                QApplication.UnicodeUTF8))
+                None))
             self.labels.append(label)
             line_edit = QLineEdit(self)
             self.form_layout.setWidget(index, QFormLayout.FieldRole, line_edit)
@@ -2248,8 +2224,7 @@ class BearingDistanceLinkFormDialog(QDialog):
         self.setWindowTitle(QApplication.translate(
             "dlg_FormBearDistEntry",
             "Link Form",
-            None,
-            QApplication.UnicodeUTF8))
+            None))
         # connect ui widgets
         self.options_buttonbox.clicked.connect(self.execute_option)
         QMetaObject.connectSlotsByName(self)
