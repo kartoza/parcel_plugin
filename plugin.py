@@ -20,23 +20,28 @@
  *                                                                         *
  ***************************************************************************/
 """
+from __future__ import absolute_import
 
-# qgis imports
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
 # python imports
 import os
-# user imports
-import __init__ as metadata
-from PyQt4Dialogs import *
-import database
-from constants import *
 from datetime import datetime
-from utilities import validate_plugin_actions
+
+# qgis imports
+from PyQt5.QtCore import QSettings, Qt
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QToolBar, QAction, QMessageBox
+from qgis.core import QgsCoordinateReferenceSystem, QgsProject, QgsVectorLayer, QgsCredentials, QgsDataSourceUri
+
+# user imports
+
+from .cogo_dialogs import BearingDistanceFormDialog, SelectorDialog, FormParcelDialog, ManagerDialog, FormBeaconDialog, \
+    DatabaseConnectionDialog
+from . import database
+from .constants import *
+from .utilities import validate_plugin_actions
 
 
-class RequiredLayer:
+class RequiredLayer(object):
 
     def __init__(
             self,
@@ -58,14 +63,14 @@ class RequiredLayer:
         self.layer = layer
 
 
-class Mode:
+class Mode(object):
 
     def __init__(self, actor, action):
         self.actor = actor
         self.action = action
 
 
-class SMLSurveyor:
+class SMLSurveyor(object):
 
     def __init__(self, iface):
         # save reference to the QGIS interface
@@ -102,14 +107,15 @@ class SMLSurveyor:
         self.refresh_layers()
         for l in self.required_layers:
             if bool(l.layer):
-                QgsMapLayerRegistry.instance().removeMapLayers([l.layer.id()])
+                QgsProject.instance().removeMapLayers([l.layer.id()])
 
     def create_plugin_toolbar(self):
         """ Create plugin toolbar to house buttons
         """
         # create plugin toolbar
-        self.plugin_toolbar = QToolBar(metadata.name())
-        self.plugin_toolbar.setObjectName(metadata.name())
+
+        self.plugin_toolbar = QToolBar('Parcel Plugin')
+        self.plugin_toolbar.setObjectName('Parcel Plugin')
         # create Database Selection button
         self.select_database_action = QAction(
             QIcon(os.path.join(self.plugin_dir, "images", "database.png")),
@@ -170,7 +176,7 @@ class SMLSurveyor:
         # fetch settings
         settings_plugin = QSettings()
         settings_postgis = QSettings()
-        settings_plugin.beginGroup(metadata.name().replace(" ", "_"))
+        settings_plugin.beginGroup('CoGo Plugin')
         settings_postgis.beginGroup('PostgreSQL/connections')
         self.connection = connection
         if not bool(self.connection):
@@ -201,7 +207,7 @@ class SMLSurveyor:
             db_password = settings_postgis.value(self.connection + '/password')
 
             max_attempts = 3
-            self.uri = QgsDataSourceURI()
+            self.uri = QgsDataSourceUri()
             self.uri.setConnection(
                 db_host,
                 db_port,
@@ -307,7 +313,7 @@ class SMLSurveyor:
             target_group = root.findGroup(group_name)
             if not bool(target_group):
                 target_group = root.insertGroup(0, group_name)
-            target_group.setVisible(Qt.Checked)
+            target_group.setItemVisibilityChecked(Qt.Checked)
 
             for required_layer in reversed(self.required_layers):
                 for layer_node in target_group.findLayers():
@@ -325,14 +331,13 @@ class SMLSurveyor:
                     required_layer.primary_key)
                 added_layer = QgsVectorLayer(
                     self.uri.uri(), required_layer.name_plural, "postgres")
-                QgsMapLayerRegistry.instance().addMapLayer(
-                    added_layer, False)
+                QgsProject.instance().addMapLayer(added_layer, False)
                 target_group.addLayer(added_layer)
                 for layer_node in target_group.findLayers():
                     layer = layer_node.layer()
                     if required_layer.name_plural == layer.name():
                         required_layer.layer = layer
-                        layer_node.setVisible(Qt.Checked)
+                        layer_node.setItemVisibilityChecked(Qt.Checked)
                         if self.crs:
                             layer.setCrs(self.crs)
                 self.iface.zoomToActiveLayer()
@@ -395,10 +400,11 @@ class SMLSurveyor:
         if connection:
             self.set_database_connection(connection=connection, crs=crs)
             self.refresh_layers()
-        validate_plugin_actions(self, self.database)
+        if self.database:
+            validate_plugin_actions(self, self.database)
 
 
-class DatabaseManager():
+class DatabaseManager(object):
 
     def __init__(self):
         self.dialog = DatabaseConnectionDialog()
@@ -409,20 +415,18 @@ class DatabaseManager():
             self.current_connection = self.dialog.get_database_connection()
             self.current_crs = self.dialog.get_crs()
             settings_plugin = QSettings()
-            settings_plugin.beginGroup(metadata.name().replace(" ", "_"))
+            settings_plugin.beginGroup('CoGo Plugin')
             settings_plugin.setValue(
                 "DatabaseConnection", self.current_connection)
 
     def get_current_connection(self):
-
         return self.current_connection
 
     def get_current_crs(self):
-
         return self.current_crs
 
 
-class BeaconManager():
+class BeaconManager(object):
 
     def __init__(self, iface, database, required_layers):
         self.iface = iface
@@ -444,9 +448,9 @@ class BeaconManager():
                     # get fields
                     fields = self.database.get_schema(
                         self.required_layers[0].table, [
-                        self.required_layers[0].geometry_column,
-                        self.required_layers[0].primary_key
-                    ])
+                            self.required_layers[0].geometry_column,
+                            self.required_layers[0].primary_key
+                        ])
                     # display form
                     form_dialog = FormBeaconDialog(
                         self.database,
@@ -462,7 +466,7 @@ class BeaconManager():
                             SQL_BEACONS["INSERT"].format(
                                 fields=", ".join(sorted(new_values.keys())),
                                 values=", ".join(
-                                    ["%s" for k in new_values.keys()])),
+                                    ["%s" for k in list(new_values.keys())])),
                             [new_values[k] for k in sorted(new_values.keys())])
                         self.iface.mapCanvas().refresh()
                     else:
@@ -498,9 +502,9 @@ class BeaconManager():
                     # get fields
                     fields = self.database.get_schema(
                         self.required_layers[0].table, [
-                        self.required_layers[0].geometry_column,
-                        self.required_layers[0].primary_key
-                    ])
+                            self.required_layers[0].geometry_column,
+                            self.required_layers[0].primary_key
+                        ])
                     # get values
                     values = [value for value in self.database.query(
                         SQL_BEACONS["EDIT"].format(
@@ -577,7 +581,7 @@ class BeaconManager():
                     required_layer.layer.removeSelection()
 
 
-class ParcelManager():
+class ParcelManager(object):
 
     def __init__(self, iface, database, required_layers):
         self.iface = iface
@@ -620,9 +624,9 @@ class ParcelManager():
                                 beacon,
                                 i))
                         sql = self.database.preview_query(
-                                SQL_PARCELS["INSERT_GENERAL"],
-                                data=points,
-                                multi_data=True)
+                            SQL_PARCELS["INSERT_GENERAL"],
+                            data=points,
+                            multi_data=True)
                         self.database.query(sql)
                         self.iface.mapCanvas().refresh()
                     else:
@@ -677,9 +681,9 @@ class ParcelManager():
                                 beacon,
                                 i))
                         sql = self.database.preview_query(
-                                SQL_PARCELS["INSERT_GENERAL"],
-                                data=points,
-                                multi_data=True)
+                            SQL_PARCELS["INSERT_GENERAL"],
+                            data=points,
+                            multi_data=True)
                         self.database.query(sql)
                 for required_layer in self.required_layers:
                     required_layer.layer.removeSelection()
@@ -710,7 +714,7 @@ class ParcelManager():
                     required_layer.layer.removeSelection()
 
 
-class BearDistManager():
+class BearDistManager(object):
 
     def __init__(self, iface, database, required_layers):
         self.iface = iface
@@ -732,8 +736,8 @@ class BearDistManager():
             survey_plan, reference_beacon, beardist_chain = dialog.get_return()
             # check whether survey plan is defined otherwise define it
             if not self.database.query(
-                SQL_BEARDIST["IS_SURVEYPLAN"],
-                (survey_plan,))[0][0]:
+                    SQL_BEARDIST["IS_SURVEYPLAN"],
+                    (survey_plan,))[0][0]:
                 self.database.query(
                     SQL_BEARDIST["INSERT_SURVEYPLAN"],
                     (survey_plan, reference_beacon))

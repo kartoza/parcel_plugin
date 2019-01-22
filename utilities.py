@@ -1,16 +1,18 @@
 # coding=utf-8
 """This module contains utilities."""
+from builtins import str
 
 import os
-from PyQt4 import uic
-from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QCompleter, QComboBox, QSortFilterProxyModel
-
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import QCompleter, QComboBox
+from qgis.PyQt.QtCore import QSortFilterProxyModel
 
 crs_options = {
     'Minna / UTM zone 31N': 26331,
     'Minna / UTM zone 32N': 26332
 }
+
 
 def images_path(*args):
     """Get the path to our resources folder.
@@ -34,6 +36,7 @@ def images_path(*args):
 
     return path
 
+
 def get_path(*args):
     """Get the path to our specific folder from plugin folder.
 
@@ -54,6 +57,7 @@ def get_path(*args):
 
     return path
 
+
 def get_ui_class(ui_file):
     """Get UI Python class from .ui file.
 
@@ -70,6 +74,7 @@ def get_ui_class(ui_file):
         )
     )
     return uic.loadUiType(ui_file_path, from_imports=True)[0]
+
 
 def validate_plugin_actions(toolbar, database):
     """Check DB schema for actions availability. eg: Manage bearing and
@@ -100,6 +105,7 @@ def validate_plugin_actions(toolbar, database):
 class ExtendedComboBox(QComboBox):
     """Extended class of QComboBox so we can perform a filtering of items.
     """
+
     def __init__(self, parent=None):
         super(ExtendedComboBox, self).__init__(parent)
 
@@ -118,10 +124,9 @@ class ExtendedComboBox(QComboBox):
         self.setCompleter(self.completer)
 
         # connect signals
-        self.lineEdit().textEdited[unicode].connect(
+        self.lineEdit().textEdited[str].connect(
             self.pFilterModel.setFilterFixedString)
         self.completer.activated.connect(self.on_completer_activated)
-
 
     # on selection of an item from the completer,
     # select the corresponding item from combobox
@@ -130,13 +135,11 @@ class ExtendedComboBox(QComboBox):
             index = self.findText(text)
             self.setCurrentIndex(index)
 
-
     # on model change, update the models of the filter and completer as well
     def setModel(self, model):
         super(ExtendedComboBox, self).setModel(model)
         self.pFilterModel.setSourceModel(model)
         self.completer.setModel(self.pFilterModel)
-
 
     # on model column change, update the model column of
     # the filter and completer as well
