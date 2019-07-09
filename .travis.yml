@@ -29,7 +29,7 @@ cache:
 
 python:
   - "3.5"
-
+dist: xenial
 virtualenv:
   system_site_packages: true
 
