@@ -15,7 +15,7 @@ SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 SET row_security = off;
-
+SET xmloption = document;
 
 --
 -- Name: postgis; Type: EXTENSION; Schema: -; Owner: 
@@ -34,7 +34,7 @@ COMMENT ON EXTENSION postgis IS 'PostGIS geometry, geography, and raster spatial
 SET search_path = public, pg_catalog;
 
 --
--- Name: beardistinsert(character varying, double precision, double precision, character varying, character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: docker
+-- Name: beardistinsert(character varying, double precision, double precision, character varying, character varying, character varying, character varying); Type: FUNCTION; Schema: public; 
 --
 
 CREATE FUNCTION beardistinsert(arg_plan_no character varying, arg_bearing double precision, arg_distance double precision, arg_beacon_from character varying, arg_beacon_to character varying, arg_location character varying, arg_name character varying) RETURNS void
@@ -58,7 +58,7 @@ $$;
 
 
 --
--- Name: beardistupdate(character varying, double precision, double precision, character varying, character varying, character varying, character varying, integer); Type: FUNCTION; Schema: public; Owner: docker
+-- Name: beardistupdate(character varying, double precision, double precision, character varying, character varying, character varying, character varying, integer); Type: FUNCTION; Schema: public; 
 --
 
 CREATE FUNCTION beardistupdate(arg_plan_no character varying, arg_bearing double precision, arg_distance double precision, arg_beacon_from character varying, arg_beacon_to character varying, arg_location character varying, arg_name character varying, arg_index integer) RETURNS void
@@ -102,7 +102,7 @@ $$;
 
 
 --
--- Name: calc_point(); Type: FUNCTION; Schema: public; Owner: docker
+-- Name: calc_point(); Type: FUNCTION; Schema: public; 
 --
 
 CREATE FUNCTION calc_point() RETURNS trigger
@@ -117,7 +117,7 @@ CREATE FUNCTION calc_point() RETURNS trigger
 
 
 --
--- Name: fn_beacons_after_insert(); Type: FUNCTION; Schema: public; Owner: docker
+-- Name: fn_beacons_after_insert(); Type: FUNCTION; Schema: public; 
 --
 
 CREATE FUNCTION fn_beacons_after_insert() RETURNS trigger
@@ -154,7 +154,7 @@ $$;
 
 
 --
--- Name: fn_beacons_before_delete(); Type: FUNCTION; Schema: public; Owner: docker
+-- Name: fn_beacons_before_delete(); Type: FUNCTION; Schema: public; 
 --
 
 CREATE FUNCTION fn_beacons_before_delete() RETURNS trigger
@@ -191,7 +191,7 @@ $$;
 
 
 --
--- Name: fn_beacons_before_update(); Type: FUNCTION; Schema: public; Owner: docker
+-- Name: fn_beacons_before_update(); Type: FUNCTION; Schema: public; 
 --
 
 CREATE FUNCTION fn_beacons_before_update() RETURNS trigger
@@ -228,7 +228,7 @@ $$;
 
 
 --
--- Name: fn_updateprintjobs(); Type: FUNCTION; Schema: public; Owner: docker
+-- Name: fn_updateprintjobs(); Type: FUNCTION; Schema: public; 
 --
 
 CREATE FUNCTION fn_updateprintjobs() RETURNS trigger
@@ -248,7 +248,7 @@ $$;
 
 
 --
--- Name: parcel_lookup_availability_trigger(); Type: FUNCTION; Schema: public; Owner: docker
+-- Name: parcel_lookup_availability_trigger(); Type: FUNCTION; Schema: public; 
 --
 
 CREATE FUNCTION parcel_lookup_availability_trigger() RETURNS trigger
@@ -264,7 +264,7 @@ $$;
 
 
 --
--- Name: parcel_lookup_define_parcel_trigger(); Type: FUNCTION; Schema: public; Owner: docker
+-- Name: parcel_lookup_define_parcel_trigger(); Type: FUNCTION; Schema: public; 
 --
 
 CREATE FUNCTION parcel_lookup_define_parcel_trigger() RETURNS trigger
@@ -281,23 +281,7 @@ $$;
 
 
 --
--- Name: parcels_matview_refresh_row(integer); Type: FUNCTION; Schema: public; Owner: docker
---
-
-CREATE FUNCTION parcels_matview_refresh_row(integer) RETURNS void
-    LANGUAGE plpgsql SECURITY DEFINER
-    AS $_$
-BEGIN
-  DELETE FROM parcels_matview WHERE parcel_id = $1;
-  INSERT INTO parcels_matview SELECT * FROM parcels WHERE parcel_id = $1;
-  RETURN;
-END
-$_$;
-
-
-
---
--- Name: pointfrombearinganddistance(double precision, double precision, double precision, double precision, integer, integer); Type: FUNCTION; Schema: public; Owner: docker
+-- Name: pointfrombearinganddistance(double precision, double precision, double precision, double precision, integer, integer); Type: FUNCTION; Schema: public; 
 --
 
 CREATE FUNCTION pointfrombearinganddistance(dstarte double precision, dstartn double precision, dbearing double precision, ddistance double precision, "precision" integer, srid integer) RETURNS geometry
@@ -365,7 +349,7 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: allocation_cat; Type: TABLE; Schema: public; Owner: docker
+-- Name: allocation_cat; Type: TABLE; Schema: public; 
 --
 
 CREATE TABLE allocation_cat (
@@ -376,7 +360,7 @@ CREATE TABLE allocation_cat (
 
 
 --
--- Name: allocation_cat_id_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: allocation_cat_id_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE allocation_cat_id_seq
@@ -389,14 +373,14 @@ CREATE SEQUENCE allocation_cat_id_seq
 
 
 --
--- Name: allocation_cat_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
+-- Name: allocation_cat_id_seq; Type: SEQUENCE OWNED BY; Schema: public; 
 --
 
 ALTER SEQUENCE allocation_cat_id_seq OWNED BY allocation_cat.allocation_cat;
 
 
 --
--- Name: beacons; Type: TABLE; Schema: public; Owner: docker
+-- Name: beacons; Type: TABLE; Schema: public; 
 --
 
 CREATE TABLE beacons (
@@ -413,7 +397,7 @@ CREATE TABLE beacons (
 
 
 --
--- Name: beacons_gid_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: beacons_gid_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE beacons_gid_seq
@@ -426,14 +410,14 @@ CREATE SEQUENCE beacons_gid_seq
 
 
 --
--- Name: beacons_gid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
+-- Name: beacons_gid_seq; Type: SEQUENCE OWNED BY; Schema: public; 
 --
 
 ALTER SEQUENCE beacons_gid_seq OWNED BY beacons.gid;
 
 
 --
--- Name: parcel_def; Type: TABLE; Schema: public; Owner: docker
+-- Name: parcel_def; Type: TABLE; Schema: public; 
 --
 
 CREATE TABLE parcel_def (
@@ -446,7 +430,7 @@ CREATE TABLE parcel_def (
 
 
 --
--- Name: parcel_lookup; Type: TABLE; Schema: public; Owner: docker
+-- Name: parcel_lookup; Type: TABLE; Schema: public; 
 --
 
 CREATE TABLE parcel_lookup (
@@ -469,14 +453,14 @@ CREATE TABLE parcel_lookup (
 
 
 --
--- Name: COLUMN parcel_lookup.plot_sn; Type: COMMENT; Schema: public; Owner: docker
+-- Name: COLUMN parcel_lookup.plot_sn; Type: COMMENT; Schema: public; 
 --
 
 COMMENT ON COLUMN parcel_lookup.plot_sn IS 'plot serial no within a block. Forms part of the parcel no';
 
 
 --
--- Name: beacons_views; Type: MATERIALIZED VIEW; Schema: public; Owner: docker
+-- Name: beacons_views; Type: MATERIALIZED VIEW; Schema: public; 
 --
 
 CREATE MATERIALIZED VIEW beacons_views AS
@@ -495,9 +479,37 @@ CREATE MATERIALIZED VIEW beacons_views AS
   WITH NO DATA;
 
 
+--
+-- Name: refresh_beacons_intersects(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.refresh_beacons_intersects() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+  BEGIN
+    REFRESH MATERIALIZED VIEW  beacons_intersect ;
+  RETURN NEW;
+  END
+  $$;
+
 
 --
--- Name: deeds; Type: TABLE; Schema: public; Owner: docker
+-- Name: refresh_beacons_views(); Type: FUNCTION; Schema: public; Owner: -
+--d
+
+CREATE FUNCTION public.refresh_beacons_views() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+  BEGIN
+    REFRESH MATERIALIZED VIEW  beacons_views ;
+  RETURN NEW;
+  END
+  $$;
+
+
+
+--
+-- Name: deeds; Type: TABLE; Schema: public; 
 --
 
 CREATE TABLE deeds (
@@ -515,7 +527,7 @@ CREATE TABLE deeds (
 
 
 --
--- Name: schemes; Type: TABLE; Schema: public; Owner: docker
+-- Name: schemes; Type: TABLE; Schema: public; 
 --
 
 CREATE TABLE schemes (
@@ -527,14 +539,14 @@ CREATE TABLE schemes (
 
 
 --
--- Name: COLUMN schemes."Scheme"; Type: COMMENT; Schema: public; Owner: docker
+-- Name: COLUMN schemes."Scheme"; Type: COMMENT; Schema: public; 
 --
 
 COMMENT ON COLUMN schemes."Scheme" IS 'line';
 
 
 --
--- Name: parcels; Type: VIEW; Schema: public; Owner: docker
+-- Name: parcels; Type: VIEW; Schema: public; 
 --
 
 CREATE VIEW parcels AS
@@ -583,7 +595,7 @@ CREATE VIEW parcels AS
 
 
 --
--- Name: beacons_intersect; Type: MATERIALIZED VIEW; Schema: public; Owner: docker
+-- Name: beacons_intersect; Type: MATERIALIZED VIEW; Schema: public; 
 --
 
 CREATE MATERIALIZED VIEW beacons_intersect AS
@@ -600,7 +612,7 @@ CREATE MATERIALIZED VIEW beacons_intersect AS
 
 
 --
--- Name: beardist; Type: TABLE; Schema: public; Owner: docker
+-- Name: beardist; Type: TABLE; Schema: public; 
 --
 
 CREATE TABLE beardist (
@@ -615,7 +627,7 @@ CREATE TABLE beardist (
 
 
 --
--- Name: beardist_id_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: beardist_id_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE beardist_id_seq
@@ -628,14 +640,14 @@ CREATE SEQUENCE beardist_id_seq
 
 
 --
--- Name: beardist_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
+-- Name: beardist_id_seq; Type: SEQUENCE OWNED BY; Schema: public; 
 --
 
 ALTER SEQUENCE beardist_id_seq OWNED BY beardist.id;
 
 
 --
--- Name: bearing_labels; Type: VIEW; Schema: public; Owner: docker
+-- Name: bearing_labels; Type: VIEW; Schema: public; 
 --
 
 CREATE VIEW bearing_labels AS
@@ -667,10 +679,10 @@ CREATE VIEW bearing_labels AS
 
 
 --
--- Name: boundaries; Type: MATERIALIZED VIEW; Schema: public; Owner: docker
+-- Name: boundaries; Type: MATERIALIZED VIEW; Schema: public; 
 --
 
-CREATE MATERIALIZED VIEW boundaries AS
+CREATE  VIEW boundaries AS
  WITH boundaries AS (
          SELECT segments.parcel_id,
             st_makeline(segments.sp, segments.ep) AS geom
@@ -688,15 +700,15 @@ CREATE MATERIALIZED VIEW boundaries AS
     round((degrees(st_azimuth(st_startpoint(boundaries.geom), st_endpoint(boundaries.geom))))::numeric, 2) AS bearing
    FROM boundaries
   WHERE st_isvalid(boundaries.geom)
-  WITH NO DATA;
+  ;
 
 
 
 --
--- Name: boundary_labels; Type: MATERIALIZED VIEW; Schema: public; Owner: docker
+-- Name: boundary_labels; Type: MATERIALIZED VIEW; Schema: public; 
 --
 
-CREATE MATERIALIZED VIEW boundary_labels AS
+CREATE  VIEW boundary_labels AS
  SELECT row_number() OVER () AS id,
     b.id AS boundary_id,
     (b.geom)::geometry(LineString,:CRS) AS geom,
@@ -724,12 +736,12 @@ CREATE MATERIALIZED VIEW boundary_labels AS
           GROUP BY a.id) b
      JOIN beardist c USING (id))
      JOIN parcels p ON (st_coveredby(b.geom, p.the_geom)))
-  WITH NO DATA;
+  ;
 
 
 
 --
--- Name: deeds_deed_sn_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: deeds_deed_sn_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE deeds_deed_sn_seq
@@ -742,17 +754,17 @@ CREATE SEQUENCE deeds_deed_sn_seq
 
 
 --
--- Name: deeds_deed_sn_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
+-- Name: deeds_deed_sn_seq; Type: SEQUENCE OWNED BY; Schema: public; 
 --
 
 ALTER SEQUENCE deeds_deed_sn_seq OWNED BY deeds.deed_sn;
 
 
 --
--- Name: derived_boundaries; Type: MATERIALIZED VIEW; Schema: public; Owner: docker
+-- Name: derived_boundaries; Type: MATERIALIZED VIEW; Schema: public; 
 --
 
-CREATE MATERIALIZED VIEW derived_boundaries AS
+CREATE  VIEW derived_boundaries AS
  SELECT b.id,
     b.parcel_id,
     b.geom,
@@ -762,12 +774,12 @@ CREATE MATERIALIZED VIEW derived_boundaries AS
   WHERE (NOT (b.id IN ( SELECT b_1.id
            FROM (boundaries b_1
              JOIN boundary_labels bl ON (st_equals(b_1.geom, bl.geom))))))
-  WITH NO DATA;
+  ;
 
 
 
 --
--- Name: hist_beacons; Type: TABLE; Schema: public; Owner: docker
+-- Name: hist_beacons; Type: TABLE; Schema: public; 
 --
 
 CREATE TABLE hist_beacons (
@@ -787,7 +799,7 @@ CREATE TABLE hist_beacons (
 
 
 --
--- Name: hist_beacons_hist_id_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: hist_beacons_hist_id_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE hist_beacons_hist_id_seq
@@ -800,14 +812,14 @@ CREATE SEQUENCE hist_beacons_hist_id_seq
 
 
 --
--- Name: hist_beacons_hist_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
+-- Name: hist_beacons_hist_id_seq; Type: SEQUENCE OWNED BY; Schema: public; 
 --
 
 ALTER SEQUENCE hist_beacons_hist_id_seq OWNED BY hist_beacons.hist_id;
 
 
 --
--- Name: instrument_cat; Type: TABLE; Schema: public; Owner: docker
+-- Name: instrument_cat; Type: TABLE; Schema: public; 
 --
 
 CREATE TABLE instrument_cat (
@@ -818,7 +830,7 @@ CREATE TABLE instrument_cat (
 
 
 --
--- Name: instrument_cat_instrument_cat_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: instrument_cat_instrument_cat_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE instrument_cat_instrument_cat_seq
@@ -831,14 +843,14 @@ CREATE SEQUENCE instrument_cat_instrument_cat_seq
 
 
 --
--- Name: instrument_cat_instrument_cat_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
+-- Name: instrument_cat_instrument_cat_seq; Type: SEQUENCE OWNED BY; Schema: public; 
 --
 
 ALTER SEQUENCE instrument_cat_instrument_cat_seq OWNED BY instrument_cat.instrument_cat;
 
 
 --
--- Name: local_govt; Type: TABLE; Schema: public; Owner: docker
+-- Name: local_govt; Type: TABLE; Schema: public; 
 --
 
 CREATE TABLE local_govt (
@@ -849,7 +861,7 @@ CREATE TABLE local_govt (
 
 
 --
--- Name: local_govt_id_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: local_govt_id_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE local_govt_id_seq
@@ -862,14 +874,14 @@ CREATE SEQUENCE local_govt_id_seq
 
 
 --
--- Name: local_govt_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
+-- Name: local_govt_id_seq; Type: SEQUENCE OWNED BY; Schema: public; 
 --
 
 ALTER SEQUENCE local_govt_id_seq OWNED BY local_govt.id;
 
 
 --
--- Name: localmotclass_code_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: localmotclass_code_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE localmotclass_code_seq
@@ -882,7 +894,7 @@ CREATE SEQUENCE localmotclass_code_seq
 
 
 --
--- Name: localrdclass_code_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: localrdclass_code_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE localrdclass_code_seq
@@ -895,7 +907,7 @@ CREATE SEQUENCE localrdclass_code_seq
 
 
 --
--- Name: parcel_def_id_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: parcel_def_id_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE parcel_def_id_seq
@@ -908,14 +920,14 @@ CREATE SEQUENCE parcel_def_id_seq
 
 
 --
--- Name: parcel_def_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
+-- Name: parcel_def_id_seq; Type: SEQUENCE OWNED BY; Schema: public; 
 --
 
 ALTER SEQUENCE parcel_def_id_seq OWNED BY parcel_def.id;
 
 
 --
--- Name: parcel_lookup_id_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: parcel_lookup_id_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE parcel_lookup_id_seq
@@ -928,14 +940,14 @@ CREATE SEQUENCE parcel_lookup_id_seq
 
 
 --
--- Name: parcel_lookup_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
+-- Name: parcel_lookup_id_seq; Type: SEQUENCE OWNED BY; Schema: public; 
 --
 
 ALTER SEQUENCE parcel_lookup_id_seq OWNED BY parcel_lookup.plot_sn;
 
 
 --
--- Name: parcel_lookup_parcel_id_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: parcel_lookup_parcel_id_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE parcel_lookup_parcel_id_seq
@@ -948,14 +960,14 @@ CREATE SEQUENCE parcel_lookup_parcel_id_seq
 
 
 --
--- Name: parcel_lookup_parcel_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
+-- Name: parcel_lookup_parcel_id_seq; Type: SEQUENCE OWNED BY; Schema: public; 
 --
 
 ALTER SEQUENCE parcel_lookup_parcel_id_seq OWNED BY parcel_lookup.parcel_id;
 
 
 --
--- Name: perimeters; Type: VIEW; Schema: public; Owner: docker
+-- Name: perimeters; Type: VIEW; Schema: public; 
 --
 
 CREATE VIEW perimeters AS
@@ -1004,10 +1016,10 @@ CREATE VIEW perimeters AS
 
 
 --
--- Name: parcel_overlap_matviews; Type: MATERIALIZED VIEW; Schema: public; Owner: docker
+-- Name: parcel_overlap_matviews; Type: MATERIALIZED VIEW; Schema: public; 
 --
 
-CREATE MATERIALIZED VIEW parcel_overlap_matviews AS
+CREATE  VIEW parcel_overlap_matviews AS
  SELECT DISTINCT ON (a.parcel_id) a.parcel_id,
     a.the_geom,
     a.comp_area,
@@ -1024,15 +1036,15 @@ CREATE MATERIALIZED VIEW parcel_overlap_matviews AS
    FROM parcels a,
     perimeters b
   WHERE (st_overlaps(a.the_geom, b.the_geom) = true)
-  WITH NO DATA;
+  ;
 
 
 
 --
--- Name: parcels_intersect; Type: MATERIALIZED VIEW; Schema: public; Owner: docker
+-- Name: parcels_intersect; Type: MATERIALIZED VIEW; Schema: public; 
 --
 
-CREATE MATERIALIZED VIEW parcels_intersect AS
+CREATE  VIEW parcels_intersect AS
  SELECT DISTINCT ON (a.parcel_id) a.parcel_id,
     a.the_geom,
     a.comp_area,
@@ -1049,12 +1061,12 @@ CREATE MATERIALIZED VIEW parcels_intersect AS
    FROM (parcels a
      LEFT JOIN parcels b ON (st_intersects(a.the_geom, b.the_geom)))
   WHERE ((a.parcel_id <> b.parcel_id) AND (b.parcel_id IS NOT NULL) AND (NOT st_touches(a.the_geom, b.the_geom)))
-  WITH NO DATA;
+  ;
 
 
 
 --
--- Name: parcels_lines; Type: VIEW; Schema: public; Owner: docker
+-- Name: parcels_lines; Type: VIEW; Schema: public; 
 --
 
 CREATE VIEW parcels_lines AS
@@ -1072,7 +1084,7 @@ CREATE VIEW parcels_lines AS
 
 
 --
--- Name: parcels_line_length; Type: VIEW; Schema: public; Owner: docker
+-- Name: parcels_line_length; Type: VIEW; Schema: public; 
 --
 
 CREATE VIEW parcels_line_length AS
@@ -1094,7 +1106,7 @@ CREATE VIEW parcels_line_length AS
 
 
 --
--- Name: perimeters_original; Type: VIEW; Schema: public; Owner: docker
+-- Name: perimeters_original; Type: VIEW; Schema: public; 
 --
 
 CREATE VIEW perimeters_original AS
@@ -1142,7 +1154,7 @@ CREATE VIEW perimeters_original AS
 
 
 --
--- Name: print_survey_details; Type: TABLE; Schema: public; Owner: docker
+-- Name: print_survey_details; Type: TABLE; Schema: public; 
 --
 
 CREATE TABLE print_survey_details (
@@ -1159,7 +1171,7 @@ CREATE TABLE print_survey_details (
 
 
 --
--- Name: print_survey_details_id_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: print_survey_details_id_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE print_survey_details_id_seq
@@ -1172,14 +1184,14 @@ CREATE SEQUENCE print_survey_details_id_seq
 
 
 --
--- Name: print_survey_details_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
+-- Name: print_survey_details_id_seq; Type: SEQUENCE OWNED BY; Schema: public; 
 --
 
 ALTER SEQUENCE print_survey_details_id_seq OWNED BY print_survey_details.id;
 
 
 --
--- Name: prop_types; Type: TABLE; Schema: public; Owner: docker
+-- Name: prop_types; Type: TABLE; Schema: public; 
 --
 
 CREATE TABLE prop_types (
@@ -1191,7 +1203,7 @@ CREATE TABLE prop_types (
 
 
 --
--- Name: prop_types_id_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: prop_types_id_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE prop_types_id_seq
@@ -1204,14 +1216,14 @@ CREATE SEQUENCE prop_types_id_seq
 
 
 --
--- Name: prop_types_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
+-- Name: prop_types_id_seq; Type: SEQUENCE OWNED BY; Schema: public; 
 --
 
 ALTER SEQUENCE prop_types_id_seq OWNED BY prop_types.id;
 
 
 --
--- Name: reference_view; Type: TABLE; Schema: public; Owner: docker
+-- Name: reference_view; Type: TABLE; Schema: public; 
 --
 
 CREATE TABLE reference_view (
@@ -1228,7 +1240,7 @@ CREATE TABLE reference_view (
 
 
 --
--- Name: schemes_id_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: schemes_id_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE schemes_id_seq
@@ -1241,14 +1253,14 @@ CREATE SEQUENCE schemes_id_seq
 
 
 --
--- Name: schemes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
+-- Name: schemes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; 
 --
 
 ALTER SEQUENCE schemes_id_seq OWNED BY schemes.id;
 
 
 --
--- Name: speed_code_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: speed_code_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE speed_code_seq
@@ -1261,7 +1273,7 @@ CREATE SEQUENCE speed_code_seq
 
 
 --
--- Name: status_cat; Type: TABLE; Schema: public; Owner: docker
+-- Name: status_cat; Type: TABLE; Schema: public; 
 --
 
 CREATE TABLE status_cat (
@@ -1272,7 +1284,7 @@ CREATE TABLE status_cat (
 
 
 --
--- Name: status_cat_status_cat_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: status_cat_status_cat_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE status_cat_status_cat_seq
@@ -1285,14 +1297,14 @@ CREATE SEQUENCE status_cat_status_cat_seq
 
 
 --
--- Name: status_cat_status_cat_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
+-- Name: status_cat_status_cat_seq; Type: SEQUENCE OWNED BY; Schema: public; 
 --
 
 ALTER SEQUENCE status_cat_status_cat_seq OWNED BY status_cat.status_cat;
 
 
 --
--- Name: str_type_strid_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: str_type_strid_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE str_type_strid_seq
@@ -1305,7 +1317,7 @@ CREATE SEQUENCE str_type_strid_seq
 
 
 --
--- Name: survey; Type: TABLE; Schema: public; Owner: docker
+-- Name: survey; Type: TABLE; Schema: public; 
 --
 
 CREATE TABLE survey (
@@ -1319,7 +1331,7 @@ CREATE TABLE survey (
 
 
 --
--- Name: survey_id_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: survey_id_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE survey_id_seq
@@ -1332,14 +1344,14 @@ CREATE SEQUENCE survey_id_seq
 
 
 --
--- Name: survey_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
+-- Name: survey_id_seq; Type: SEQUENCE OWNED BY; Schema: public; 
 --
 
 ALTER SEQUENCE survey_id_seq OWNED BY survey.id;
 
 
 --
--- Name: transactions; Type: TABLE; Schema: public; Owner: docker
+-- Name: transactions; Type: TABLE; Schema: public; 
 --
 
 CREATE TABLE transactions (
@@ -1352,108 +1364,155 @@ CREATE TABLE transactions (
     survey integer NOT NULL
 );
 
+CREATE TABLE public.layer_styles (
+    id integer NOT NULL,
+    f_table_catalog character varying,
+    f_table_schema character varying,
+    f_table_name character varying,
+    f_geometry_column character varying,
+    stylename text,
+    styleqml xml,
+    stylesld xml,
+    useasdefault boolean,
+    description text,
+    owner character varying(63),
+    ui xml,
+    update_time timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+--
+-- Name: layer_styles_id_seq; Type: SEQUENCE; Schema: public;
+--
+
+CREATE SEQUENCE public.layer_styles_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
 
 
 --
--- Name: allocation_cat allocation_cat; Type: DEFAULT; Schema: public; Owner: docker
+-- Name: layer_styles_id_seq; Type: SEQUENCE OWNED BY; Schema: public;
 --
 
-ALTER TABLE ONLY allocation_cat ALTER COLUMN allocation_cat SET DEFAULT nextval('allocation_cat_id_seq'::regclass);
+ALTER SEQUENCE public.layer_styles_id_seq OWNED BY public.layer_styles.id;
 
 
 --
--- Name: beacons gid; Type: DEFAULT; Schema: public; Owner: docker
+-- Name: layer_styles id; Type: DEFAULT; Schema: public;
+--
+
+ALTER TABLE ONLY public.layer_styles ALTER COLUMN id SET DEFAULT nextval('public.layer_styles_id_seq'::regclass);
+
+
+
+
+
+--
+-- Name: layer_styles layer_styles_pkey; Type: CONSTRAINT; Schema: public;
+--
+
+ALTER TABLE ONLY public.layer_styles
+    ADD CONSTRAINT layer_styles_pkey PRIMARY KEY (id);
+
+
+
+--
+-- Name: beacons gid; Type: DEFAULT; Schema: public; 
 --
 
 ALTER TABLE ONLY beacons ALTER COLUMN gid SET DEFAULT nextval('beacons_gid_seq'::regclass);
 
 
 --
--- Name: beardist id; Type: DEFAULT; Schema: public; Owner: docker
+-- Name: beardist id; Type: DEFAULT; Schema: public; 
 --
 
 ALTER TABLE ONLY beardist ALTER COLUMN id SET DEFAULT nextval('beardist_id_seq'::regclass);
 
 
 --
--- Name: deeds deed_sn; Type: DEFAULT; Schema: public; Owner: docker
+-- Name: deeds deed_sn; Type: DEFAULT; Schema: public; 
 --
 
 ALTER TABLE ONLY deeds ALTER COLUMN deed_sn SET DEFAULT nextval('deeds_deed_sn_seq'::regclass);
 
 
 --
--- Name: hist_beacons hist_id; Type: DEFAULT; Schema: public; Owner: docker
+-- Name: hist_beacons hist_id; Type: DEFAULT; Schema: public; 
 --
 
 ALTER TABLE ONLY hist_beacons ALTER COLUMN hist_id SET DEFAULT nextval('hist_beacons_hist_id_seq'::regclass);
 
 
 --
--- Name: instrument_cat instrument_cat; Type: DEFAULT; Schema: public; Owner: docker
+-- Name: instrument_cat instrument_cat; Type: DEFAULT; Schema: public; 
 --
 
 ALTER TABLE ONLY instrument_cat ALTER COLUMN instrument_cat SET DEFAULT nextval('instrument_cat_instrument_cat_seq'::regclass);
 
 
 --
--- Name: local_govt id; Type: DEFAULT; Schema: public; Owner: docker
+-- Name: local_govt id; Type: DEFAULT; Schema: public; 
 --
 
 ALTER TABLE ONLY local_govt ALTER COLUMN id SET DEFAULT nextval('local_govt_id_seq'::regclass);
 
 
 --
--- Name: parcel_def id; Type: DEFAULT; Schema: public; Owner: docker
+-- Name: parcel_def id; Type: DEFAULT; Schema: public; 
 --
 
 ALTER TABLE ONLY parcel_def ALTER COLUMN id SET DEFAULT nextval('parcel_def_id_seq'::regclass);
 
 
 --
--- Name: parcel_lookup parcel_id; Type: DEFAULT; Schema: public; Owner: docker
+-- Name: parcel_lookup parcel_id; Type: DEFAULT; Schema: public; 
 --
 
 ALTER TABLE ONLY parcel_lookup ALTER COLUMN parcel_id SET DEFAULT nextval('parcel_lookup_parcel_id_seq'::regclass);
 
 
 --
--- Name: print_survey_details id; Type: DEFAULT; Schema: public; Owner: docker
+-- Name: print_survey_details id; Type: DEFAULT; Schema: public; 
 --
 
 ALTER TABLE ONLY print_survey_details ALTER COLUMN id SET DEFAULT nextval('print_survey_details_id_seq'::regclass);
 
 
 --
--- Name: prop_types id; Type: DEFAULT; Schema: public; Owner: docker
+-- Name: prop_types id; Type: DEFAULT; Schema: public; 
 --
 
 ALTER TABLE ONLY prop_types ALTER COLUMN id SET DEFAULT nextval('prop_types_id_seq'::regclass);
 
 
 --
--- Name: schemes id; Type: DEFAULT; Schema: public; Owner: docker
+-- Name: schemes id; Type: DEFAULT; Schema: public; 
 --
 
 ALTER TABLE ONLY schemes ALTER COLUMN id SET DEFAULT nextval('schemes_id_seq'::regclass);
 
 
 --
--- Name: status_cat status_cat; Type: DEFAULT; Schema: public; Owner: docker
+-- Name: status_cat status_cat; Type: DEFAULT; Schema: public; 
 --
 
 ALTER TABLE ONLY status_cat ALTER COLUMN status_cat SET DEFAULT nextval('status_cat_status_cat_seq'::regclass);
 
 
 --
--- Name: survey id; Type: DEFAULT; Schema: public; Owner: docker
+-- Name: survey id; Type: DEFAULT; Schema: public; 
 --
 
 ALTER TABLE ONLY survey ALTER COLUMN id SET DEFAULT nextval('survey_id_seq'::regclass);
 
 
 --
--- Name: allocation_cat allocation_cat_pkey; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: allocation_cat allocation_cat_pkey; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY allocation_cat
@@ -1461,7 +1520,7 @@ ALTER TABLE ONLY allocation_cat
 
 
 --
--- Name: beacons beacons_beacon_key; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: beacons beacons_beacon_key; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY beacons
@@ -1469,7 +1528,7 @@ ALTER TABLE ONLY beacons
 
 
 --
--- Name: beacons beacons_pkey; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: beacons beacons_pkey; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY beacons
@@ -1477,7 +1536,7 @@ ALTER TABLE ONLY beacons
 
 
 --
--- Name: beardist beardist_pkey; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: beardist beardist_pkey; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY beardist
@@ -1485,7 +1544,7 @@ ALTER TABLE ONLY beardist
 
 
 --
--- Name: deeds dkey; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: deeds dkey; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY deeds
@@ -1493,7 +1552,7 @@ ALTER TABLE ONLY deeds
 
 
 --
--- Name: hist_beacons hist_beacons_pkey; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: hist_beacons hist_beacons_pkey; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY hist_beacons
@@ -1501,7 +1560,7 @@ ALTER TABLE ONLY hist_beacons
 
 
 --
--- Name: instrument_cat instrument_cat_pkey; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: instrument_cat instrument_cat_pkey; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY instrument_cat
@@ -1509,7 +1568,7 @@ ALTER TABLE ONLY instrument_cat
 
 
 --
--- Name: local_govt local_govt_id_key; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: local_govt local_govt_id_key; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY local_govt
@@ -1517,7 +1576,7 @@ ALTER TABLE ONLY local_govt
 
 
 --
--- Name: local_govt local_govt_pkey; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: local_govt local_govt_pkey; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY local_govt
@@ -1525,7 +1584,7 @@ ALTER TABLE ONLY local_govt
 
 
 --
--- Name: parcel_def parcel_def_pkey; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: parcel_def parcel_def_pkey; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY parcel_def
@@ -1533,7 +1592,7 @@ ALTER TABLE ONLY parcel_def
 
 
 --
--- Name: parcel_lookup parcel_lookup_pkey; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: parcel_lookup parcel_lookup_pkey; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY parcel_lookup
@@ -1541,7 +1600,7 @@ ALTER TABLE ONLY parcel_lookup
 
 
 --
--- Name: print_survey_details print_survey_details_pkey; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: print_survey_details print_survey_details_pkey; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY print_survey_details
@@ -1549,7 +1608,7 @@ ALTER TABLE ONLY print_survey_details
 
 
 --
--- Name: prop_types prop_type_code_key; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: prop_types prop_type_code_key; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY prop_types
@@ -1557,7 +1616,7 @@ ALTER TABLE ONLY prop_types
 
 
 --
--- Name: prop_types prop_type_id_key; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: prop_types prop_type_id_key; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY prop_types
@@ -1565,7 +1624,7 @@ ALTER TABLE ONLY prop_types
 
 
 --
--- Name: prop_types prop_type_pkey; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: prop_types prop_type_pkey; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY prop_types
@@ -1573,7 +1632,7 @@ ALTER TABLE ONLY prop_types
 
 
 --
--- Name: schemes schemes_id_key; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: schemes schemes_id_key; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY schemes
@@ -1581,7 +1640,7 @@ ALTER TABLE ONLY schemes
 
 
 --
--- Name: schemes schemes_pkey; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: schemes schemes_pkey; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY schemes
@@ -1589,7 +1648,7 @@ ALTER TABLE ONLY schemes
 
 
 --
--- Name: status_cat status_cat_pkey; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: status_cat status_cat_pkey; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY status_cat
@@ -1597,7 +1656,7 @@ ALTER TABLE ONLY status_cat
 
 
 --
--- Name: survey survey_pkey; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: survey survey_pkey; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY survey
@@ -1605,7 +1664,7 @@ ALTER TABLE ONLY survey
 
 
 --
--- Name: survey survey_plan_no_key; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: survey survey_plan_no_key; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY survey
@@ -1613,7 +1672,7 @@ ALTER TABLE ONLY survey
 
 
 --
--- Name: survey survey_plan_no_key1; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: survey survey_plan_no_key1; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY survey
@@ -1621,7 +1680,7 @@ ALTER TABLE ONLY survey
 
 
 --
--- Name: transactions transactions_pkey; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: transactions transactions_pkey; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY transactions
@@ -1629,210 +1688,176 @@ ALTER TABLE ONLY transactions
 
 
 --
--- Name: beacons_beacon_idx; Type: INDEX; Schema: public; Owner: docker
+-- Name: beacons_beacon_idx; Type: INDEX; Schema: public; 
 --
 
 CREATE INDEX beacons_beacon_idx ON beacons USING btree (beacon);
 
 
 --
--- Name: beardist_beacon_from_idx; Type: INDEX; Schema: public; Owner: docker
+-- Name: beardist_beacon_from_idx; Type: INDEX; Schema: public; 
 --
 
 CREATE INDEX beardist_beacon_from_idx ON beardist USING btree (beacon_from);
 
 
 --
--- Name: beardist_beacon_to_idx; Type: INDEX; Schema: public; Owner: docker
+-- Name: beardist_beacon_to_idx; Type: INDEX; Schema: public; 
 --
 
 CREATE INDEX beardist_beacon_to_idx ON beardist USING btree (beacon_to);
 
 
 --
--- Name: beardist_ndx1; Type: INDEX; Schema: public; Owner: docker
+-- Name: beardist_ndx1; Type: INDEX; Schema: public; 
 --
 
 CREATE INDEX beardist_ndx1 ON beardist USING btree (beacon_from);
 
 
 --
--- Name: beardist_plan_no_idx; Type: INDEX; Schema: public; Owner: docker
+-- Name: beardist_plan_no_idx; Type: INDEX; Schema: public; 
 --
 
 CREATE INDEX beardist_plan_no_idx ON beardist USING btree (plan_no);
 
 
 --
--- Name: fki_parcel_lookup_status_cat_fkey; Type: INDEX; Schema: public; Owner: docker
+-- Name: fki_parcel_lookup_status_cat_fkey; Type: INDEX; Schema: public; 
 --
 
 CREATE INDEX fki_parcel_lookup_status_cat_fkey ON parcel_lookup USING btree (status);
 
 
 --
--- Name: fki_transactions_instrument_fkey; Type: INDEX; Schema: public; Owner: docker
+-- Name: fki_transactions_instrument_fkey; Type: INDEX; Schema: public; 
 --
 
 CREATE INDEX fki_transactions_instrument_fkey ON transactions USING btree (instrument);
 
 
 --
--- Name: fki_transactions_parcel_fkey; Type: INDEX; Schema: public; Owner: docker
+-- Name: fki_transactions_parcel_fkey; Type: INDEX; Schema: public; 
 --
 
 CREATE INDEX fki_transactions_parcel_fkey ON transactions USING btree (parcel_id);
 
 
 --
--- Name: fki_transactions_survey_fkey; Type: INDEX; Schema: public; Owner: docker
+-- Name: fki_transactions_survey_fkey; Type: INDEX; Schema: public; 
 --
 
 CREATE INDEX fki_transactions_survey_fkey ON transactions USING btree (survey);
 
 
 --
--- Name: hist_beacons_idx1; Type: INDEX; Schema: public; Owner: docker
+-- Name: hist_beacons_idx1; Type: INDEX; Schema: public; 
 --
 
 CREATE INDEX hist_beacons_idx1 ON hist_beacons USING btree (gid);
 
 
 --
--- Name: hist_beacons_idx2; Type: INDEX; Schema: public; Owner: docker
+-- Name: hist_beacons_idx2; Type: INDEX; Schema: public; 
 --
 
 CREATE INDEX hist_beacons_idx2 ON hist_beacons USING btree (hist_time);
 
 
 --
--- Name: idp_beacons_intersect; Type: INDEX; Schema: public; Owner: docker
+-- Name: idp_beacons_intersect; Type: INDEX; Schema: public; 
 --
 
 CREATE UNIQUE INDEX idp_beacons_intersect ON beacons_intersect USING btree (beacon);
 
 
 --
--- Name: idp_beacons_mtview; Type: INDEX; Schema: public; Owner: docker
+-- Name: idp_beacons_mtview; Type: INDEX; Schema: public; 
 --
 
 CREATE UNIQUE INDEX idp_beacons_mtview ON beacons_views USING btree (gid);
 
 
 --
--- Name: idp_parcel_overlap_matviews; Type: INDEX; Schema: public; Owner: docker
---
-
-CREATE UNIQUE INDEX idp_parcel_overlap_matviews ON parcel_overlap_matviews USING btree (parcel_id);
-
-
---
--- Name: idp_parcels_intersect; Type: INDEX; Schema: public; Owner: docker
---
-
-CREATE UNIQUE INDEX idp_parcels_intersect ON parcels_intersect USING btree (parcel_id);
-
-
---
--- Name: idx_beacons_intersect_geom; Type: INDEX; Schema: public; Owner: docker
+-- Name: idx_beacons_intersect_geom; Type: INDEX; Schema: public; 
 --
 
 CREATE INDEX idx_beacons_intersect_geom ON beacons_intersect USING gist (the_geom);
 
 
 --
--- Name: idx_beacons_matviews_geom; Type: INDEX; Schema: public; Owner: docker
+-- Name: idx_beacons_matviews_geom; Type: INDEX; Schema: public; 
 --
 
 CREATE INDEX idx_beacons_matviews_geom ON beacons_views USING gist (the_geom);
 
-
 --
--- Name: idx_boundaries_labels_geom; Type: INDEX; Schema: public; Owner: docker
---
-
-CREATE INDEX idx_boundaries_labels_geom ON boundaries USING gist (geom);
-
-
---
--- Name: idx_boundary_labels_geom; Type: INDEX; Schema: public; Owner: docker
---
-
-CREATE INDEX idx_boundary_labels_geom ON boundary_labels USING gist (geom);
-
-
---
--- Name: idx_derived_boundaries_labels_geom; Type: INDEX; Schema: public; Owner: docker
---
-
-CREATE INDEX idx_derived_boundaries_labels_geom ON derived_boundaries USING gist (geom);
-
-
---
--- Name: idx_parcels_intersects_new_matviews_geom; Type: INDEX; Schema: public; Owner: docker
---
-
-CREATE INDEX idx_parcels_intersects_new_matviews_geom ON parcels_intersect USING gist (the_geom);
-
-
---
--- Name: ndx_schemes1; Type: INDEX; Schema: public; Owner: docker
+-- Name: ndx_schemes1; Type: INDEX; Schema: public; 
 --
 
 CREATE INDEX ndx_schemes1 ON schemes USING gin (to_tsvector('english'::regconfig, (COALESCE(scheme_name, ''::character varying))::text));
 
 
---
--- Name: parcel_over_idx; Type: INDEX; Schema: public; Owner: docker
---
-
-CREATE INDEX parcel_over_idx ON parcel_overlap_matviews USING gist (the_geom);
 
 
 --
--- Name: sidx_beacons_geom; Type: INDEX; Schema: public; Owner: docker
+-- Name: sidx_beacons_geom; Type: INDEX; Schema: public; 
 --
 
 CREATE INDEX sidx_beacons_geom ON beacons USING gist (the_geom);
 
+--
+-- Name: parcel_def bcn_a_view; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER bcn_a_view BEFORE INSERT OR UPDATE ON public.parcel_def FOR EACH ROW EXECUTE PROCEDURE public.refresh_beacons_views();
+
 
 --
--- Name: beacons insert_nodes_geom; Type: TRIGGER; Schema: public; Owner: docker
+-- Name: parcel_def bcn_intersects; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER bcn_intersects BEFORE INSERT OR UPDATE ON public.parcel_def FOR EACH ROW EXECUTE PROCEDURE public.refresh_beacons_intersects();
+
+
+
+--
+-- Name: beacons insert_nodes_geom; Type: TRIGGER; Schema: public; 
 --
 
 CREATE TRIGGER insert_nodes_geom BEFORE INSERT OR UPDATE ON beacons FOR EACH ROW EXECUTE PROCEDURE calc_point();
 
 
 --
--- Name: parcel_def parcel_lookup_define_parcel; Type: TRIGGER; Schema: public; Owner: docker
+-- Name: parcel_def parcel_lookup_define_parcel; Type: TRIGGER; Schema: public; 
 --
 
 CREATE TRIGGER parcel_lookup_define_parcel BEFORE INSERT OR UPDATE ON parcel_def FOR EACH ROW EXECUTE PROCEDURE parcel_lookup_define_parcel_trigger();
 
 
 --
--- Name: beacons trg_beacons_after_insert; Type: TRIGGER; Schema: public; Owner: docker
+-- Name: beacons trg_beacons_after_insert; Type: TRIGGER; Schema: public; 
 --
 
 CREATE TRIGGER trg_beacons_after_insert AFTER INSERT ON beacons FOR EACH ROW EXECUTE PROCEDURE fn_beacons_after_insert();
 
 
 --
--- Name: beacons trg_beacons_before_delete; Type: TRIGGER; Schema: public; Owner: docker
+-- Name: beacons trg_beacons_before_delete; Type: TRIGGER; Schema: public; 
 --
 
 CREATE TRIGGER trg_beacons_before_delete BEFORE DELETE ON beacons FOR EACH ROW EXECUTE PROCEDURE fn_beacons_before_delete();
 
 
 --
--- Name: beacons trg_beacons_before_update; Type: TRIGGER; Schema: public; Owner: docker
+-- Name: beacons trg_beacons_before_update; Type: TRIGGER; Schema: public; 
 --
 
 CREATE TRIGGER trg_beacons_before_update BEFORE UPDATE ON beacons FOR EACH ROW EXECUTE PROCEDURE fn_beacons_before_update();
 
 
 --
--- Name: beardist beardist_beacon_from_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: beardist beardist_beacon_from_fkey; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY beardist
@@ -1840,7 +1865,7 @@ ALTER TABLE ONLY beardist
 
 
 --
--- Name: beardist beardist_beacon_from_fkey1; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: beardist beardist_beacon_from_fkey1; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY beardist
@@ -1848,7 +1873,7 @@ ALTER TABLE ONLY beardist
 
 
 --
--- Name: beardist beardist_beacon_to_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: beardist beardist_beacon_to_fkey; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY beardist
@@ -1856,7 +1881,7 @@ ALTER TABLE ONLY beardist
 
 
 --
--- Name: beardist beardist_beacon_to_fkey1; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: beardist beardist_beacon_to_fkey1; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY beardist
@@ -1864,7 +1889,7 @@ ALTER TABLE ONLY beardist
 
 
 --
--- Name: beardist beardist_plan_no_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: beardist beardist_plan_no_fkey; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY beardist
@@ -1872,7 +1897,7 @@ ALTER TABLE ONLY beardist
 
 
 --
--- Name: beardist beardist_plan_no_fkey1; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: beardist beardist_plan_no_fkey1; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY beardist
@@ -1880,7 +1905,7 @@ ALTER TABLE ONLY beardist
 
 
 --
--- Name: parcel_def parcel_def_beacon_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: parcel_def parcel_def_beacon_fkey; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY parcel_def
@@ -1888,7 +1913,7 @@ ALTER TABLE ONLY parcel_def
 
 
 --
--- Name: parcel_def parcel_def_parcel_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: parcel_def parcel_def_parcel_id_fkey; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY parcel_def
@@ -1896,7 +1921,7 @@ ALTER TABLE ONLY parcel_def
 
 
 --
--- Name: parcel_lookup parcel_lookup_allocation_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: parcel_lookup parcel_lookup_allocation_id_fkey; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY parcel_lookup
@@ -1904,7 +1929,7 @@ ALTER TABLE ONLY parcel_lookup
 
 
 --
--- Name: parcel_lookup parcel_lookup_local_govt_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: parcel_lookup parcel_lookup_local_govt_id_fkey; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY parcel_lookup
@@ -1912,7 +1937,7 @@ ALTER TABLE ONLY parcel_lookup
 
 
 --
--- Name: parcel_lookup parcel_lookup_prop_type_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: parcel_lookup parcel_lookup_prop_type_id_fkey; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY parcel_lookup
@@ -1920,7 +1945,7 @@ ALTER TABLE ONLY parcel_lookup
 
 
 --
--- Name: parcel_lookup parcel_lookup_scheme_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: parcel_lookup parcel_lookup_scheme_id_fkey; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY parcel_lookup
@@ -1928,7 +1953,7 @@ ALTER TABLE ONLY parcel_lookup
 
 
 --
--- Name: parcel_lookup parcel_lookup_status_cat_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: parcel_lookup parcel_lookup_status_cat_fkey; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY parcel_lookup
@@ -1936,7 +1961,7 @@ ALTER TABLE ONLY parcel_lookup
 
 
 --
--- Name: survey survey_ref_beacon_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: survey survey_ref_beacon_fkey; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY survey
@@ -1944,7 +1969,7 @@ ALTER TABLE ONLY survey
 
 
 --
--- Name: survey survey_scheme_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: survey survey_scheme_fkey; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY survey
@@ -1952,7 +1977,7 @@ ALTER TABLE ONLY survey
 
 
 --
--- Name: transactions transactions_instrument_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: transactions transactions_instrument_fkey; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY transactions
@@ -1960,7 +1985,7 @@ ALTER TABLE ONLY transactions
 
 
 --
--- Name: transactions transactions_parcel_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: transactions transactions_parcel_fkey; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY transactions
@@ -1968,7 +1993,7 @@ ALTER TABLE ONLY transactions
 
 
 --
--- Name: transactions transactions_survey_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: transactions transactions_survey_fkey; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY transactions
