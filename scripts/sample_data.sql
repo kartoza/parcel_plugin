@@ -1,10 +1,9 @@
 INSERT INTO beacons(beacon, y, x, location, name)
 VALUES ('MB1416',735460.877,488470.404,'East','Test');
 
-
-INSERT INTO allocation_cat(description) 
-VALUES ('free and unallocated parcel'),('temporary allocation pending approval'),
-('parcel allocated and approved'),('Private Survey pending approval'),('Private Survey approved');
+INSERT INTO beacons (x,y,beacon) VALUES (488444.861,735443.135, 'MB1417');
+INSERT INTO beacons (x,y,beacon) VALUES (488440.719,735456.299, 'MB1418');
+INSERT INTO beacons (x,y,beacon) VALUES (488458.679,735472.068, 'MB1419');
 
 INSERT INTO instrument_cat(description) 
 VALUES('Deed of Assignment'),('Certificate Of Occupancy'),('Deed of Conveyance');
@@ -26,8 +25,6 @@ VALUES ('IF SLR184','BC5 OG','COFO','OGSG','Olawale Olusoga Olubi',38,23,'RIVERV
 INSERT INTO survey(plan_no, ref_beacon, scheme)
 VALUES ('BC5 OG', 'MB1416', 1);
 
-INSERT INTO public.parcel_lookup(plot_sn, available, scheme, block, local_govt, prop_type, file_number, 
-allocation, manual_no, deeds_file,official_area, private, status)  
-VALUES ('1', true, 1, '0', 1, 1, 'HOC/PL/123', 1, '0', '', 680.510999999999967, true, 1);
+
 
 

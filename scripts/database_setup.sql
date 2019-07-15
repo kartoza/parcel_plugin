@@ -1409,6 +1409,875 @@ ALTER TABLE ONLY public.layer_styles ALTER COLUMN id SET DEFAULT nextval('public
 
 
 
+INSERT INTO public.layer_styles VALUES (1, ':DATABASE', 'public', 'beacons', 'the_geom', 'beacons', '<!DOCTYPE qgis PUBLIC ''http://mrcc.com/qgis.dtd'' ''SYSTEM''>
+<qgis version="3.8.0-Zanzibar" labelsEnabled="1" simplifyAlgorithm="0" maxScale="0" simplifyDrawingTol="1" simplifyLocal="1" hasScaleBasedVisibilityFlag="1" simplifyDrawingHints="0" readOnly="0" styleCategories="AllStyleCategories" minScale="10000" simplifyMaxScale="1">
+ <flags>
+  <Identifiable>1</Identifiable>
+  <Removable>1</Removable>
+  <Searchable>1</Searchable>
+ </flags>
+ <renderer-v2 type="singleSymbol" forceraster="0" enableorderby="0" symbollevels="0">
+  <symbols>
+   <symbol type="marker" alpha="1" name="0" clip_to_extent="1" force_rhr="0">
+    <layer enabled="1" class="SvgMarker" locked="0" pass="0">
+     <prop k="angle" v="0"/>
+     <prop k="color" v="0,0,0,255"/>
+     <prop k="fixedAspectRatio" v="0"/>
+     <prop k="horizontal_anchor_point" v="1"/>
+     <prop k="name" v="gpsicons/point.svg"/>
+     <prop k="offset" v="0,0"/>
+     <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+     <prop k="offset_unit" v="MM"/>
+     <prop k="outline_color" v="0,0,0,255"/>
+     <prop k="outline_width" v="1"/>
+     <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+     <prop k="outline_width_unit" v="MM"/>
+     <prop k="scale_method" v="diameter"/>
+     <prop k="size" v="3"/>
+     <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+     <prop k="size_unit" v="MM"/>
+     <prop k="vertical_anchor_point" v="1"/>
+     <data_defined_properties>
+      <Option type="Map">
+       <Option type="QString" name="name" value=""/>
+       <Option name="properties"/>
+       <Option type="QString" name="type" value="collection"/>
+      </Option>
+     </data_defined_properties>
+    </layer>
+   </symbol>
+  </symbols>
+  <rotation/>
+  <sizescale/>
+ </renderer-v2>
+ <labeling type="simple">
+  <settings>
+   <text-style textOpacity="1" fontLetterSpacing="0" fontSizeUnit="Point" blendMode="0" namedStyle="Regular" fontUnderline="0" multilineHeight="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="85,0,0,255" fieldName="beacon" useSubstitutions="0" fontWordSpacing="0" fontStrikeout="0" fontCapitals="0" fontFamily="Ubuntu" previewBkgrdColor="#ffffff" isExpression="0" fontSize="7" fontWeight="50" fontItalic="0">
+    <text-buffer bufferColor="255,255,255,255" bufferOpacity="1" bufferNoFill="0" bufferDraw="0" bufferSize="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferJoinStyle="64" bufferSizeUnits="MM" bufferBlendMode="0"/>
+    <background shapeOffsetY="0" shapeSizeType="0" shapeOffsetUnit="Point" shapeBorderWidthUnit="Point" shapeJoinStyle="64" shapeOffsetX="0" shapeRadiiX="0" shapeRadiiY="0" shapeSizeUnit="Point" shapeRotation="0" shapeSizeX="0" shapeRadiiUnit="Point" shapeSizeMapUnitScale="3x:0,0,0,0,0,0" shapeBorderWidth="0" shapeOpacity="1" shapeSizeY="0" shapeRotationType="0" shapeFillColor="255,255,255,255" shapeDraw="0" shapeRadiiMapUnitScale="3x:0,0,0,0,0,0" shapeBorderWidthMapUnitScale="3x:0,0,0,0,0,0" shapeBlendMode="0" shapeBorderColor="128,128,128,255" shapeType="0" shapeSVGFile="" shapeOffsetMapUnitScale="3x:0,0,0,0,0,0"/>
+    <shadow shadowDraw="0" shadowRadiusMapUnitScale="3x:0,0,0,0,0,0" shadowBlendMode="6" shadowRadius="1.5" shadowRadiusUnit="Point" shadowOffsetUnit="Point" shadowOpacity="1" shadowColor="0,0,0,255" shadowRadiusAlphaOnly="0" shadowOffsetDist="1" shadowOffsetMapUnitScale="3x:0,0,0,0,0,0" shadowUnder="0" shadowOffsetAngle="135" shadowScale="100" shadowOffsetGlobal="1"/>
+    <substitutions/>
+   </text-style>
+   <text-format reverseDirectionSymbol="0" decimals="0" placeDirectionSymbol="0" formatNumbers="0" rightDirectionSymbol=">" addDirectionSymbol="0" leftDirectionSymbol="&lt;" useMaxLineLengthForAutoWrap="1" autoWrapLength="0" multilineAlign="0" plussign="1" wrapChar=""/>
+   <placement offsetUnits="MapUnit" geometryGenerator="" distUnits="MM" fitInPolygonOnly="0" centroidWhole="0" xOffset="1" maxCurvedCharAngleOut="-20" maxCurvedCharAngleIn="20" placement="0" labelOffsetMapUnitScale="3x:0,0,0,0,0,0" offsetType="0" geometryGeneratorType="PointGeometry" dist="0" repeatDistance="0" repeatDistanceUnits="MM" distMapUnitScale="3x:0,0,0,0,0,0" placementFlags="0" centroidInside="0" quadOffset="2" predefinedPositionOrder="TR,TL,BR,BL,R,L,TSR,BSR" rotationAngle="0" geometryGeneratorEnabled="0" preserveRotation="1" yOffset="0" priority="5" repeatDistanceMapUnitScale="3x:0,0,0,0,0,0"/>
+   <rendering obstacleFactor="1" obstacle="1" labelPerPart="0" fontLimitPixelSize="0" scaleVisibility="1" obstacleType="0" mergeLines="0" scaleMin="1" minFeatureSize="0" zIndex="0" limitNumLabels="0" scaleMax="10000" fontMaxPixelSize="200" fontMinPixelSize="3" maxNumLabels="2000" displayAll="0" upsidedownLabels="0" drawLabels="1"/>
+   <dd_properties>
+    <Option type="Map">
+     <Option type="QString" name="name" value=""/>
+     <Option name="properties"/>
+     <Option type="QString" name="type" value="collection"/>
+    </Option>
+   </dd_properties>
+  </settings>
+ </labeling>
+ <customproperties>
+  <property key="embeddedWidgets/count" value="0"/>
+  <property key="variableNames"/>
+  <property key="variableValues"/>
+ </customproperties>
+ <blendMode>0</blendMode>
+ <featureBlendMode>0</featureBlendMode>
+ <layerOpacity>1</layerOpacity>
+ <SingleCategoryDiagramRenderer attributeLegend="1" diagramType="Histogram">
+  <DiagramCategory sizeType="MM" barWidth="5" penAlpha="255" scaleBasedVisibility="0" scaleDependency="Area" minScaleDenominator="0" labelPlacementMethod="XHeight" height="15" backgroundColor="#ffffff" minimumSize="0" width="15" lineSizeType="MM" rotationOffset="270" penWidth="0" opacity="1" diagramOrientation="Up" penColor="#000000" maxScaleDenominator="1e+08" lineSizeScale="3x:0,0,0,0,0,0" backgroundAlpha="255" enabled="0" sizeScale="3x:0,0,0,0,0,0">
+   <fontProperties description="Ubuntu,11,-1,5,50,0,0,0,0,0" style=""/>
+  </DiagramCategory>
+ </SingleCategoryDiagramRenderer>
+ <DiagramLayerSettings priority="0" linePlacementFlags="18" zIndex="0" dist="0" showAll="1" placement="0" obstacle="0">
+  <properties>
+   <Option type="Map">
+    <Option type="QString" name="name" value=""/>
+    <Option name="properties"/>
+    <Option type="QString" name="type" value="collection"/>
+   </Option>
+  </properties>
+ </DiagramLayerSettings>
+ <geometryOptions geometryPrecision="0" removeDuplicateNodes="0">
+  <activeChecks/>
+  <checkConfiguration/>
+ </geometryOptions>
+ <fieldConfiguration>
+  <field name="gid">
+   <editWidget type="TextEdit">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+  <field name="beacon">
+   <editWidget type="TextEdit">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+  <field name="y">
+   <editWidget type="TextEdit">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+  <field name="x">
+   <editWidget type="TextEdit">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+  <field name="location">
+   <editWidget type="TextEdit">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+  <field name="name">
+   <editWidget type="TextEdit">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+  <field name="last_modified_by">
+   <editWidget type="TextEdit">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+ </fieldConfiguration>
+ <aliases>
+  <alias field="gid" name="" index="0"/>
+  <alias field="beacon" name="" index="1"/>
+  <alias field="y" name="" index="2"/>
+  <alias field="x" name="" index="3"/>
+  <alias field="location" name="" index="4"/>
+  <alias field="name" name="" index="5"/>
+  <alias field="last_modified_by" name="" index="6"/>
+ </aliases>
+ <excludeAttributesWMS/>
+ <excludeAttributesWFS/>
+ <defaults>
+  <default field="gid" expression="" applyOnUpdate="0"/>
+  <default field="beacon" expression="" applyOnUpdate="0"/>
+  <default field="y" expression="" applyOnUpdate="0"/>
+  <default field="x" expression="" applyOnUpdate="0"/>
+  <default field="location" expression="" applyOnUpdate="0"/>
+  <default field="name" expression="" applyOnUpdate="0"/>
+  <default field="last_modified_by" expression="" applyOnUpdate="0"/>
+ </defaults>
+ <constraints>
+  <constraint field="gid" constraints="3" unique_strength="1" notnull_strength="1" exp_strength="0"/>
+  <constraint field="beacon" constraints="3" unique_strength="1" notnull_strength="1" exp_strength="0"/>
+  <constraint field="y" constraints="1" unique_strength="0" notnull_strength="1" exp_strength="0"/>
+  <constraint field="x" constraints="1" unique_strength="0" notnull_strength="1" exp_strength="0"/>
+  <constraint field="location" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
+  <constraint field="name" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
+  <constraint field="last_modified_by" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
+ </constraints>
+ <constraintExpressions>
+  <constraint field="gid" desc="" exp=""/>
+  <constraint field="beacon" desc="" exp=""/>
+  <constraint field="y" desc="" exp=""/>
+  <constraint field="x" desc="" exp=""/>
+  <constraint field="location" desc="" exp=""/>
+  <constraint field="name" desc="" exp=""/>
+  <constraint field="last_modified_by" desc="" exp=""/>
+ </constraintExpressions>
+ <expressionfields/>
+ <attributeactions>
+  <defaultAction key="Canvas" value="{{00000000-0000-0000-0000-000000000000}}"/>
+ </attributeactions>
+ <attributetableconfig sortOrder="0" sortExpression="" actionWidgetStyle="dropDown">
+  <columns>
+   <column type="field" hidden="0" width="-1" name="gid"/>
+   <column type="field" hidden="0" width="-1" name="beacon"/>
+   <column type="field" hidden="0" width="-1" name="y"/>
+   <column type="field" hidden="0" width="-1" name="x"/>
+   <column type="field" hidden="0" width="-1" name="location"/>
+   <column type="field" hidden="0" width="-1" name="name"/>
+   <column type="field" hidden="0" width="-1" name="last_modified_by"/>
+   <column type="actions" hidden="1" width="-1"/>
+  </columns>
+ </attributetableconfig>
+ <conditionalstyles>
+  <rowstyles/>
+  <fieldstyles/>
+ </conditionalstyles>
+ <editform tolerant="1">.</editform>
+ <editforminit/>
+ <editforminitcodesource>0</editforminitcodesource>
+ <editforminitfilepath></editforminitfilepath>
+ <editforminitcode><![CDATA[# -*- coding: utf-8 -*-
+"""
+QGIS forms can have a Python function that is called when the form is
+opened.
+
+Use this function to add extra logic to your forms.
+
+Enter the name of the function in the "Python Init function"
+field.
+An example follows:
+"""
+from qgis.PyQt.QtWidgets import QWidget
+
+def my_form_open(dialog, layer, feature):
+  geom = feature.geometry()
+  control = dialog.findChild(QWidget, "MyLineEdit")
+]]></editforminitcode>
+ <featformsuppress>0</featformsuppress>
+ <editorlayout>generatedlayout</editorlayout>
+ <editable>
+  <field name="beacon" editable="1"/>
+  <field name="gid" editable="1"/>
+  <field name="last_modified_by" editable="1"/>
+  <field name="location" editable="1"/>
+  <field name="name" editable="1"/>
+  <field name="x" editable="1"/>
+  <field name="y" editable="1"/>
+ </editable>
+ <labelOnTop>
+  <field labelOnTop="0" name="beacon"/>
+  <field labelOnTop="0" name="gid"/>
+  <field labelOnTop="0" name="last_modified_by"/>
+  <field labelOnTop="0" name="location"/>
+  <field labelOnTop="0" name="name"/>
+  <field labelOnTop="0" name="x"/>
+  <field labelOnTop="0" name="y"/>
+ </labelOnTop>
+ <widgets/>
+ <previewExpression>name</previewExpression>
+ <mapTip></mapTip>
+ <layerGeometryType>0</layerGeometryType>
+</qgis>
+', '<StyledLayerDescriptor xmlns="http://www.opengis.net/sld" version="1.1.0" xmlns:se="http://www.opengis.net/se" xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ogc="http://www.opengis.net/ogc">
+ <NamedLayer>
+  <se:Name>Beacons</se:Name>
+  <UserStyle>
+   <se:Name>Beacons</se:Name>
+   <se:FeatureTypeStyle>
+    <se:Rule>
+     <se:Name>Single symbol</se:Name>
+     <se:MinScaleDenominator>0</se:MinScaleDenominator>
+     <se:MaxScaleDenominator>10000</se:MaxScaleDenominator>
+     <se:PointSymbolizer>
+      <se:Graphic>
+       <!--Parametric SVG-->
+       <se:ExternalGraphic>
+        <se:OnlineResource xlink:type="simple" xlink:href="/usr/share/qgis/svg/gpsicons/point.svg?fill=%23000000&amp;fill-opacity=1&amp;outline=%23000000&amp;outline-opacity=1&amp;outline-width=4"/>
+        <se:Format>image/svg+xml</se:Format>
+       </se:ExternalGraphic>
+       <!--Plain SVG fallback, no parameters-->
+       <se:ExternalGraphic>
+        <se:OnlineResource xlink:type="simple" xlink:href="gpsicons/point.svg"/>
+        <se:Format>image/svg+xml</se:Format>
+       </se:ExternalGraphic>
+       <!--Well known marker fallback-->
+       <se:Mark>
+        <se:WellKnownName>square</se:WellKnownName>
+        <se:Fill>
+         <se:SvgParameter name="fill">#000000</se:SvgParameter>
+        </se:Fill>
+        <se:Stroke>
+         <se:SvgParameter name="stroke">#000000</se:SvgParameter>
+         <se:SvgParameter name="stroke-width">4</se:SvgParameter>
+        </se:Stroke>
+       </se:Mark>
+       <se:Size>11</se:Size>
+      </se:Graphic>
+     </se:PointSymbolizer>
+    </se:Rule>
+    <se:Rule>
+     <se:MinScaleDenominator>1</se:MinScaleDenominator>
+     <se:MaxScaleDenominator>10000</se:MaxScaleDenominator>
+     <se:TextSymbolizer>
+      <se:Label>
+       <ogc:PropertyName>beacon</ogc:PropertyName>
+      </se:Label>
+      <se:Font>
+       <se:SvgParameter name="font-family">Ubuntu</se:SvgParameter>
+       <se:SvgParameter name="font-size">9</se:SvgParameter>
+      </se:Font>
+      <se:LabelPlacement>
+       <se:PointPlacement>
+        <se:AnchorPoint>
+         <se:AnchorPointX>0</se:AnchorPointX>
+         <se:AnchorPointY>0.5</se:AnchorPointY>
+        </se:AnchorPoint>
+       </se:PointPlacement>
+      </se:LabelPlacement>
+      <se:Fill>
+       <se:SvgParameter name="fill">#550000</se:SvgParameter>
+      </se:Fill>
+      <se:VendorOption name="maxDisplacement">1</se:VendorOption>
+     </se:TextSymbolizer>
+    </se:Rule>
+   </se:FeatureTypeStyle>
+  </UserStyle>
+ </NamedLayer>
+</StyledLayerDescriptor>
+', true, 'Mon Jul 8 11:24:51 2019', ':DBOWNER', NULL, '2019-07-08 09:24:51.081314');
+INSERT INTO public.layer_styles VALUES (2, ':DATABASE', 'public', 'parcels', 'the_geom', 'parcels', '<!DOCTYPE qgis PUBLIC ''http://mrcc.com/qgis.dtd'' ''SYSTEM''>
+<qgis version="3.8.0-Zanzibar" labelsEnabled="1" simplifyAlgorithm="0" maxScale="-4.65661e-10" simplifyDrawingTol="1" simplifyLocal="1" hasScaleBasedVisibilityFlag="0" simplifyDrawingHints="1" readOnly="0" styleCategories="AllStyleCategories" minScale="1e+08" simplifyMaxScale="1">
+ <flags>
+  <Identifiable>1</Identifiable>
+  <Removable>1</Removable>
+  <Searchable>1</Searchable>
+ </flags>
+ <renderer-v2 type="RuleRenderer" forceraster="0" enableorderby="0" symbollevels="0">
+  <rules key="{{ef477c4b-828a-4aa4-b5b5-e35bd14cdbba}}">
+   <rule label="parcels" key="{{2acd78d1-46b5-4c4e-bb2f-366f29335ebb}}" scalemindenom="1" scalemaxdenom="20000" description="Parcel boundaries" symbol="0" filter=" &quot;block&quot; &lt;> ''perimeter'' or &quot;block&quot; is null"/>
+   <rule label="parcels" key="{{6ae6949f-9f98-4328-a90c-86d1b98f1d42}}" scalemindenom="20000" symbol="1" filter=" &quot;block&quot; &lt;> ''perimeter'' or &quot;block&quot; is null"/>
+   <rule label="acquisitions" key="{{8bca7cec-fb7b-4dd0-9eba-523b253233a9}}" scalemindenom="20000" symbol="2" filter=" &quot;block&quot; &lt;> ''acquisitionr'' or &quot;block&quot; is null"/>
+   <rule label="perimeter" key="{{acd42f56-dd9e-4675-bf2a-568e389a9c43}}" description="Scheme perimeters" symbol="3" filter=" &quot;block&quot; = ''perimeter''"/>
+  </rules>
+  <symbols>
+   <symbol type="fill" alpha="0.498039" name="0" clip_to_extent="1" force_rhr="0">
+    <layer enabled="1" class="SimpleFill" locked="0" pass="2">
+     <prop k="border_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+     <prop k="color" v="255,0,0,255"/>
+     <prop k="joinstyle" v="bevel"/>
+     <prop k="offset" v="0,0"/>
+     <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+     <prop k="offset_unit" v="MM"/>
+     <prop k="outline_color" v="0,0,0,255"/>
+     <prop k="outline_style" v="solid"/>
+     <prop k="outline_width" v="0.3"/>
+     <prop k="outline_width_unit" v="MM"/>
+     <prop k="style" v="diagonal_x"/>
+     <data_defined_properties>
+      <Option type="Map">
+       <Option type="QString" name="name" value=""/>
+       <Option name="properties"/>
+       <Option type="QString" name="type" value="collection"/>
+      </Option>
+     </data_defined_properties>
+    </layer>
+   </symbol>
+   <symbol type="fill" alpha="1" name="1" clip_to_extent="1" force_rhr="0">
+    <layer enabled="1" class="CentroidFill" locked="0" pass="3">
+     <prop k="point_on_all_parts" v="1"/>
+     <prop k="point_on_surface" v="0"/>
+     <data_defined_properties>
+      <Option type="Map">
+       <Option type="QString" name="name" value=""/>
+       <Option name="properties"/>
+       <Option type="QString" name="type" value="collection"/>
+      </Option>
+     </data_defined_properties>
+     <symbol type="marker" alpha="1" name="@1@0" clip_to_extent="1" force_rhr="0">
+      <layer enabled="1" class="SimpleMarker" locked="0" pass="0">
+       <prop k="angle" v="0"/>
+       <prop k="color" v="170,85,0,255"/>
+       <prop k="horizontal_anchor_point" v="1"/>
+       <prop k="joinstyle" v="bevel"/>
+       <prop k="name" v="square"/>
+       <prop k="offset" v="0,0"/>
+       <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+       <prop k="offset_unit" v="MM"/>
+       <prop k="outline_color" v="170,85,0,255"/>
+       <prop k="outline_style" v="solid"/>
+       <prop k="outline_width" v="0"/>
+       <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+       <prop k="outline_width_unit" v="MM"/>
+       <prop k="scale_method" v="area"/>
+       <prop k="size" v="0.1"/>
+       <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+       <prop k="size_unit" v="MM"/>
+       <prop k="vertical_anchor_point" v="1"/>
+       <data_defined_properties>
+        <Option type="Map">
+         <Option type="QString" name="name" value=""/>
+         <Option name="properties"/>
+         <Option type="QString" name="type" value="collection"/>
+        </Option>
+       </data_defined_properties>
+      </layer>
+     </symbol>
+    </layer>
+   </symbol>
+   <symbol type="fill" alpha="1" name="2" clip_to_extent="1" force_rhr="0">
+    <layer enabled="1" class="SimpleFill" locked="0" pass="0">
+     <prop k="border_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+     <prop k="color" v="86,35,135,255"/>
+     <prop k="joinstyle" v="bevel"/>
+     <prop k="offset" v="0,0"/>
+     <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+     <prop k="offset_unit" v="MM"/>
+     <prop k="outline_color" v="170,0,127,255"/>
+     <prop k="outline_style" v="dot"/>
+     <prop k="outline_width" v="0.26"/>
+     <prop k="outline_width_unit" v="MM"/>
+     <prop k="style" v="no"/>
+     <data_defined_properties>
+      <Option type="Map">
+       <Option type="QString" name="name" value=""/>
+       <Option name="properties"/>
+       <Option type="QString" name="type" value="collection"/>
+      </Option>
+     </data_defined_properties>
+    </layer>
+   </symbol>
+   <symbol type="fill" alpha="1" name="3" clip_to_extent="1" force_rhr="0">
+    <layer enabled="1" class="SimpleFill" locked="0" pass="1">
+     <prop k="border_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+     <prop k="color" v="170,0,0,255"/>
+     <prop k="joinstyle" v="bevel"/>
+     <prop k="offset" v="0,0"/>
+     <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+     <prop k="offset_unit" v="MM"/>
+     <prop k="outline_color" v="170,0,0,255"/>
+     <prop k="outline_style" v="dash"/>
+     <prop k="outline_width" v="0.26"/>
+     <prop k="outline_width_unit" v="MM"/>
+     <prop k="style" v="no"/>
+     <data_defined_properties>
+      <Option type="Map">
+       <Option type="QString" name="name" value=""/>
+       <Option name="properties"/>
+       <Option type="QString" name="type" value="collection"/>
+      </Option>
+     </data_defined_properties>
+    </layer>
+   </symbol>
+  </symbols>
+ </renderer-v2>
+ <labeling type="simple">
+  <settings>
+   <text-style textOpacity="1" fontLetterSpacing="0" fontSizeUnit="Point" blendMode="0" namedStyle="Regular" fontUnderline="0" multilineHeight="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255" fieldName="case when &quot;block&quot; &lt;> ''perimeter'' or &quot;block&quot; is null then (&quot;parcel_number&quot; || ''\n'' || ''block ''||&#xa;case when &quot;block&quot; is not null then &quot;block&quot; else ''?'' end ||'', plot ''||&#xa;case when&quot;serial_no&quot; is not null then&quot;serial_no&quot; else ''?'' end ||''\n''|| &#xa;case when &quot;official_area&quot; is not null then &quot;official_area&quot; else ''?'' end||''m² (o)''||''\n''||&#xa;&quot;comp_area&quot;||''m² (c)'')  else &quot;scheme&quot; end" useSubstitutions="0" fontWordSpacing="0" fontStrikeout="0" fontCapitals="0" fontFamily="Ubuntu" previewBkgrdColor="#ffffff" isExpression="1" fontSize="8" fontWeight="50" fontItalic="0">
+    <text-buffer bufferColor="255,255,255,255" bufferOpacity="1" bufferNoFill="0" bufferDraw="1" bufferSize="0.1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferJoinStyle="64" bufferSizeUnits="MapUnit" bufferBlendMode="0"/>
+    <background shapeOffsetY="0" shapeSizeType="0" shapeOffsetUnit="Point" shapeBorderWidthUnit="Point" shapeJoinStyle="64" shapeOffsetX="0" shapeRadiiX="0" shapeRadiiY="0" shapeSizeUnit="Point" shapeRotation="0" shapeSizeX="0" shapeRadiiUnit="Point" shapeSizeMapUnitScale="3x:0,0,0,0,0,0" shapeBorderWidth="0" shapeOpacity="1" shapeSizeY="0" shapeRotationType="0" shapeFillColor="255,255,255,255" shapeDraw="0" shapeRadiiMapUnitScale="3x:0,0,0,0,0,0" shapeBorderWidthMapUnitScale="3x:0,0,0,0,0,0" shapeBlendMode="0" shapeBorderColor="128,128,128,255" shapeType="0" shapeSVGFile="" shapeOffsetMapUnitScale="3x:0,0,0,0,0,0"/>
+    <shadow shadowDraw="0" shadowRadiusMapUnitScale="3x:0,0,0,0,0,0" shadowBlendMode="6" shadowRadius="1.5" shadowRadiusUnit="Point" shadowOffsetUnit="Point" shadowOpacity="1" shadowColor="0,0,0,255" shadowRadiusAlphaOnly="0" shadowOffsetDist="1" shadowOffsetMapUnitScale="3x:0,0,0,0,0,0" shadowUnder="0" shadowOffsetAngle="135" shadowScale="100" shadowOffsetGlobal="1"/>
+    <substitutions/>
+   </text-style>
+   <text-format reverseDirectionSymbol="0" decimals="0" placeDirectionSymbol="0" formatNumbers="0" rightDirectionSymbol=">" addDirectionSymbol="0" leftDirectionSymbol="&lt;" useMaxLineLengthForAutoWrap="1" autoWrapLength="0" multilineAlign="0" plussign="1" wrapChar=""/>
+   <placement offsetUnits="MapUnit" geometryGenerator="" distUnits="MM" fitInPolygonOnly="0" centroidWhole="0" xOffset="0" maxCurvedCharAngleOut="-20" maxCurvedCharAngleIn="20" placement="5" labelOffsetMapUnitScale="3x:0,0,0,0,0,0" offsetType="0" geometryGeneratorType="PointGeometry" dist="0" repeatDistance="0" repeatDistanceUnits="MM" distMapUnitScale="3x:0,0,0,0,0,0" placementFlags="0" centroidInside="0" quadOffset="4" predefinedPositionOrder="TR,TL,BR,BL,R,L,TSR,BSR" rotationAngle="0" geometryGeneratorEnabled="0" preserveRotation="1" yOffset="0" priority="10" repeatDistanceMapUnitScale="3x:0,0,0,0,0,0"/>
+   <rendering obstacleFactor="1" obstacle="1" labelPerPart="0" fontLimitPixelSize="0" scaleVisibility="1" obstacleType="0" mergeLines="0" scaleMin="1" minFeatureSize="0" zIndex="0" limitNumLabels="0" scaleMax="1500" fontMaxPixelSize="10000" fontMinPixelSize="3" maxNumLabels="2000" displayAll="0" upsidedownLabels="0" drawLabels="1"/>
+   <dd_properties>
+    <Option type="Map">
+     <Option type="QString" name="name" value=""/>
+     <Option name="properties"/>
+     <Option type="QString" name="type" value="collection"/>
+    </Option>
+   </dd_properties>
+  </settings>
+ </labeling>
+ <customproperties>
+  <property key="dualview/previewExpressions">
+   <value>parcel_id</value>
+  </property>
+  <property key="embeddedWidgets/count" value="0"/>
+  <property key="variableNames"/>
+  <property key="variableValues"/>
+ </customproperties>
+ <blendMode>0</blendMode>
+ <featureBlendMode>0</featureBlendMode>
+ <layerOpacity>1</layerOpacity>
+ <SingleCategoryDiagramRenderer attributeLegend="1" diagramType="Histogram">
+  <DiagramCategory sizeType="MM" barWidth="5" penAlpha="255" scaleBasedVisibility="0" scaleDependency="Area" minScaleDenominator="-4.65661e-10" labelPlacementMethod="XHeight" height="15" backgroundColor="#ffffff" minimumSize="0" width="15" lineSizeType="MM" rotationOffset="270" penWidth="0" opacity="1" diagramOrientation="Up" penColor="#000000" maxScaleDenominator="1e+08" lineSizeScale="3x:0,0,0,0,0,0" backgroundAlpha="255" enabled="0" sizeScale="3x:0,0,0,0,0,0">
+   <fontProperties description="Ubuntu,11,-1,5,50,0,0,0,0,0" style=""/>
+  </DiagramCategory>
+ </SingleCategoryDiagramRenderer>
+ <DiagramLayerSettings priority="0" linePlacementFlags="18" zIndex="0" dist="0" showAll="1" placement="1" obstacle="0">
+  <properties>
+   <Option type="Map">
+    <Option type="QString" name="name" value=""/>
+    <Option name="properties"/>
+    <Option type="QString" name="type" value="collection"/>
+   </Option>
+  </properties>
+ </DiagramLayerSettings>
+ <geometryOptions geometryPrecision="0" removeDuplicateNodes="0">
+  <activeChecks/>
+  <checkConfiguration/>
+ </geometryOptions>
+ <fieldConfiguration>
+  <field name="parcel_id">
+   <editWidget type="Range">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+  <field name="comp_area">
+   <editWidget type="TextEdit">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+  <field name="official_area">
+   <editWidget type="TextEdit">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+  <field name="parcel_number">
+   <editWidget type="TextEdit">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+  <field name="block">
+   <editWidget type="TextEdit">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+  <field name="serial_no">
+   <editWidget type="TextEdit">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+  <field name="scheme">
+   <editWidget type="TextEdit">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+  <field name="file_number">
+   <editWidget type="TextEdit">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+  <field name="allocation">
+   <editWidget type="Range">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+  <field name="owner">
+   <editWidget type="TextEdit">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+  <field name="deeds_file">
+   <editWidget type="TextEdit">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+  <field name="private">
+   <editWidget type="CheckBox">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+ </fieldConfiguration>
+ <aliases>
+  <alias field="parcel_id" name="" index="0"/>
+  <alias field="comp_area" name="" index="1"/>
+  <alias field="official_area" name="" index="2"/>
+  <alias field="parcel_number" name="" index="3"/>
+  <alias field="block" name="" index="4"/>
+  <alias field="serial_no" name="" index="5"/>
+  <alias field="scheme" name="" index="6"/>
+  <alias field="file_number" name="" index="7"/>
+  <alias field="allocation" name="" index="8"/>
+  <alias field="owner" name="" index="9"/>
+  <alias field="deeds_file" name="" index="10"/>
+  <alias field="private" name="" index="11"/>
+ </aliases>
+ <excludeAttributesWMS/>
+ <excludeAttributesWFS/>
+ <defaults>
+  <default field="parcel_id" expression="" applyOnUpdate="0"/>
+  <default field="comp_area" expression="" applyOnUpdate="0"/>
+  <default field="official_area" expression="" applyOnUpdate="0"/>
+  <default field="parcel_number" expression="" applyOnUpdate="0"/>
+  <default field="block" expression="" applyOnUpdate="0"/>
+  <default field="serial_no" expression="" applyOnUpdate="0"/>
+  <default field="scheme" expression="" applyOnUpdate="0"/>
+  <default field="file_number" expression="" applyOnUpdate="0"/>
+  <default field="allocation" expression="" applyOnUpdate="0"/>
+  <default field="owner" expression="" applyOnUpdate="0"/>
+  <default field="deeds_file" expression="" applyOnUpdate="0"/>
+  <default field="private" expression="" applyOnUpdate="0"/>
+ </defaults>
+ <constraints>
+  <constraint field="parcel_id" constraints="3" unique_strength="1" notnull_strength="1" exp_strength="0"/>
+  <constraint field="comp_area" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
+  <constraint field="official_area" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
+  <constraint field="parcel_number" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
+  <constraint field="block" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
+  <constraint field="serial_no" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
+  <constraint field="scheme" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
+  <constraint field="file_number" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
+  <constraint field="allocation" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
+  <constraint field="owner" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
+  <constraint field="deeds_file" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
+  <constraint field="private" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
+ </constraints>
+ <constraintExpressions>
+  <constraint field="parcel_id" desc="" exp=""/>
+  <constraint field="comp_area" desc="" exp=""/>
+  <constraint field="official_area" desc="" exp=""/>
+  <constraint field="parcel_number" desc="" exp=""/>
+  <constraint field="block" desc="" exp=""/>
+  <constraint field="serial_no" desc="" exp=""/>
+  <constraint field="scheme" desc="" exp=""/>
+  <constraint field="file_number" desc="" exp=""/>
+  <constraint field="allocation" desc="" exp=""/>
+  <constraint field="owner" desc="" exp=""/>
+  <constraint field="deeds_file" desc="" exp=""/>
+  <constraint field="private" desc="" exp=""/>
+ </constraintExpressions>
+ <expressionfields/>
+ <attributeactions>
+  <defaultAction key="Canvas" value="{{00000000-0000-0000-0000-000000000000}}"/>
+ </attributeactions>
+ <attributetableconfig sortOrder="0" sortExpression="" actionWidgetStyle="dropDown">
+  <columns>
+   <column type="field" hidden="0" width="-1" name="parcel_id"/>
+   <column type="field" hidden="0" width="-1" name="comp_area"/>
+   <column type="field" hidden="0" width="-1" name="official_area"/>
+   <column type="field" hidden="0" width="-1" name="parcel_number"/>
+   <column type="field" hidden="0" width="172" name="block"/>
+   <column type="field" hidden="0" width="-1" name="serial_no"/>
+   <column type="field" hidden="0" width="-1" name="scheme"/>
+   <column type="field" hidden="0" width="-1" name="file_number"/>
+   <column type="field" hidden="0" width="-1" name="allocation"/>
+   <column type="field" hidden="0" width="-1" name="owner"/>
+   <column type="field" hidden="0" width="-1" name="deeds_file"/>
+   <column type="field" hidden="0" width="-1" name="private"/>
+   <column type="actions" hidden="1" width="-1"/>
+  </columns>
+ </attributetableconfig>
+ <conditionalstyles>
+  <rowstyles/>
+  <fieldstyles/>
+ </conditionalstyles>
+ <editform tolerant="1">.</editform>
+ <editforminit/>
+ <editforminitcodesource>0</editforminitcodesource>
+ <editforminitfilepath></editforminitfilepath>
+ <editforminitcode><![CDATA[# -*- coding: utf-8 -*-
+"""
+QGIS forms can have a Python function that is called when the form is
+opened.
+
+Use this function to add extra logic to your forms.
+
+Enter the name of the function in the "Python Init function"
+field.
+An example follows:
+"""
+from qgis.PyQt.QtWidgets import QWidget
+
+def my_form_open(dialog, layer, feature):
+  geom = feature.geometry()
+  control = dialog.findChild(QWidget, "MyLineEdit")
+]]></editforminitcode>
+ <featformsuppress>0</featformsuppress>
+ <editorlayout>generatedlayout</editorlayout>
+ <editable>
+  <field name="allocation" editable="1"/>
+  <field name="block" editable="1"/>
+  <field name="comp_area" editable="1"/>
+  <field name="deeds_file" editable="1"/>
+  <field name="file_number" editable="1"/>
+  <field name="official_area" editable="1"/>
+  <field name="owner" editable="1"/>
+  <field name="parcel_id" editable="1"/>
+  <field name="parcel_number" editable="1"/>
+  <field name="private" editable="1"/>
+  <field name="scheme" editable="1"/>
+  <field name="serial_no" editable="1"/>
+ </editable>
+ <labelOnTop>
+  <field labelOnTop="0" name="allocation"/>
+  <field labelOnTop="0" name="block"/>
+  <field labelOnTop="0" name="comp_area"/>
+  <field labelOnTop="0" name="deeds_file"/>
+  <field labelOnTop="0" name="file_number"/>
+  <field labelOnTop="0" name="official_area"/>
+  <field labelOnTop="0" name="owner"/>
+  <field labelOnTop="0" name="parcel_id"/>
+  <field labelOnTop="0" name="parcel_number"/>
+  <field labelOnTop="0" name="private"/>
+  <field labelOnTop="0" name="scheme"/>
+  <field labelOnTop="0" name="serial_no"/>
+ </labelOnTop>
+ <widgets/>
+ <previewExpression>parcel_id</previewExpression>
+ <mapTip></mapTip>
+ <layerGeometryType>2</layerGeometryType>
+</qgis>
+', '<StyledLayerDescriptor xmlns="http://www.opengis.net/sld" version="1.1.0" xmlns:se="http://www.opengis.net/se" xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ogc="http://www.opengis.net/ogc">
+ <NamedLayer>
+  <se:Name>Parcels</se:Name>
+  <UserStyle>
+   <se:Name>Parcels</se:Name>
+   <se:FeatureTypeStyle>
+    <se:Rule>
+     <se:Name>parcels</se:Name>
+     <se:Description>
+      <se:Title>parcels</se:Title>
+      <se:Abstract>Parcel boundaries</se:Abstract>
+     </se:Description>
+     <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+      <ogc:Or>
+       <ogc:PropertyIsNotEqualTo>
+        <ogc:PropertyName>block</ogc:PropertyName>
+        <ogc:Literal>perimeter</ogc:Literal>
+       </ogc:PropertyIsNotEqualTo>
+       <ogc:PropertyIsNull>
+        <ogc:PropertyName>block</ogc:PropertyName>
+       </ogc:PropertyIsNull>
+      </ogc:Or>
+     </ogc:Filter>
+     <se:MinScaleDenominator>1</se:MinScaleDenominator>
+     <se:MaxScaleDenominator>20000</se:MaxScaleDenominator>
+     <se:PolygonSymbolizer>
+      <se:Fill>
+       <se:GraphicFill>
+        <se:Graphic>
+         <se:Mark>
+          <se:WellKnownName>x</se:WellKnownName>
+          <se:Stroke>
+           <se:SvgParameter name="stroke">#ff0000</se:SvgParameter>
+          </se:Stroke>
+         </se:Mark>
+        </se:Graphic>
+       </se:GraphicFill>
+      </se:Fill>
+      <se:Stroke>
+       <se:SvgParameter name="stroke">#000000</se:SvgParameter>
+       <se:SvgParameter name="stroke-width">1</se:SvgParameter>
+       <se:SvgParameter name="stroke-linejoin">bevel</se:SvgParameter>
+      </se:Stroke>
+     </se:PolygonSymbolizer>
+    </se:Rule>
+    <se:Rule>
+     <se:Name>parcels</se:Name>
+     <se:Description>
+      <se:Title>parcels</se:Title>
+     </se:Description>
+     <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+      <ogc:Or>
+       <ogc:PropertyIsNotEqualTo>
+        <ogc:PropertyName>block</ogc:PropertyName>
+        <ogc:Literal>perimeter</ogc:Literal>
+       </ogc:PropertyIsNotEqualTo>
+       <ogc:PropertyIsNull>
+        <ogc:PropertyName>block</ogc:PropertyName>
+       </ogc:PropertyIsNull>
+      </ogc:Or>
+     </ogc:Filter>
+     <se:MinScaleDenominator>20000</se:MinScaleDenominator>
+     <se:PointSymbolizer>
+      <se:Graphic>
+       <se:Mark>
+        <se:WellKnownName>square</se:WellKnownName>
+        <se:Fill>
+         <se:SvgParameter name="fill">#aa5500</se:SvgParameter>
+        </se:Fill>
+        <se:Stroke>
+         <se:SvgParameter name="stroke">#aa5500</se:SvgParameter>
+         <se:SvgParameter name="stroke-width">0.5</se:SvgParameter>
+        </se:Stroke>
+       </se:Mark>
+      </se:Graphic>
+     </se:PointSymbolizer>
+    </se:Rule>
+    <se:Rule>
+     <se:Name>acquisitions</se:Name>
+     <se:Description>
+      <se:Title>acquisitions</se:Title>
+     </se:Description>
+     <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+      <ogc:Or>
+       <ogc:PropertyIsNotEqualTo>
+        <ogc:PropertyName>block</ogc:PropertyName>
+        <ogc:Literal>acquisitionr</ogc:Literal>
+       </ogc:PropertyIsNotEqualTo>
+       <ogc:PropertyIsNull>
+        <ogc:PropertyName>block</ogc:PropertyName>
+       </ogc:PropertyIsNull>
+      </ogc:Or>
+     </ogc:Filter>
+     <se:MinScaleDenominator>20000</se:MinScaleDenominator>
+     <se:PolygonSymbolizer>
+      <se:Stroke>
+       <se:SvgParameter name="stroke">#aa007f</se:SvgParameter>
+       <se:SvgParameter name="stroke-width">1</se:SvgParameter>
+       <se:SvgParameter name="stroke-linejoin">bevel</se:SvgParameter>
+       <se:SvgParameter name="stroke-dasharray">1 2</se:SvgParameter>
+      </se:Stroke>
+     </se:PolygonSymbolizer>
+    </se:Rule>
+    <se:Rule>
+     <se:Name>perimeter</se:Name>
+     <se:Description>
+      <se:Title>perimeter</se:Title>
+      <se:Abstract>Scheme perimeters</se:Abstract>
+     </se:Description>
+     <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+      <ogc:PropertyIsEqualTo>
+       <ogc:PropertyName>block</ogc:PropertyName>
+       <ogc:Literal>perimeter</ogc:Literal>
+      </ogc:PropertyIsEqualTo>
+     </ogc:Filter>
+     <se:PolygonSymbolizer>
+      <se:Stroke>
+       <se:SvgParameter name="stroke">#aa0000</se:SvgParameter>
+       <se:SvgParameter name="stroke-width">1</se:SvgParameter>
+       <se:SvgParameter name="stroke-linejoin">bevel</se:SvgParameter>
+       <se:SvgParameter name="stroke-dasharray">4 2</se:SvgParameter>
+      </se:Stroke>
+     </se:PolygonSymbolizer>
+    </se:Rule>
+    <se:Rule>
+     <se:MinScaleDenominator>1</se:MinScaleDenominator>
+     <se:MaxScaleDenominator>1500</se:MaxScaleDenominator>
+     <se:TextSymbolizer>
+      <se:Label>
+       <!--SE Export for CASE WHEN block <> ''perimeter'' OR block IS NULL THEN parcel_number || ''\n'' || ''block '' || CASE WHEN block IS NOT NULL THEN block ELSE ''?'' END || '', plot '' || CASE WHEN serial_no IS NOT NULL THEN serial_no ELSE ''?'' END || ''\n'' || CASE WHEN official_area IS NOT NULL THEN official_area ELSE ''?'' END || ''m² (o)'' || ''\n'' || comp_area || ''m² (c)'' ELSE scheme END not implemented yet-->Placeholder</se:Label>
+      <se:Font>
+       <se:SvgParameter name="font-family">Ubuntu</se:SvgParameter>
+       <se:SvgParameter name="font-size">10</se:SvgParameter>
+      </se:Font>
+      <se:LabelPlacement>
+       <se:PointPlacement>
+        <se:AnchorPoint>
+         <se:AnchorPointX>0.5</se:AnchorPointX>
+         <se:AnchorPointY>0.5</se:AnchorPointY>
+        </se:AnchorPoint>
+       </se:PointPlacement>
+      </se:LabelPlacement>
+      <se:Halo>
+       <se:Radius>0.05</se:Radius>
+       <se:Fill>
+        <se:SvgParameter name="fill">#ffffff</se:SvgParameter>
+       </se:Fill>
+      </se:Halo>
+      <se:Fill>
+       <se:SvgParameter name="fill">#000000</se:SvgParameter>
+      </se:Fill>
+      <se:Priority>1000</se:Priority>
+     </se:TextSymbolizer>
+    </se:Rule>
+   </se:FeatureTypeStyle>
+  </UserStyle>
+ </NamedLayer>
+</StyledLayerDescriptor>
+', true, 'Mon Jul 8 11:25:02 2019', ':DBOWNER', NULL, '2019-07-08 09:25:02.645003');
+
+
 
 
 --
