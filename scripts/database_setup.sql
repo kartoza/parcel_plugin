@@ -15,7 +15,7 @@ SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 SET row_security = off;
-
+SET xmloption = document;
 
 --
 -- Name: postgis; Type: EXTENSION; Schema: -; Owner: 
@@ -34,7 +34,7 @@ COMMENT ON EXTENSION postgis IS 'PostGIS geometry, geography, and raster spatial
 SET search_path = public, pg_catalog;
 
 --
--- Name: beardistinsert(character varying, double precision, double precision, character varying, character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: docker
+-- Name: beardistinsert(character varying, double precision, double precision, character varying, character varying, character varying, character varying); Type: FUNCTION; Schema: public; 
 --
 
 CREATE FUNCTION beardistinsert(arg_plan_no character varying, arg_bearing double precision, arg_distance double precision, arg_beacon_from character varying, arg_beacon_to character varying, arg_location character varying, arg_name character varying) RETURNS void
@@ -58,7 +58,7 @@ $$;
 
 
 --
--- Name: beardistupdate(character varying, double precision, double precision, character varying, character varying, character varying, character varying, integer); Type: FUNCTION; Schema: public; Owner: docker
+-- Name: beardistupdate(character varying, double precision, double precision, character varying, character varying, character varying, character varying, integer); Type: FUNCTION; Schema: public; 
 --
 
 CREATE FUNCTION beardistupdate(arg_plan_no character varying, arg_bearing double precision, arg_distance double precision, arg_beacon_from character varying, arg_beacon_to character varying, arg_location character varying, arg_name character varying, arg_index integer) RETURNS void
@@ -102,7 +102,7 @@ $$;
 
 
 --
--- Name: calc_point(); Type: FUNCTION; Schema: public; Owner: docker
+-- Name: calc_point(); Type: FUNCTION; Schema: public; 
 --
 
 CREATE FUNCTION calc_point() RETURNS trigger
@@ -117,7 +117,7 @@ CREATE FUNCTION calc_point() RETURNS trigger
 
 
 --
--- Name: fn_beacons_after_insert(); Type: FUNCTION; Schema: public; Owner: docker
+-- Name: fn_beacons_after_insert(); Type: FUNCTION; Schema: public; 
 --
 
 CREATE FUNCTION fn_beacons_after_insert() RETURNS trigger
@@ -154,7 +154,7 @@ $$;
 
 
 --
--- Name: fn_beacons_before_delete(); Type: FUNCTION; Schema: public; Owner: docker
+-- Name: fn_beacons_before_delete(); Type: FUNCTION; Schema: public; 
 --
 
 CREATE FUNCTION fn_beacons_before_delete() RETURNS trigger
@@ -191,7 +191,7 @@ $$;
 
 
 --
--- Name: fn_beacons_before_update(); Type: FUNCTION; Schema: public; Owner: docker
+-- Name: fn_beacons_before_update(); Type: FUNCTION; Schema: public; 
 --
 
 CREATE FUNCTION fn_beacons_before_update() RETURNS trigger
@@ -228,7 +228,7 @@ $$;
 
 
 --
--- Name: fn_updateprintjobs(); Type: FUNCTION; Schema: public; Owner: docker
+-- Name: fn_updateprintjobs(); Type: FUNCTION; Schema: public; 
 --
 
 CREATE FUNCTION fn_updateprintjobs() RETURNS trigger
@@ -248,7 +248,7 @@ $$;
 
 
 --
--- Name: parcel_lookup_availability_trigger(); Type: FUNCTION; Schema: public; Owner: docker
+-- Name: parcel_lookup_availability_trigger(); Type: FUNCTION; Schema: public; 
 --
 
 CREATE FUNCTION parcel_lookup_availability_trigger() RETURNS trigger
@@ -264,7 +264,7 @@ $$;
 
 
 --
--- Name: parcel_lookup_define_parcel_trigger(); Type: FUNCTION; Schema: public; Owner: docker
+-- Name: parcel_lookup_define_parcel_trigger(); Type: FUNCTION; Schema: public; 
 --
 
 CREATE FUNCTION parcel_lookup_define_parcel_trigger() RETURNS trigger
@@ -281,23 +281,7 @@ $$;
 
 
 --
--- Name: parcels_matview_refresh_row(integer); Type: FUNCTION; Schema: public; Owner: docker
---
-
-CREATE FUNCTION parcels_matview_refresh_row(integer) RETURNS void
-    LANGUAGE plpgsql SECURITY DEFINER
-    AS $_$
-BEGIN
-  DELETE FROM parcels_matview WHERE parcel_id = $1;
-  INSERT INTO parcels_matview SELECT * FROM parcels WHERE parcel_id = $1;
-  RETURN;
-END
-$_$;
-
-
-
---
--- Name: pointfrombearinganddistance(double precision, double precision, double precision, double precision, integer, integer); Type: FUNCTION; Schema: public; Owner: docker
+-- Name: pointfrombearinganddistance(double precision, double precision, double precision, double precision, integer, integer); Type: FUNCTION; Schema: public; 
 --
 
 CREATE FUNCTION pointfrombearinganddistance(dstarte double precision, dstartn double precision, dbearing double precision, ddistance double precision, "precision" integer, srid integer) RETURNS geometry
@@ -365,7 +349,7 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: allocation_cat; Type: TABLE; Schema: public; Owner: docker
+-- Name: allocation_cat; Type: TABLE; Schema: public; 
 --
 
 CREATE TABLE allocation_cat (
@@ -376,7 +360,7 @@ CREATE TABLE allocation_cat (
 
 
 --
--- Name: allocation_cat_id_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: allocation_cat_id_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE allocation_cat_id_seq
@@ -389,14 +373,14 @@ CREATE SEQUENCE allocation_cat_id_seq
 
 
 --
--- Name: allocation_cat_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
+-- Name: allocation_cat_id_seq; Type: SEQUENCE OWNED BY; Schema: public; 
 --
 
 ALTER SEQUENCE allocation_cat_id_seq OWNED BY allocation_cat.allocation_cat;
 
 
 --
--- Name: beacons; Type: TABLE; Schema: public; Owner: docker
+-- Name: beacons; Type: TABLE; Schema: public; 
 --
 
 CREATE TABLE beacons (
@@ -413,7 +397,7 @@ CREATE TABLE beacons (
 
 
 --
--- Name: beacons_gid_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: beacons_gid_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE beacons_gid_seq
@@ -426,14 +410,14 @@ CREATE SEQUENCE beacons_gid_seq
 
 
 --
--- Name: beacons_gid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
+-- Name: beacons_gid_seq; Type: SEQUENCE OWNED BY; Schema: public; 
 --
 
 ALTER SEQUENCE beacons_gid_seq OWNED BY beacons.gid;
 
 
 --
--- Name: parcel_def; Type: TABLE; Schema: public; Owner: docker
+-- Name: parcel_def; Type: TABLE; Schema: public; 
 --
 
 CREATE TABLE parcel_def (
@@ -446,7 +430,7 @@ CREATE TABLE parcel_def (
 
 
 --
--- Name: parcel_lookup; Type: TABLE; Schema: public; Owner: docker
+-- Name: parcel_lookup; Type: TABLE; Schema: public; 
 --
 
 CREATE TABLE parcel_lookup (
@@ -469,14 +453,14 @@ CREATE TABLE parcel_lookup (
 
 
 --
--- Name: COLUMN parcel_lookup.plot_sn; Type: COMMENT; Schema: public; Owner: docker
+-- Name: COLUMN parcel_lookup.plot_sn; Type: COMMENT; Schema: public; 
 --
 
 COMMENT ON COLUMN parcel_lookup.plot_sn IS 'plot serial no within a block. Forms part of the parcel no';
 
 
 --
--- Name: beacons_views; Type: MATERIALIZED VIEW; Schema: public; Owner: docker
+-- Name: beacons_views; Type: MATERIALIZED VIEW; Schema: public; 
 --
 
 CREATE MATERIALIZED VIEW beacons_views AS
@@ -495,9 +479,37 @@ CREATE MATERIALIZED VIEW beacons_views AS
   WITH NO DATA;
 
 
+--
+-- Name: refresh_beacons_intersects(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.refresh_beacons_intersects() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+  BEGIN
+    REFRESH MATERIALIZED VIEW  beacons_intersect ;
+  RETURN NEW;
+  END
+  $$;
+
 
 --
--- Name: deeds; Type: TABLE; Schema: public; Owner: docker
+-- Name: refresh_beacons_views(); Type: FUNCTION; Schema: public; Owner: -
+--d
+
+CREATE FUNCTION public.refresh_beacons_views() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+  BEGIN
+    REFRESH MATERIALIZED VIEW  beacons_views ;
+  RETURN NEW;
+  END
+  $$;
+
+
+
+--
+-- Name: deeds; Type: TABLE; Schema: public; 
 --
 
 CREATE TABLE deeds (
@@ -515,7 +527,7 @@ CREATE TABLE deeds (
 
 
 --
--- Name: schemes; Type: TABLE; Schema: public; Owner: docker
+-- Name: schemes; Type: TABLE; Schema: public; 
 --
 
 CREATE TABLE schemes (
@@ -527,14 +539,14 @@ CREATE TABLE schemes (
 
 
 --
--- Name: COLUMN schemes."Scheme"; Type: COMMENT; Schema: public; Owner: docker
+-- Name: COLUMN schemes."Scheme"; Type: COMMENT; Schema: public; 
 --
 
 COMMENT ON COLUMN schemes."Scheme" IS 'line';
 
 
 --
--- Name: parcels; Type: VIEW; Schema: public; Owner: docker
+-- Name: parcels; Type: VIEW; Schema: public; 
 --
 
 CREATE VIEW parcels AS
@@ -583,7 +595,7 @@ CREATE VIEW parcels AS
 
 
 --
--- Name: beacons_intersect; Type: MATERIALIZED VIEW; Schema: public; Owner: docker
+-- Name: beacons_intersect; Type: MATERIALIZED VIEW; Schema: public; 
 --
 
 CREATE MATERIALIZED VIEW beacons_intersect AS
@@ -600,7 +612,7 @@ CREATE MATERIALIZED VIEW beacons_intersect AS
 
 
 --
--- Name: beardist; Type: TABLE; Schema: public; Owner: docker
+-- Name: beardist; Type: TABLE; Schema: public; 
 --
 
 CREATE TABLE beardist (
@@ -615,7 +627,7 @@ CREATE TABLE beardist (
 
 
 --
--- Name: beardist_id_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: beardist_id_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE beardist_id_seq
@@ -628,14 +640,14 @@ CREATE SEQUENCE beardist_id_seq
 
 
 --
--- Name: beardist_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
+-- Name: beardist_id_seq; Type: SEQUENCE OWNED BY; Schema: public; 
 --
 
 ALTER SEQUENCE beardist_id_seq OWNED BY beardist.id;
 
 
 --
--- Name: bearing_labels; Type: VIEW; Schema: public; Owner: docker
+-- Name: bearing_labels; Type: VIEW; Schema: public; 
 --
 
 CREATE VIEW bearing_labels AS
@@ -667,10 +679,10 @@ CREATE VIEW bearing_labels AS
 
 
 --
--- Name: boundaries; Type: MATERIALIZED VIEW; Schema: public; Owner: docker
+-- Name: boundaries; Type: MATERIALIZED VIEW; Schema: public; 
 --
 
-CREATE MATERIALIZED VIEW boundaries AS
+CREATE  VIEW boundaries AS
  WITH boundaries AS (
          SELECT segments.parcel_id,
             st_makeline(segments.sp, segments.ep) AS geom
@@ -688,15 +700,15 @@ CREATE MATERIALIZED VIEW boundaries AS
     round((degrees(st_azimuth(st_startpoint(boundaries.geom), st_endpoint(boundaries.geom))))::numeric, 2) AS bearing
    FROM boundaries
   WHERE st_isvalid(boundaries.geom)
-  WITH NO DATA;
+  ;
 
 
 
 --
--- Name: boundary_labels; Type: MATERIALIZED VIEW; Schema: public; Owner: docker
+-- Name: boundary_labels; Type: MATERIALIZED VIEW; Schema: public; 
 --
 
-CREATE MATERIALIZED VIEW boundary_labels AS
+CREATE  VIEW boundary_labels AS
  SELECT row_number() OVER () AS id,
     b.id AS boundary_id,
     (b.geom)::geometry(LineString,:CRS) AS geom,
@@ -724,12 +736,12 @@ CREATE MATERIALIZED VIEW boundary_labels AS
           GROUP BY a.id) b
      JOIN beardist c USING (id))
      JOIN parcels p ON (st_coveredby(b.geom, p.the_geom)))
-  WITH NO DATA;
+  ;
 
 
 
 --
--- Name: deeds_deed_sn_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: deeds_deed_sn_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE deeds_deed_sn_seq
@@ -742,17 +754,17 @@ CREATE SEQUENCE deeds_deed_sn_seq
 
 
 --
--- Name: deeds_deed_sn_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
+-- Name: deeds_deed_sn_seq; Type: SEQUENCE OWNED BY; Schema: public; 
 --
 
 ALTER SEQUENCE deeds_deed_sn_seq OWNED BY deeds.deed_sn;
 
 
 --
--- Name: derived_boundaries; Type: MATERIALIZED VIEW; Schema: public; Owner: docker
+-- Name: derived_boundaries; Type: MATERIALIZED VIEW; Schema: public; 
 --
 
-CREATE MATERIALIZED VIEW derived_boundaries AS
+CREATE  VIEW derived_boundaries AS
  SELECT b.id,
     b.parcel_id,
     b.geom,
@@ -762,12 +774,12 @@ CREATE MATERIALIZED VIEW derived_boundaries AS
   WHERE (NOT (b.id IN ( SELECT b_1.id
            FROM (boundaries b_1
              JOIN boundary_labels bl ON (st_equals(b_1.geom, bl.geom))))))
-  WITH NO DATA;
+  ;
 
 
 
 --
--- Name: hist_beacons; Type: TABLE; Schema: public; Owner: docker
+-- Name: hist_beacons; Type: TABLE; Schema: public; 
 --
 
 CREATE TABLE hist_beacons (
@@ -787,7 +799,7 @@ CREATE TABLE hist_beacons (
 
 
 --
--- Name: hist_beacons_hist_id_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: hist_beacons_hist_id_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE hist_beacons_hist_id_seq
@@ -800,14 +812,14 @@ CREATE SEQUENCE hist_beacons_hist_id_seq
 
 
 --
--- Name: hist_beacons_hist_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
+-- Name: hist_beacons_hist_id_seq; Type: SEQUENCE OWNED BY; Schema: public; 
 --
 
 ALTER SEQUENCE hist_beacons_hist_id_seq OWNED BY hist_beacons.hist_id;
 
 
 --
--- Name: instrument_cat; Type: TABLE; Schema: public; Owner: docker
+-- Name: instrument_cat; Type: TABLE; Schema: public; 
 --
 
 CREATE TABLE instrument_cat (
@@ -818,7 +830,7 @@ CREATE TABLE instrument_cat (
 
 
 --
--- Name: instrument_cat_instrument_cat_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: instrument_cat_instrument_cat_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE instrument_cat_instrument_cat_seq
@@ -831,14 +843,14 @@ CREATE SEQUENCE instrument_cat_instrument_cat_seq
 
 
 --
--- Name: instrument_cat_instrument_cat_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
+-- Name: instrument_cat_instrument_cat_seq; Type: SEQUENCE OWNED BY; Schema: public; 
 --
 
 ALTER SEQUENCE instrument_cat_instrument_cat_seq OWNED BY instrument_cat.instrument_cat;
 
 
 --
--- Name: local_govt; Type: TABLE; Schema: public; Owner: docker
+-- Name: local_govt; Type: TABLE; Schema: public; 
 --
 
 CREATE TABLE local_govt (
@@ -849,7 +861,7 @@ CREATE TABLE local_govt (
 
 
 --
--- Name: local_govt_id_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: local_govt_id_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE local_govt_id_seq
@@ -862,14 +874,14 @@ CREATE SEQUENCE local_govt_id_seq
 
 
 --
--- Name: local_govt_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
+-- Name: local_govt_id_seq; Type: SEQUENCE OWNED BY; Schema: public; 
 --
 
 ALTER SEQUENCE local_govt_id_seq OWNED BY local_govt.id;
 
 
 --
--- Name: localmotclass_code_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: localmotclass_code_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE localmotclass_code_seq
@@ -882,7 +894,7 @@ CREATE SEQUENCE localmotclass_code_seq
 
 
 --
--- Name: localrdclass_code_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: localrdclass_code_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE localrdclass_code_seq
@@ -895,7 +907,7 @@ CREATE SEQUENCE localrdclass_code_seq
 
 
 --
--- Name: parcel_def_id_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: parcel_def_id_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE parcel_def_id_seq
@@ -908,14 +920,14 @@ CREATE SEQUENCE parcel_def_id_seq
 
 
 --
--- Name: parcel_def_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
+-- Name: parcel_def_id_seq; Type: SEQUENCE OWNED BY; Schema: public; 
 --
 
 ALTER SEQUENCE parcel_def_id_seq OWNED BY parcel_def.id;
 
 
 --
--- Name: parcel_lookup_id_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: parcel_lookup_id_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE parcel_lookup_id_seq
@@ -928,14 +940,14 @@ CREATE SEQUENCE parcel_lookup_id_seq
 
 
 --
--- Name: parcel_lookup_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
+-- Name: parcel_lookup_id_seq; Type: SEQUENCE OWNED BY; Schema: public; 
 --
 
 ALTER SEQUENCE parcel_lookup_id_seq OWNED BY parcel_lookup.plot_sn;
 
 
 --
--- Name: parcel_lookup_parcel_id_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: parcel_lookup_parcel_id_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE parcel_lookup_parcel_id_seq
@@ -948,14 +960,14 @@ CREATE SEQUENCE parcel_lookup_parcel_id_seq
 
 
 --
--- Name: parcel_lookup_parcel_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
+-- Name: parcel_lookup_parcel_id_seq; Type: SEQUENCE OWNED BY; Schema: public; 
 --
 
 ALTER SEQUENCE parcel_lookup_parcel_id_seq OWNED BY parcel_lookup.parcel_id;
 
 
 --
--- Name: perimeters; Type: VIEW; Schema: public; Owner: docker
+-- Name: perimeters; Type: VIEW; Schema: public; 
 --
 
 CREATE VIEW perimeters AS
@@ -1004,10 +1016,10 @@ CREATE VIEW perimeters AS
 
 
 --
--- Name: parcel_overlap_matviews; Type: MATERIALIZED VIEW; Schema: public; Owner: docker
+-- Name: parcel_overlap_matviews; Type: MATERIALIZED VIEW; Schema: public; 
 --
 
-CREATE MATERIALIZED VIEW parcel_overlap_matviews AS
+CREATE  VIEW parcel_overlap_matviews AS
  SELECT DISTINCT ON (a.parcel_id) a.parcel_id,
     a.the_geom,
     a.comp_area,
@@ -1024,15 +1036,15 @@ CREATE MATERIALIZED VIEW parcel_overlap_matviews AS
    FROM parcels a,
     perimeters b
   WHERE (st_overlaps(a.the_geom, b.the_geom) = true)
-  WITH NO DATA;
+  ;
 
 
 
 --
--- Name: parcels_intersect; Type: MATERIALIZED VIEW; Schema: public; Owner: docker
+-- Name: parcels_intersect; Type: MATERIALIZED VIEW; Schema: public; 
 --
 
-CREATE MATERIALIZED VIEW parcels_intersect AS
+CREATE  VIEW parcels_intersect AS
  SELECT DISTINCT ON (a.parcel_id) a.parcel_id,
     a.the_geom,
     a.comp_area,
@@ -1049,12 +1061,12 @@ CREATE MATERIALIZED VIEW parcels_intersect AS
    FROM (parcels a
      LEFT JOIN parcels b ON (st_intersects(a.the_geom, b.the_geom)))
   WHERE ((a.parcel_id <> b.parcel_id) AND (b.parcel_id IS NOT NULL) AND (NOT st_touches(a.the_geom, b.the_geom)))
-  WITH NO DATA;
+  ;
 
 
 
 --
--- Name: parcels_lines; Type: VIEW; Schema: public; Owner: docker
+-- Name: parcels_lines; Type: VIEW; Schema: public; 
 --
 
 CREATE VIEW parcels_lines AS
@@ -1072,7 +1084,7 @@ CREATE VIEW parcels_lines AS
 
 
 --
--- Name: parcels_line_length; Type: VIEW; Schema: public; Owner: docker
+-- Name: parcels_line_length; Type: VIEW; Schema: public; 
 --
 
 CREATE VIEW parcels_line_length AS
@@ -1094,7 +1106,7 @@ CREATE VIEW parcels_line_length AS
 
 
 --
--- Name: perimeters_original; Type: VIEW; Schema: public; Owner: docker
+-- Name: perimeters_original; Type: VIEW; Schema: public; 
 --
 
 CREATE VIEW perimeters_original AS
@@ -1142,7 +1154,7 @@ CREATE VIEW perimeters_original AS
 
 
 --
--- Name: print_survey_details; Type: TABLE; Schema: public; Owner: docker
+-- Name: print_survey_details; Type: TABLE; Schema: public; 
 --
 
 CREATE TABLE print_survey_details (
@@ -1159,7 +1171,7 @@ CREATE TABLE print_survey_details (
 
 
 --
--- Name: print_survey_details_id_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: print_survey_details_id_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE print_survey_details_id_seq
@@ -1172,14 +1184,14 @@ CREATE SEQUENCE print_survey_details_id_seq
 
 
 --
--- Name: print_survey_details_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
+-- Name: print_survey_details_id_seq; Type: SEQUENCE OWNED BY; Schema: public; 
 --
 
 ALTER SEQUENCE print_survey_details_id_seq OWNED BY print_survey_details.id;
 
 
 --
--- Name: prop_types; Type: TABLE; Schema: public; Owner: docker
+-- Name: prop_types; Type: TABLE; Schema: public; 
 --
 
 CREATE TABLE prop_types (
@@ -1191,7 +1203,7 @@ CREATE TABLE prop_types (
 
 
 --
--- Name: prop_types_id_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: prop_types_id_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE prop_types_id_seq
@@ -1204,14 +1216,14 @@ CREATE SEQUENCE prop_types_id_seq
 
 
 --
--- Name: prop_types_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
+-- Name: prop_types_id_seq; Type: SEQUENCE OWNED BY; Schema: public; 
 --
 
 ALTER SEQUENCE prop_types_id_seq OWNED BY prop_types.id;
 
 
 --
--- Name: reference_view; Type: TABLE; Schema: public; Owner: docker
+-- Name: reference_view; Type: TABLE; Schema: public; 
 --
 
 CREATE TABLE reference_view (
@@ -1228,7 +1240,7 @@ CREATE TABLE reference_view (
 
 
 --
--- Name: schemes_id_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: schemes_id_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE schemes_id_seq
@@ -1241,14 +1253,14 @@ CREATE SEQUENCE schemes_id_seq
 
 
 --
--- Name: schemes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
+-- Name: schemes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; 
 --
 
 ALTER SEQUENCE schemes_id_seq OWNED BY schemes.id;
 
 
 --
--- Name: speed_code_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: speed_code_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE speed_code_seq
@@ -1261,7 +1273,7 @@ CREATE SEQUENCE speed_code_seq
 
 
 --
--- Name: status_cat; Type: TABLE; Schema: public; Owner: docker
+-- Name: status_cat; Type: TABLE; Schema: public; 
 --
 
 CREATE TABLE status_cat (
@@ -1272,7 +1284,7 @@ CREATE TABLE status_cat (
 
 
 --
--- Name: status_cat_status_cat_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: status_cat_status_cat_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE status_cat_status_cat_seq
@@ -1285,14 +1297,14 @@ CREATE SEQUENCE status_cat_status_cat_seq
 
 
 --
--- Name: status_cat_status_cat_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
+-- Name: status_cat_status_cat_seq; Type: SEQUENCE OWNED BY; Schema: public; 
 --
 
 ALTER SEQUENCE status_cat_status_cat_seq OWNED BY status_cat.status_cat;
 
 
 --
--- Name: str_type_strid_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: str_type_strid_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE str_type_strid_seq
@@ -1305,7 +1317,7 @@ CREATE SEQUENCE str_type_strid_seq
 
 
 --
--- Name: survey; Type: TABLE; Schema: public; Owner: docker
+-- Name: survey; Type: TABLE; Schema: public; 
 --
 
 CREATE TABLE survey (
@@ -1319,7 +1331,7 @@ CREATE TABLE survey (
 
 
 --
--- Name: survey_id_seq; Type: SEQUENCE; Schema: public; Owner: docker
+-- Name: survey_id_seq; Type: SEQUENCE; Schema: public; 
 --
 
 CREATE SEQUENCE survey_id_seq
@@ -1332,14 +1344,14 @@ CREATE SEQUENCE survey_id_seq
 
 
 --
--- Name: survey_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker
+-- Name: survey_id_seq; Type: SEQUENCE OWNED BY; Schema: public; 
 --
 
 ALTER SEQUENCE survey_id_seq OWNED BY survey.id;
 
 
 --
--- Name: transactions; Type: TABLE; Schema: public; Owner: docker
+-- Name: transactions; Type: TABLE; Schema: public; 
 --
 
 CREATE TABLE transactions (
@@ -1352,108 +1364,1024 @@ CREATE TABLE transactions (
     survey integer NOT NULL
 );
 
+CREATE TABLE public.layer_styles (
+    id integer NOT NULL,
+    f_table_catalog character varying,
+    f_table_schema character varying,
+    f_table_name character varying,
+    f_geometry_column character varying,
+    stylename text,
+    styleqml xml,
+    stylesld xml,
+    useasdefault boolean,
+    description text,
+    owner character varying(63),
+    ui xml,
+    update_time timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+--
+-- Name: layer_styles_id_seq; Type: SEQUENCE; Schema: public;
+--
+
+CREATE SEQUENCE public.layer_styles_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
 
 
 --
--- Name: allocation_cat allocation_cat; Type: DEFAULT; Schema: public; Owner: docker
+-- Name: layer_styles_id_seq; Type: SEQUENCE OWNED BY; Schema: public;
 --
 
-ALTER TABLE ONLY allocation_cat ALTER COLUMN allocation_cat SET DEFAULT nextval('allocation_cat_id_seq'::regclass);
+ALTER SEQUENCE public.layer_styles_id_seq OWNED BY public.layer_styles.id;
 
 
 --
--- Name: beacons gid; Type: DEFAULT; Schema: public; Owner: docker
+-- Name: layer_styles id; Type: DEFAULT; Schema: public;
+--
+
+ALTER TABLE ONLY public.layer_styles ALTER COLUMN id SET DEFAULT nextval('public.layer_styles_id_seq'::regclass);
+
+
+
+INSERT INTO public.layer_styles VALUES (1, ':DATABASE', 'public', 'beacons', 'the_geom', 'beacons', '<!DOCTYPE qgis PUBLIC ''http://mrcc.com/qgis.dtd'' ''SYSTEM''>
+<qgis version="3.8.0-Zanzibar" labelsEnabled="1" simplifyAlgorithm="0" maxScale="0" simplifyDrawingTol="1" simplifyLocal="1" hasScaleBasedVisibilityFlag="1" simplifyDrawingHints="0" readOnly="0" styleCategories="AllStyleCategories" minScale="10000" simplifyMaxScale="1">
+ <flags>
+  <Identifiable>1</Identifiable>
+  <Removable>1</Removable>
+  <Searchable>1</Searchable>
+ </flags>
+ <renderer-v2 type="singleSymbol" forceraster="0" enableorderby="0" symbollevels="0">
+  <symbols>
+   <symbol type="marker" alpha="1" name="0" clip_to_extent="1" force_rhr="0">
+    <layer enabled="1" class="SvgMarker" locked="0" pass="0">
+     <prop k="angle" v="0"/>
+     <prop k="color" v="0,0,0,255"/>
+     <prop k="fixedAspectRatio" v="0"/>
+     <prop k="horizontal_anchor_point" v="1"/>
+     <prop k="name" v="gpsicons/point.svg"/>
+     <prop k="offset" v="0,0"/>
+     <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+     <prop k="offset_unit" v="MM"/>
+     <prop k="outline_color" v="0,0,0,255"/>
+     <prop k="outline_width" v="1"/>
+     <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+     <prop k="outline_width_unit" v="MM"/>
+     <prop k="scale_method" v="diameter"/>
+     <prop k="size" v="3"/>
+     <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+     <prop k="size_unit" v="MM"/>
+     <prop k="vertical_anchor_point" v="1"/>
+     <data_defined_properties>
+      <Option type="Map">
+       <Option type="QString" name="name" value=""/>
+       <Option name="properties"/>
+       <Option type="QString" name="type" value="collection"/>
+      </Option>
+     </data_defined_properties>
+    </layer>
+   </symbol>
+  </symbols>
+  <rotation/>
+  <sizescale/>
+ </renderer-v2>
+ <labeling type="simple">
+  <settings>
+   <text-style textOpacity="1" fontLetterSpacing="0" fontSizeUnit="Point" blendMode="0" namedStyle="Regular" fontUnderline="0" multilineHeight="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="85,0,0,255" fieldName="beacon" useSubstitutions="0" fontWordSpacing="0" fontStrikeout="0" fontCapitals="0" fontFamily="Ubuntu" previewBkgrdColor="#ffffff" isExpression="0" fontSize="7" fontWeight="50" fontItalic="0">
+    <text-buffer bufferColor="255,255,255,255" bufferOpacity="1" bufferNoFill="0" bufferDraw="0" bufferSize="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferJoinStyle="64" bufferSizeUnits="MM" bufferBlendMode="0"/>
+    <background shapeOffsetY="0" shapeSizeType="0" shapeOffsetUnit="Point" shapeBorderWidthUnit="Point" shapeJoinStyle="64" shapeOffsetX="0" shapeRadiiX="0" shapeRadiiY="0" shapeSizeUnit="Point" shapeRotation="0" shapeSizeX="0" shapeRadiiUnit="Point" shapeSizeMapUnitScale="3x:0,0,0,0,0,0" shapeBorderWidth="0" shapeOpacity="1" shapeSizeY="0" shapeRotationType="0" shapeFillColor="255,255,255,255" shapeDraw="0" shapeRadiiMapUnitScale="3x:0,0,0,0,0,0" shapeBorderWidthMapUnitScale="3x:0,0,0,0,0,0" shapeBlendMode="0" shapeBorderColor="128,128,128,255" shapeType="0" shapeSVGFile="" shapeOffsetMapUnitScale="3x:0,0,0,0,0,0"/>
+    <shadow shadowDraw="0" shadowRadiusMapUnitScale="3x:0,0,0,0,0,0" shadowBlendMode="6" shadowRadius="1.5" shadowRadiusUnit="Point" shadowOffsetUnit="Point" shadowOpacity="1" shadowColor="0,0,0,255" shadowRadiusAlphaOnly="0" shadowOffsetDist="1" shadowOffsetMapUnitScale="3x:0,0,0,0,0,0" shadowUnder="0" shadowOffsetAngle="135" shadowScale="100" shadowOffsetGlobal="1"/>
+    <substitutions/>
+   </text-style>
+   <text-format reverseDirectionSymbol="0" decimals="0" placeDirectionSymbol="0" formatNumbers="0" rightDirectionSymbol=">" addDirectionSymbol="0" leftDirectionSymbol="&lt;" useMaxLineLengthForAutoWrap="1" autoWrapLength="0" multilineAlign="0" plussign="1" wrapChar=""/>
+   <placement offsetUnits="MapUnit" geometryGenerator="" distUnits="MM" fitInPolygonOnly="0" centroidWhole="0" xOffset="1" maxCurvedCharAngleOut="-20" maxCurvedCharAngleIn="20" placement="0" labelOffsetMapUnitScale="3x:0,0,0,0,0,0" offsetType="0" geometryGeneratorType="PointGeometry" dist="0" repeatDistance="0" repeatDistanceUnits="MM" distMapUnitScale="3x:0,0,0,0,0,0" placementFlags="0" centroidInside="0" quadOffset="2" predefinedPositionOrder="TR,TL,BR,BL,R,L,TSR,BSR" rotationAngle="0" geometryGeneratorEnabled="0" preserveRotation="1" yOffset="0" priority="5" repeatDistanceMapUnitScale="3x:0,0,0,0,0,0"/>
+   <rendering obstacleFactor="1" obstacle="1" labelPerPart="0" fontLimitPixelSize="0" scaleVisibility="1" obstacleType="0" mergeLines="0" scaleMin="1" minFeatureSize="0" zIndex="0" limitNumLabels="0" scaleMax="10000" fontMaxPixelSize="200" fontMinPixelSize="3" maxNumLabels="2000" displayAll="0" upsidedownLabels="0" drawLabels="1"/>
+   <dd_properties>
+    <Option type="Map">
+     <Option type="QString" name="name" value=""/>
+     <Option name="properties"/>
+     <Option type="QString" name="type" value="collection"/>
+    </Option>
+   </dd_properties>
+  </settings>
+ </labeling>
+ <customproperties>
+  <property key="embeddedWidgets/count" value="0"/>
+  <property key="variableNames"/>
+  <property key="variableValues"/>
+ </customproperties>
+ <blendMode>0</blendMode>
+ <featureBlendMode>0</featureBlendMode>
+ <layerOpacity>1</layerOpacity>
+ <SingleCategoryDiagramRenderer attributeLegend="1" diagramType="Histogram">
+  <DiagramCategory sizeType="MM" barWidth="5" penAlpha="255" scaleBasedVisibility="0" scaleDependency="Area" minScaleDenominator="0" labelPlacementMethod="XHeight" height="15" backgroundColor="#ffffff" minimumSize="0" width="15" lineSizeType="MM" rotationOffset="270" penWidth="0" opacity="1" diagramOrientation="Up" penColor="#000000" maxScaleDenominator="1e+08" lineSizeScale="3x:0,0,0,0,0,0" backgroundAlpha="255" enabled="0" sizeScale="3x:0,0,0,0,0,0">
+   <fontProperties description="Ubuntu,11,-1,5,50,0,0,0,0,0" style=""/>
+  </DiagramCategory>
+ </SingleCategoryDiagramRenderer>
+ <DiagramLayerSettings priority="0" linePlacementFlags="18" zIndex="0" dist="0" showAll="1" placement="0" obstacle="0">
+  <properties>
+   <Option type="Map">
+    <Option type="QString" name="name" value=""/>
+    <Option name="properties"/>
+    <Option type="QString" name="type" value="collection"/>
+   </Option>
+  </properties>
+ </DiagramLayerSettings>
+ <geometryOptions geometryPrecision="0" removeDuplicateNodes="0">
+  <activeChecks/>
+  <checkConfiguration/>
+ </geometryOptions>
+ <fieldConfiguration>
+  <field name="gid">
+   <editWidget type="TextEdit">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+  <field name="beacon">
+   <editWidget type="TextEdit">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+  <field name="y">
+   <editWidget type="TextEdit">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+  <field name="x">
+   <editWidget type="TextEdit">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+  <field name="location">
+   <editWidget type="TextEdit">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+  <field name="name">
+   <editWidget type="TextEdit">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+  <field name="last_modified_by">
+   <editWidget type="TextEdit">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+ </fieldConfiguration>
+ <aliases>
+  <alias field="gid" name="" index="0"/>
+  <alias field="beacon" name="" index="1"/>
+  <alias field="y" name="" index="2"/>
+  <alias field="x" name="" index="3"/>
+  <alias field="location" name="" index="4"/>
+  <alias field="name" name="" index="5"/>
+  <alias field="last_modified_by" name="" index="6"/>
+ </aliases>
+ <excludeAttributesWMS/>
+ <excludeAttributesWFS/>
+ <defaults>
+  <default field="gid" expression="" applyOnUpdate="0"/>
+  <default field="beacon" expression="" applyOnUpdate="0"/>
+  <default field="y" expression="" applyOnUpdate="0"/>
+  <default field="x" expression="" applyOnUpdate="0"/>
+  <default field="location" expression="" applyOnUpdate="0"/>
+  <default field="name" expression="" applyOnUpdate="0"/>
+  <default field="last_modified_by" expression="" applyOnUpdate="0"/>
+ </defaults>
+ <constraints>
+  <constraint field="gid" constraints="3" unique_strength="1" notnull_strength="1" exp_strength="0"/>
+  <constraint field="beacon" constraints="3" unique_strength="1" notnull_strength="1" exp_strength="0"/>
+  <constraint field="y" constraints="1" unique_strength="0" notnull_strength="1" exp_strength="0"/>
+  <constraint field="x" constraints="1" unique_strength="0" notnull_strength="1" exp_strength="0"/>
+  <constraint field="location" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
+  <constraint field="name" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
+  <constraint field="last_modified_by" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
+ </constraints>
+ <constraintExpressions>
+  <constraint field="gid" desc="" exp=""/>
+  <constraint field="beacon" desc="" exp=""/>
+  <constraint field="y" desc="" exp=""/>
+  <constraint field="x" desc="" exp=""/>
+  <constraint field="location" desc="" exp=""/>
+  <constraint field="name" desc="" exp=""/>
+  <constraint field="last_modified_by" desc="" exp=""/>
+ </constraintExpressions>
+ <expressionfields/>
+ <attributeactions>
+  <defaultAction key="Canvas" value="{{00000000-0000-0000-0000-000000000000}}"/>
+ </attributeactions>
+ <attributetableconfig sortOrder="0" sortExpression="" actionWidgetStyle="dropDown">
+  <columns>
+   <column type="field" hidden="0" width="-1" name="gid"/>
+   <column type="field" hidden="0" width="-1" name="beacon"/>
+   <column type="field" hidden="0" width="-1" name="y"/>
+   <column type="field" hidden="0" width="-1" name="x"/>
+   <column type="field" hidden="0" width="-1" name="location"/>
+   <column type="field" hidden="0" width="-1" name="name"/>
+   <column type="field" hidden="0" width="-1" name="last_modified_by"/>
+   <column type="actions" hidden="1" width="-1"/>
+  </columns>
+ </attributetableconfig>
+ <conditionalstyles>
+  <rowstyles/>
+  <fieldstyles/>
+ </conditionalstyles>
+ <editform tolerant="1">.</editform>
+ <editforminit/>
+ <editforminitcodesource>0</editforminitcodesource>
+ <editforminitfilepath></editforminitfilepath>
+ <editforminitcode><![CDATA[# -*- coding: utf-8 -*-
+"""
+QGIS forms can have a Python function that is called when the form is
+opened.
+
+Use this function to add extra logic to your forms.
+
+Enter the name of the function in the "Python Init function"
+field.
+An example follows:
+"""
+from qgis.PyQt.QtWidgets import QWidget
+
+def my_form_open(dialog, layer, feature):
+  geom = feature.geometry()
+  control = dialog.findChild(QWidget, "MyLineEdit")
+]]></editforminitcode>
+ <featformsuppress>0</featformsuppress>
+ <editorlayout>generatedlayout</editorlayout>
+ <editable>
+  <field name="beacon" editable="1"/>
+  <field name="gid" editable="1"/>
+  <field name="last_modified_by" editable="1"/>
+  <field name="location" editable="1"/>
+  <field name="name" editable="1"/>
+  <field name="x" editable="1"/>
+  <field name="y" editable="1"/>
+ </editable>
+ <labelOnTop>
+  <field labelOnTop="0" name="beacon"/>
+  <field labelOnTop="0" name="gid"/>
+  <field labelOnTop="0" name="last_modified_by"/>
+  <field labelOnTop="0" name="location"/>
+  <field labelOnTop="0" name="name"/>
+  <field labelOnTop="0" name="x"/>
+  <field labelOnTop="0" name="y"/>
+ </labelOnTop>
+ <widgets/>
+ <previewExpression>name</previewExpression>
+ <mapTip></mapTip>
+ <layerGeometryType>0</layerGeometryType>
+</qgis>
+', '<StyledLayerDescriptor xmlns="http://www.opengis.net/sld" version="1.1.0" xmlns:se="http://www.opengis.net/se" xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ogc="http://www.opengis.net/ogc">
+ <NamedLayer>
+  <se:Name>Beacons</se:Name>
+  <UserStyle>
+   <se:Name>Beacons</se:Name>
+   <se:FeatureTypeStyle>
+    <se:Rule>
+     <se:Name>Single symbol</se:Name>
+     <se:MinScaleDenominator>0</se:MinScaleDenominator>
+     <se:MaxScaleDenominator>10000</se:MaxScaleDenominator>
+     <se:PointSymbolizer>
+      <se:Graphic>
+       <!--Parametric SVG-->
+       <se:ExternalGraphic>
+        <se:OnlineResource xlink:type="simple" xlink:href="/usr/share/qgis/svg/gpsicons/point.svg?fill=%23000000&amp;fill-opacity=1&amp;outline=%23000000&amp;outline-opacity=1&amp;outline-width=4"/>
+        <se:Format>image/svg+xml</se:Format>
+       </se:ExternalGraphic>
+       <!--Plain SVG fallback, no parameters-->
+       <se:ExternalGraphic>
+        <se:OnlineResource xlink:type="simple" xlink:href="gpsicons/point.svg"/>
+        <se:Format>image/svg+xml</se:Format>
+       </se:ExternalGraphic>
+       <!--Well known marker fallback-->
+       <se:Mark>
+        <se:WellKnownName>square</se:WellKnownName>
+        <se:Fill>
+         <se:SvgParameter name="fill">#000000</se:SvgParameter>
+        </se:Fill>
+        <se:Stroke>
+         <se:SvgParameter name="stroke">#000000</se:SvgParameter>
+         <se:SvgParameter name="stroke-width">4</se:SvgParameter>
+        </se:Stroke>
+       </se:Mark>
+       <se:Size>11</se:Size>
+      </se:Graphic>
+     </se:PointSymbolizer>
+    </se:Rule>
+    <se:Rule>
+     <se:MinScaleDenominator>1</se:MinScaleDenominator>
+     <se:MaxScaleDenominator>10000</se:MaxScaleDenominator>
+     <se:TextSymbolizer>
+      <se:Label>
+       <ogc:PropertyName>beacon</ogc:PropertyName>
+      </se:Label>
+      <se:Font>
+       <se:SvgParameter name="font-family">Ubuntu</se:SvgParameter>
+       <se:SvgParameter name="font-size">9</se:SvgParameter>
+      </se:Font>
+      <se:LabelPlacement>
+       <se:PointPlacement>
+        <se:AnchorPoint>
+         <se:AnchorPointX>0</se:AnchorPointX>
+         <se:AnchorPointY>0.5</se:AnchorPointY>
+        </se:AnchorPoint>
+       </se:PointPlacement>
+      </se:LabelPlacement>
+      <se:Fill>
+       <se:SvgParameter name="fill">#550000</se:SvgParameter>
+      </se:Fill>
+      <se:VendorOption name="maxDisplacement">1</se:VendorOption>
+     </se:TextSymbolizer>
+    </se:Rule>
+   </se:FeatureTypeStyle>
+  </UserStyle>
+ </NamedLayer>
+</StyledLayerDescriptor>
+', true, 'Mon Jul 8 11:24:51 2019', ':DBOWNER', NULL, '2019-07-08 09:24:51.081314');
+INSERT INTO public.layer_styles VALUES (2, ':DATABASE', 'public', 'parcels', 'the_geom', 'parcels', '<!DOCTYPE qgis PUBLIC ''http://mrcc.com/qgis.dtd'' ''SYSTEM''>
+<qgis version="3.8.0-Zanzibar" labelsEnabled="1" simplifyAlgorithm="0" maxScale="-4.65661e-10" simplifyDrawingTol="1" simplifyLocal="1" hasScaleBasedVisibilityFlag="0" simplifyDrawingHints="1" readOnly="0" styleCategories="AllStyleCategories" minScale="1e+08" simplifyMaxScale="1">
+ <flags>
+  <Identifiable>1</Identifiable>
+  <Removable>1</Removable>
+  <Searchable>1</Searchable>
+ </flags>
+ <renderer-v2 type="RuleRenderer" forceraster="0" enableorderby="0" symbollevels="0">
+  <rules key="{{ef477c4b-828a-4aa4-b5b5-e35bd14cdbba}}">
+   <rule label="parcels" key="{{2acd78d1-46b5-4c4e-bb2f-366f29335ebb}}" scalemindenom="1" scalemaxdenom="20000" description="Parcel boundaries" symbol="0" filter=" &quot;block&quot; &lt;> ''perimeter'' or &quot;block&quot; is null"/>
+   <rule label="parcels" key="{{6ae6949f-9f98-4328-a90c-86d1b98f1d42}}" scalemindenom="20000" symbol="1" filter=" &quot;block&quot; &lt;> ''perimeter'' or &quot;block&quot; is null"/>
+   <rule label="acquisitions" key="{{8bca7cec-fb7b-4dd0-9eba-523b253233a9}}" scalemindenom="20000" symbol="2" filter=" &quot;block&quot; &lt;> ''acquisitionr'' or &quot;block&quot; is null"/>
+   <rule label="perimeter" key="{{acd42f56-dd9e-4675-bf2a-568e389a9c43}}" description="Scheme perimeters" symbol="3" filter=" &quot;block&quot; = ''perimeter''"/>
+  </rules>
+  <symbols>
+   <symbol type="fill" alpha="0.498039" name="0" clip_to_extent="1" force_rhr="0">
+    <layer enabled="1" class="SimpleFill" locked="0" pass="2">
+     <prop k="border_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+     <prop k="color" v="255,0,0,255"/>
+     <prop k="joinstyle" v="bevel"/>
+     <prop k="offset" v="0,0"/>
+     <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+     <prop k="offset_unit" v="MM"/>
+     <prop k="outline_color" v="0,0,0,255"/>
+     <prop k="outline_style" v="solid"/>
+     <prop k="outline_width" v="0.3"/>
+     <prop k="outline_width_unit" v="MM"/>
+     <prop k="style" v="diagonal_x"/>
+     <data_defined_properties>
+      <Option type="Map">
+       <Option type="QString" name="name" value=""/>
+       <Option name="properties"/>
+       <Option type="QString" name="type" value="collection"/>
+      </Option>
+     </data_defined_properties>
+    </layer>
+   </symbol>
+   <symbol type="fill" alpha="1" name="1" clip_to_extent="1" force_rhr="0">
+    <layer enabled="1" class="CentroidFill" locked="0" pass="3">
+     <prop k="point_on_all_parts" v="1"/>
+     <prop k="point_on_surface" v="0"/>
+     <data_defined_properties>
+      <Option type="Map">
+       <Option type="QString" name="name" value=""/>
+       <Option name="properties"/>
+       <Option type="QString" name="type" value="collection"/>
+      </Option>
+     </data_defined_properties>
+     <symbol type="marker" alpha="1" name="@1@0" clip_to_extent="1" force_rhr="0">
+      <layer enabled="1" class="SimpleMarker" locked="0" pass="0">
+       <prop k="angle" v="0"/>
+       <prop k="color" v="170,85,0,255"/>
+       <prop k="horizontal_anchor_point" v="1"/>
+       <prop k="joinstyle" v="bevel"/>
+       <prop k="name" v="square"/>
+       <prop k="offset" v="0,0"/>
+       <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+       <prop k="offset_unit" v="MM"/>
+       <prop k="outline_color" v="170,85,0,255"/>
+       <prop k="outline_style" v="solid"/>
+       <prop k="outline_width" v="0"/>
+       <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+       <prop k="outline_width_unit" v="MM"/>
+       <prop k="scale_method" v="area"/>
+       <prop k="size" v="0.1"/>
+       <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+       <prop k="size_unit" v="MM"/>
+       <prop k="vertical_anchor_point" v="1"/>
+       <data_defined_properties>
+        <Option type="Map">
+         <Option type="QString" name="name" value=""/>
+         <Option name="properties"/>
+         <Option type="QString" name="type" value="collection"/>
+        </Option>
+       </data_defined_properties>
+      </layer>
+     </symbol>
+    </layer>
+   </symbol>
+   <symbol type="fill" alpha="1" name="2" clip_to_extent="1" force_rhr="0">
+    <layer enabled="1" class="SimpleFill" locked="0" pass="0">
+     <prop k="border_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+     <prop k="color" v="86,35,135,255"/>
+     <prop k="joinstyle" v="bevel"/>
+     <prop k="offset" v="0,0"/>
+     <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+     <prop k="offset_unit" v="MM"/>
+     <prop k="outline_color" v="170,0,127,255"/>
+     <prop k="outline_style" v="dot"/>
+     <prop k="outline_width" v="0.26"/>
+     <prop k="outline_width_unit" v="MM"/>
+     <prop k="style" v="no"/>
+     <data_defined_properties>
+      <Option type="Map">
+       <Option type="QString" name="name" value=""/>
+       <Option name="properties"/>
+       <Option type="QString" name="type" value="collection"/>
+      </Option>
+     </data_defined_properties>
+    </layer>
+   </symbol>
+   <symbol type="fill" alpha="1" name="3" clip_to_extent="1" force_rhr="0">
+    <layer enabled="1" class="SimpleFill" locked="0" pass="1">
+     <prop k="border_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+     <prop k="color" v="170,0,0,255"/>
+     <prop k="joinstyle" v="bevel"/>
+     <prop k="offset" v="0,0"/>
+     <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+     <prop k="offset_unit" v="MM"/>
+     <prop k="outline_color" v="170,0,0,255"/>
+     <prop k="outline_style" v="dash"/>
+     <prop k="outline_width" v="0.26"/>
+     <prop k="outline_width_unit" v="MM"/>
+     <prop k="style" v="no"/>
+     <data_defined_properties>
+      <Option type="Map">
+       <Option type="QString" name="name" value=""/>
+       <Option name="properties"/>
+       <Option type="QString" name="type" value="collection"/>
+      </Option>
+     </data_defined_properties>
+    </layer>
+   </symbol>
+  </symbols>
+ </renderer-v2>
+ <labeling type="simple">
+  <settings>
+   <text-style textOpacity="1" fontLetterSpacing="0" fontSizeUnit="Point" blendMode="0" namedStyle="Regular" fontUnderline="0" multilineHeight="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255" fieldName="case when &quot;block&quot; &lt;> ''perimeter'' or &quot;block&quot; is null then (&quot;parcel_number&quot; || ''\n'' || ''block ''||&#xa;case when &quot;block&quot; is not null then &quot;block&quot; else ''?'' end ||'', plot ''||&#xa;case when&quot;serial_no&quot; is not null then&quot;serial_no&quot; else ''?'' end ||''\n''|| &#xa;case when &quot;official_area&quot; is not null then &quot;official_area&quot; else ''?'' end||''m² (o)''||''\n''||&#xa;&quot;comp_area&quot;||''m² (c)'')  else &quot;scheme&quot; end" useSubstitutions="0" fontWordSpacing="0" fontStrikeout="0" fontCapitals="0" fontFamily="Ubuntu" previewBkgrdColor="#ffffff" isExpression="1" fontSize="8" fontWeight="50" fontItalic="0">
+    <text-buffer bufferColor="255,255,255,255" bufferOpacity="1" bufferNoFill="0" bufferDraw="1" bufferSize="0.1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferJoinStyle="64" bufferSizeUnits="MapUnit" bufferBlendMode="0"/>
+    <background shapeOffsetY="0" shapeSizeType="0" shapeOffsetUnit="Point" shapeBorderWidthUnit="Point" shapeJoinStyle="64" shapeOffsetX="0" shapeRadiiX="0" shapeRadiiY="0" shapeSizeUnit="Point" shapeRotation="0" shapeSizeX="0" shapeRadiiUnit="Point" shapeSizeMapUnitScale="3x:0,0,0,0,0,0" shapeBorderWidth="0" shapeOpacity="1" shapeSizeY="0" shapeRotationType="0" shapeFillColor="255,255,255,255" shapeDraw="0" shapeRadiiMapUnitScale="3x:0,0,0,0,0,0" shapeBorderWidthMapUnitScale="3x:0,0,0,0,0,0" shapeBlendMode="0" shapeBorderColor="128,128,128,255" shapeType="0" shapeSVGFile="" shapeOffsetMapUnitScale="3x:0,0,0,0,0,0"/>
+    <shadow shadowDraw="0" shadowRadiusMapUnitScale="3x:0,0,0,0,0,0" shadowBlendMode="6" shadowRadius="1.5" shadowRadiusUnit="Point" shadowOffsetUnit="Point" shadowOpacity="1" shadowColor="0,0,0,255" shadowRadiusAlphaOnly="0" shadowOffsetDist="1" shadowOffsetMapUnitScale="3x:0,0,0,0,0,0" shadowUnder="0" shadowOffsetAngle="135" shadowScale="100" shadowOffsetGlobal="1"/>
+    <substitutions/>
+   </text-style>
+   <text-format reverseDirectionSymbol="0" decimals="0" placeDirectionSymbol="0" formatNumbers="0" rightDirectionSymbol=">" addDirectionSymbol="0" leftDirectionSymbol="&lt;" useMaxLineLengthForAutoWrap="1" autoWrapLength="0" multilineAlign="0" plussign="1" wrapChar=""/>
+   <placement offsetUnits="MapUnit" geometryGenerator="" distUnits="MM" fitInPolygonOnly="0" centroidWhole="0" xOffset="0" maxCurvedCharAngleOut="-20" maxCurvedCharAngleIn="20" placement="5" labelOffsetMapUnitScale="3x:0,0,0,0,0,0" offsetType="0" geometryGeneratorType="PointGeometry" dist="0" repeatDistance="0" repeatDistanceUnits="MM" distMapUnitScale="3x:0,0,0,0,0,0" placementFlags="0" centroidInside="0" quadOffset="4" predefinedPositionOrder="TR,TL,BR,BL,R,L,TSR,BSR" rotationAngle="0" geometryGeneratorEnabled="0" preserveRotation="1" yOffset="0" priority="10" repeatDistanceMapUnitScale="3x:0,0,0,0,0,0"/>
+   <rendering obstacleFactor="1" obstacle="1" labelPerPart="0" fontLimitPixelSize="0" scaleVisibility="1" obstacleType="0" mergeLines="0" scaleMin="1" minFeatureSize="0" zIndex="0" limitNumLabels="0" scaleMax="1500" fontMaxPixelSize="10000" fontMinPixelSize="3" maxNumLabels="2000" displayAll="0" upsidedownLabels="0" drawLabels="1"/>
+   <dd_properties>
+    <Option type="Map">
+     <Option type="QString" name="name" value=""/>
+     <Option name="properties"/>
+     <Option type="QString" name="type" value="collection"/>
+    </Option>
+   </dd_properties>
+  </settings>
+ </labeling>
+ <customproperties>
+  <property key="dualview/previewExpressions">
+   <value>parcel_id</value>
+  </property>
+  <property key="embeddedWidgets/count" value="0"/>
+  <property key="variableNames"/>
+  <property key="variableValues"/>
+ </customproperties>
+ <blendMode>0</blendMode>
+ <featureBlendMode>0</featureBlendMode>
+ <layerOpacity>1</layerOpacity>
+ <SingleCategoryDiagramRenderer attributeLegend="1" diagramType="Histogram">
+  <DiagramCategory sizeType="MM" barWidth="5" penAlpha="255" scaleBasedVisibility="0" scaleDependency="Area" minScaleDenominator="-4.65661e-10" labelPlacementMethod="XHeight" height="15" backgroundColor="#ffffff" minimumSize="0" width="15" lineSizeType="MM" rotationOffset="270" penWidth="0" opacity="1" diagramOrientation="Up" penColor="#000000" maxScaleDenominator="1e+08" lineSizeScale="3x:0,0,0,0,0,0" backgroundAlpha="255" enabled="0" sizeScale="3x:0,0,0,0,0,0">
+   <fontProperties description="Ubuntu,11,-1,5,50,0,0,0,0,0" style=""/>
+  </DiagramCategory>
+ </SingleCategoryDiagramRenderer>
+ <DiagramLayerSettings priority="0" linePlacementFlags="18" zIndex="0" dist="0" showAll="1" placement="1" obstacle="0">
+  <properties>
+   <Option type="Map">
+    <Option type="QString" name="name" value=""/>
+    <Option name="properties"/>
+    <Option type="QString" name="type" value="collection"/>
+   </Option>
+  </properties>
+ </DiagramLayerSettings>
+ <geometryOptions geometryPrecision="0" removeDuplicateNodes="0">
+  <activeChecks/>
+  <checkConfiguration/>
+ </geometryOptions>
+ <fieldConfiguration>
+  <field name="parcel_id">
+   <editWidget type="Range">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+  <field name="comp_area">
+   <editWidget type="TextEdit">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+  <field name="official_area">
+   <editWidget type="TextEdit">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+  <field name="parcel_number">
+   <editWidget type="TextEdit">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+  <field name="block">
+   <editWidget type="TextEdit">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+  <field name="serial_no">
+   <editWidget type="TextEdit">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+  <field name="scheme">
+   <editWidget type="TextEdit">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+  <field name="file_number">
+   <editWidget type="TextEdit">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+  <field name="allocation">
+   <editWidget type="Range">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+  <field name="owner">
+   <editWidget type="TextEdit">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+  <field name="deeds_file">
+   <editWidget type="TextEdit">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+  <field name="private">
+   <editWidget type="CheckBox">
+    <config>
+     <Option/>
+    </config>
+   </editWidget>
+  </field>
+ </fieldConfiguration>
+ <aliases>
+  <alias field="parcel_id" name="" index="0"/>
+  <alias field="comp_area" name="" index="1"/>
+  <alias field="official_area" name="" index="2"/>
+  <alias field="parcel_number" name="" index="3"/>
+  <alias field="block" name="" index="4"/>
+  <alias field="serial_no" name="" index="5"/>
+  <alias field="scheme" name="" index="6"/>
+  <alias field="file_number" name="" index="7"/>
+  <alias field="allocation" name="" index="8"/>
+  <alias field="owner" name="" index="9"/>
+  <alias field="deeds_file" name="" index="10"/>
+  <alias field="private" name="" index="11"/>
+ </aliases>
+ <excludeAttributesWMS/>
+ <excludeAttributesWFS/>
+ <defaults>
+  <default field="parcel_id" expression="" applyOnUpdate="0"/>
+  <default field="comp_area" expression="" applyOnUpdate="0"/>
+  <default field="official_area" expression="" applyOnUpdate="0"/>
+  <default field="parcel_number" expression="" applyOnUpdate="0"/>
+  <default field="block" expression="" applyOnUpdate="0"/>
+  <default field="serial_no" expression="" applyOnUpdate="0"/>
+  <default field="scheme" expression="" applyOnUpdate="0"/>
+  <default field="file_number" expression="" applyOnUpdate="0"/>
+  <default field="allocation" expression="" applyOnUpdate="0"/>
+  <default field="owner" expression="" applyOnUpdate="0"/>
+  <default field="deeds_file" expression="" applyOnUpdate="0"/>
+  <default field="private" expression="" applyOnUpdate="0"/>
+ </defaults>
+ <constraints>
+  <constraint field="parcel_id" constraints="3" unique_strength="1" notnull_strength="1" exp_strength="0"/>
+  <constraint field="comp_area" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
+  <constraint field="official_area" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
+  <constraint field="parcel_number" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
+  <constraint field="block" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
+  <constraint field="serial_no" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
+  <constraint field="scheme" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
+  <constraint field="file_number" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
+  <constraint field="allocation" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
+  <constraint field="owner" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
+  <constraint field="deeds_file" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
+  <constraint field="private" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
+ </constraints>
+ <constraintExpressions>
+  <constraint field="parcel_id" desc="" exp=""/>
+  <constraint field="comp_area" desc="" exp=""/>
+  <constraint field="official_area" desc="" exp=""/>
+  <constraint field="parcel_number" desc="" exp=""/>
+  <constraint field="block" desc="" exp=""/>
+  <constraint field="serial_no" desc="" exp=""/>
+  <constraint field="scheme" desc="" exp=""/>
+  <constraint field="file_number" desc="" exp=""/>
+  <constraint field="allocation" desc="" exp=""/>
+  <constraint field="owner" desc="" exp=""/>
+  <constraint field="deeds_file" desc="" exp=""/>
+  <constraint field="private" desc="" exp=""/>
+ </constraintExpressions>
+ <expressionfields/>
+ <attributeactions>
+  <defaultAction key="Canvas" value="{{00000000-0000-0000-0000-000000000000}}"/>
+ </attributeactions>
+ <attributetableconfig sortOrder="0" sortExpression="" actionWidgetStyle="dropDown">
+  <columns>
+   <column type="field" hidden="0" width="-1" name="parcel_id"/>
+   <column type="field" hidden="0" width="-1" name="comp_area"/>
+   <column type="field" hidden="0" width="-1" name="official_area"/>
+   <column type="field" hidden="0" width="-1" name="parcel_number"/>
+   <column type="field" hidden="0" width="172" name="block"/>
+   <column type="field" hidden="0" width="-1" name="serial_no"/>
+   <column type="field" hidden="0" width="-1" name="scheme"/>
+   <column type="field" hidden="0" width="-1" name="file_number"/>
+   <column type="field" hidden="0" width="-1" name="allocation"/>
+   <column type="field" hidden="0" width="-1" name="owner"/>
+   <column type="field" hidden="0" width="-1" name="deeds_file"/>
+   <column type="field" hidden="0" width="-1" name="private"/>
+   <column type="actions" hidden="1" width="-1"/>
+  </columns>
+ </attributetableconfig>
+ <conditionalstyles>
+  <rowstyles/>
+  <fieldstyles/>
+ </conditionalstyles>
+ <editform tolerant="1">.</editform>
+ <editforminit/>
+ <editforminitcodesource>0</editforminitcodesource>
+ <editforminitfilepath></editforminitfilepath>
+ <editforminitcode><![CDATA[# -*- coding: utf-8 -*-
+"""
+QGIS forms can have a Python function that is called when the form is
+opened.
+
+Use this function to add extra logic to your forms.
+
+Enter the name of the function in the "Python Init function"
+field.
+An example follows:
+"""
+from qgis.PyQt.QtWidgets import QWidget
+
+def my_form_open(dialog, layer, feature):
+  geom = feature.geometry()
+  control = dialog.findChild(QWidget, "MyLineEdit")
+]]></editforminitcode>
+ <featformsuppress>0</featformsuppress>
+ <editorlayout>generatedlayout</editorlayout>
+ <editable>
+  <field name="allocation" editable="1"/>
+  <field name="block" editable="1"/>
+  <field name="comp_area" editable="1"/>
+  <field name="deeds_file" editable="1"/>
+  <field name="file_number" editable="1"/>
+  <field name="official_area" editable="1"/>
+  <field name="owner" editable="1"/>
+  <field name="parcel_id" editable="1"/>
+  <field name="parcel_number" editable="1"/>
+  <field name="private" editable="1"/>
+  <field name="scheme" editable="1"/>
+  <field name="serial_no" editable="1"/>
+ </editable>
+ <labelOnTop>
+  <field labelOnTop="0" name="allocation"/>
+  <field labelOnTop="0" name="block"/>
+  <field labelOnTop="0" name="comp_area"/>
+  <field labelOnTop="0" name="deeds_file"/>
+  <field labelOnTop="0" name="file_number"/>
+  <field labelOnTop="0" name="official_area"/>
+  <field labelOnTop="0" name="owner"/>
+  <field labelOnTop="0" name="parcel_id"/>
+  <field labelOnTop="0" name="parcel_number"/>
+  <field labelOnTop="0" name="private"/>
+  <field labelOnTop="0" name="scheme"/>
+  <field labelOnTop="0" name="serial_no"/>
+ </labelOnTop>
+ <widgets/>
+ <previewExpression>parcel_id</previewExpression>
+ <mapTip></mapTip>
+ <layerGeometryType>2</layerGeometryType>
+</qgis>
+', '<StyledLayerDescriptor xmlns="http://www.opengis.net/sld" version="1.1.0" xmlns:se="http://www.opengis.net/se" xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ogc="http://www.opengis.net/ogc">
+ <NamedLayer>
+  <se:Name>Parcels</se:Name>
+  <UserStyle>
+   <se:Name>Parcels</se:Name>
+   <se:FeatureTypeStyle>
+    <se:Rule>
+     <se:Name>parcels</se:Name>
+     <se:Description>
+      <se:Title>parcels</se:Title>
+      <se:Abstract>Parcel boundaries</se:Abstract>
+     </se:Description>
+     <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+      <ogc:Or>
+       <ogc:PropertyIsNotEqualTo>
+        <ogc:PropertyName>block</ogc:PropertyName>
+        <ogc:Literal>perimeter</ogc:Literal>
+       </ogc:PropertyIsNotEqualTo>
+       <ogc:PropertyIsNull>
+        <ogc:PropertyName>block</ogc:PropertyName>
+       </ogc:PropertyIsNull>
+      </ogc:Or>
+     </ogc:Filter>
+     <se:MinScaleDenominator>1</se:MinScaleDenominator>
+     <se:MaxScaleDenominator>20000</se:MaxScaleDenominator>
+     <se:PolygonSymbolizer>
+      <se:Fill>
+       <se:GraphicFill>
+        <se:Graphic>
+         <se:Mark>
+          <se:WellKnownName>x</se:WellKnownName>
+          <se:Stroke>
+           <se:SvgParameter name="stroke">#ff0000</se:SvgParameter>
+          </se:Stroke>
+         </se:Mark>
+        </se:Graphic>
+       </se:GraphicFill>
+      </se:Fill>
+      <se:Stroke>
+       <se:SvgParameter name="stroke">#000000</se:SvgParameter>
+       <se:SvgParameter name="stroke-width">1</se:SvgParameter>
+       <se:SvgParameter name="stroke-linejoin">bevel</se:SvgParameter>
+      </se:Stroke>
+     </se:PolygonSymbolizer>
+    </se:Rule>
+    <se:Rule>
+     <se:Name>parcels</se:Name>
+     <se:Description>
+      <se:Title>parcels</se:Title>
+     </se:Description>
+     <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+      <ogc:Or>
+       <ogc:PropertyIsNotEqualTo>
+        <ogc:PropertyName>block</ogc:PropertyName>
+        <ogc:Literal>perimeter</ogc:Literal>
+       </ogc:PropertyIsNotEqualTo>
+       <ogc:PropertyIsNull>
+        <ogc:PropertyName>block</ogc:PropertyName>
+       </ogc:PropertyIsNull>
+      </ogc:Or>
+     </ogc:Filter>
+     <se:MinScaleDenominator>20000</se:MinScaleDenominator>
+     <se:PointSymbolizer>
+      <se:Graphic>
+       <se:Mark>
+        <se:WellKnownName>square</se:WellKnownName>
+        <se:Fill>
+         <se:SvgParameter name="fill">#aa5500</se:SvgParameter>
+        </se:Fill>
+        <se:Stroke>
+         <se:SvgParameter name="stroke">#aa5500</se:SvgParameter>
+         <se:SvgParameter name="stroke-width">0.5</se:SvgParameter>
+        </se:Stroke>
+       </se:Mark>
+      </se:Graphic>
+     </se:PointSymbolizer>
+    </se:Rule>
+    <se:Rule>
+     <se:Name>acquisitions</se:Name>
+     <se:Description>
+      <se:Title>acquisitions</se:Title>
+     </se:Description>
+     <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+      <ogc:Or>
+       <ogc:PropertyIsNotEqualTo>
+        <ogc:PropertyName>block</ogc:PropertyName>
+        <ogc:Literal>acquisitionr</ogc:Literal>
+       </ogc:PropertyIsNotEqualTo>
+       <ogc:PropertyIsNull>
+        <ogc:PropertyName>block</ogc:PropertyName>
+       </ogc:PropertyIsNull>
+      </ogc:Or>
+     </ogc:Filter>
+     <se:MinScaleDenominator>20000</se:MinScaleDenominator>
+     <se:PolygonSymbolizer>
+      <se:Stroke>
+       <se:SvgParameter name="stroke">#aa007f</se:SvgParameter>
+       <se:SvgParameter name="stroke-width">1</se:SvgParameter>
+       <se:SvgParameter name="stroke-linejoin">bevel</se:SvgParameter>
+       <se:SvgParameter name="stroke-dasharray">1 2</se:SvgParameter>
+      </se:Stroke>
+     </se:PolygonSymbolizer>
+    </se:Rule>
+    <se:Rule>
+     <se:Name>perimeter</se:Name>
+     <se:Description>
+      <se:Title>perimeter</se:Title>
+      <se:Abstract>Scheme perimeters</se:Abstract>
+     </se:Description>
+     <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+      <ogc:PropertyIsEqualTo>
+       <ogc:PropertyName>block</ogc:PropertyName>
+       <ogc:Literal>perimeter</ogc:Literal>
+      </ogc:PropertyIsEqualTo>
+     </ogc:Filter>
+     <se:PolygonSymbolizer>
+      <se:Stroke>
+       <se:SvgParameter name="stroke">#aa0000</se:SvgParameter>
+       <se:SvgParameter name="stroke-width">1</se:SvgParameter>
+       <se:SvgParameter name="stroke-linejoin">bevel</se:SvgParameter>
+       <se:SvgParameter name="stroke-dasharray">4 2</se:SvgParameter>
+      </se:Stroke>
+     </se:PolygonSymbolizer>
+    </se:Rule>
+    <se:Rule>
+     <se:MinScaleDenominator>1</se:MinScaleDenominator>
+     <se:MaxScaleDenominator>1500</se:MaxScaleDenominator>
+     <se:TextSymbolizer>
+      <se:Label>
+       <!--SE Export for CASE WHEN block <> ''perimeter'' OR block IS NULL THEN parcel_number || ''\n'' || ''block '' || CASE WHEN block IS NOT NULL THEN block ELSE ''?'' END || '', plot '' || CASE WHEN serial_no IS NOT NULL THEN serial_no ELSE ''?'' END || ''\n'' || CASE WHEN official_area IS NOT NULL THEN official_area ELSE ''?'' END || ''m² (o)'' || ''\n'' || comp_area || ''m² (c)'' ELSE scheme END not implemented yet-->Placeholder</se:Label>
+      <se:Font>
+       <se:SvgParameter name="font-family">Ubuntu</se:SvgParameter>
+       <se:SvgParameter name="font-size">10</se:SvgParameter>
+      </se:Font>
+      <se:LabelPlacement>
+       <se:PointPlacement>
+        <se:AnchorPoint>
+         <se:AnchorPointX>0.5</se:AnchorPointX>
+         <se:AnchorPointY>0.5</se:AnchorPointY>
+        </se:AnchorPoint>
+       </se:PointPlacement>
+      </se:LabelPlacement>
+      <se:Halo>
+       <se:Radius>0.05</se:Radius>
+       <se:Fill>
+        <se:SvgParameter name="fill">#ffffff</se:SvgParameter>
+       </se:Fill>
+      </se:Halo>
+      <se:Fill>
+       <se:SvgParameter name="fill">#000000</se:SvgParameter>
+      </se:Fill>
+      <se:Priority>1000</se:Priority>
+     </se:TextSymbolizer>
+    </se:Rule>
+   </se:FeatureTypeStyle>
+  </UserStyle>
+ </NamedLayer>
+</StyledLayerDescriptor>
+', true, 'Mon Jul 8 11:25:02 2019', ':DBOWNER', NULL, '2019-07-08 09:25:02.645003');
+
+
+
+
+--
+-- Name: layer_styles layer_styles_pkey; Type: CONSTRAINT; Schema: public;
+--
+
+ALTER TABLE ONLY public.layer_styles
+    ADD CONSTRAINT layer_styles_pkey PRIMARY KEY (id);
+
+
+
+--
+-- Name: beacons gid; Type: DEFAULT; Schema: public; 
 --
 
 ALTER TABLE ONLY beacons ALTER COLUMN gid SET DEFAULT nextval('beacons_gid_seq'::regclass);
 
 
 --
--- Name: beardist id; Type: DEFAULT; Schema: public; Owner: docker
+-- Name: beardist id; Type: DEFAULT; Schema: public; 
 --
 
 ALTER TABLE ONLY beardist ALTER COLUMN id SET DEFAULT nextval('beardist_id_seq'::regclass);
 
 
 --
--- Name: deeds deed_sn; Type: DEFAULT; Schema: public; Owner: docker
+-- Name: deeds deed_sn; Type: DEFAULT; Schema: public; 
 --
 
 ALTER TABLE ONLY deeds ALTER COLUMN deed_sn SET DEFAULT nextval('deeds_deed_sn_seq'::regclass);
 
 
 --
--- Name: hist_beacons hist_id; Type: DEFAULT; Schema: public; Owner: docker
+-- Name: hist_beacons hist_id; Type: DEFAULT; Schema: public; 
 --
 
 ALTER TABLE ONLY hist_beacons ALTER COLUMN hist_id SET DEFAULT nextval('hist_beacons_hist_id_seq'::regclass);
 
 
 --
--- Name: instrument_cat instrument_cat; Type: DEFAULT; Schema: public; Owner: docker
+-- Name: instrument_cat instrument_cat; Type: DEFAULT; Schema: public; 
 --
 
 ALTER TABLE ONLY instrument_cat ALTER COLUMN instrument_cat SET DEFAULT nextval('instrument_cat_instrument_cat_seq'::regclass);
 
 
 --
--- Name: local_govt id; Type: DEFAULT; Schema: public; Owner: docker
+-- Name: local_govt id; Type: DEFAULT; Schema: public; 
 --
 
 ALTER TABLE ONLY local_govt ALTER COLUMN id SET DEFAULT nextval('local_govt_id_seq'::regclass);
 
 
 --
--- Name: parcel_def id; Type: DEFAULT; Schema: public; Owner: docker
+-- Name: parcel_def id; Type: DEFAULT; Schema: public; 
 --
 
 ALTER TABLE ONLY parcel_def ALTER COLUMN id SET DEFAULT nextval('parcel_def_id_seq'::regclass);
 
 
 --
--- Name: parcel_lookup parcel_id; Type: DEFAULT; Schema: public; Owner: docker
+-- Name: parcel_lookup parcel_id; Type: DEFAULT; Schema: public; 
 --
 
 ALTER TABLE ONLY parcel_lookup ALTER COLUMN parcel_id SET DEFAULT nextval('parcel_lookup_parcel_id_seq'::regclass);
 
 
 --
--- Name: print_survey_details id; Type: DEFAULT; Schema: public; Owner: docker
+-- Name: print_survey_details id; Type: DEFAULT; Schema: public; 
 --
 
 ALTER TABLE ONLY print_survey_details ALTER COLUMN id SET DEFAULT nextval('print_survey_details_id_seq'::regclass);
 
 
 --
--- Name: prop_types id; Type: DEFAULT; Schema: public; Owner: docker
+-- Name: prop_types id; Type: DEFAULT; Schema: public; 
 --
 
 ALTER TABLE ONLY prop_types ALTER COLUMN id SET DEFAULT nextval('prop_types_id_seq'::regclass);
 
 
 --
--- Name: schemes id; Type: DEFAULT; Schema: public; Owner: docker
+-- Name: schemes id; Type: DEFAULT; Schema: public; 
 --
 
 ALTER TABLE ONLY schemes ALTER COLUMN id SET DEFAULT nextval('schemes_id_seq'::regclass);
 
 
 --
--- Name: status_cat status_cat; Type: DEFAULT; Schema: public; Owner: docker
+-- Name: status_cat status_cat; Type: DEFAULT; Schema: public; 
 --
 
 ALTER TABLE ONLY status_cat ALTER COLUMN status_cat SET DEFAULT nextval('status_cat_status_cat_seq'::regclass);
 
 
 --
--- Name: survey id; Type: DEFAULT; Schema: public; Owner: docker
+-- Name: survey id; Type: DEFAULT; Schema: public; 
 --
 
 ALTER TABLE ONLY survey ALTER COLUMN id SET DEFAULT nextval('survey_id_seq'::regclass);
 
 
 --
--- Name: allocation_cat allocation_cat_pkey; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: allocation_cat allocation_cat_pkey; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY allocation_cat
@@ -1461,7 +2389,7 @@ ALTER TABLE ONLY allocation_cat
 
 
 --
--- Name: beacons beacons_beacon_key; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: beacons beacons_beacon_key; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY beacons
@@ -1469,7 +2397,7 @@ ALTER TABLE ONLY beacons
 
 
 --
--- Name: beacons beacons_pkey; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: beacons beacons_pkey; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY beacons
@@ -1477,7 +2405,7 @@ ALTER TABLE ONLY beacons
 
 
 --
--- Name: beardist beardist_pkey; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: beardist beardist_pkey; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY beardist
@@ -1485,7 +2413,7 @@ ALTER TABLE ONLY beardist
 
 
 --
--- Name: deeds dkey; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: deeds dkey; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY deeds
@@ -1493,7 +2421,7 @@ ALTER TABLE ONLY deeds
 
 
 --
--- Name: hist_beacons hist_beacons_pkey; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: hist_beacons hist_beacons_pkey; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY hist_beacons
@@ -1501,7 +2429,7 @@ ALTER TABLE ONLY hist_beacons
 
 
 --
--- Name: instrument_cat instrument_cat_pkey; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: instrument_cat instrument_cat_pkey; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY instrument_cat
@@ -1509,7 +2437,7 @@ ALTER TABLE ONLY instrument_cat
 
 
 --
--- Name: local_govt local_govt_id_key; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: local_govt local_govt_id_key; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY local_govt
@@ -1517,7 +2445,7 @@ ALTER TABLE ONLY local_govt
 
 
 --
--- Name: local_govt local_govt_pkey; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: local_govt local_govt_pkey; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY local_govt
@@ -1525,7 +2453,7 @@ ALTER TABLE ONLY local_govt
 
 
 --
--- Name: parcel_def parcel_def_pkey; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: parcel_def parcel_def_pkey; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY parcel_def
@@ -1533,7 +2461,7 @@ ALTER TABLE ONLY parcel_def
 
 
 --
--- Name: parcel_lookup parcel_lookup_pkey; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: parcel_lookup parcel_lookup_pkey; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY parcel_lookup
@@ -1541,7 +2469,7 @@ ALTER TABLE ONLY parcel_lookup
 
 
 --
--- Name: print_survey_details print_survey_details_pkey; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: print_survey_details print_survey_details_pkey; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY print_survey_details
@@ -1549,7 +2477,7 @@ ALTER TABLE ONLY print_survey_details
 
 
 --
--- Name: prop_types prop_type_code_key; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: prop_types prop_type_code_key; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY prop_types
@@ -1557,7 +2485,7 @@ ALTER TABLE ONLY prop_types
 
 
 --
--- Name: prop_types prop_type_id_key; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: prop_types prop_type_id_key; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY prop_types
@@ -1565,7 +2493,7 @@ ALTER TABLE ONLY prop_types
 
 
 --
--- Name: prop_types prop_type_pkey; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: prop_types prop_type_pkey; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY prop_types
@@ -1573,7 +2501,7 @@ ALTER TABLE ONLY prop_types
 
 
 --
--- Name: schemes schemes_id_key; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: schemes schemes_id_key; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY schemes
@@ -1581,7 +2509,7 @@ ALTER TABLE ONLY schemes
 
 
 --
--- Name: schemes schemes_pkey; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: schemes schemes_pkey; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY schemes
@@ -1589,7 +2517,7 @@ ALTER TABLE ONLY schemes
 
 
 --
--- Name: status_cat status_cat_pkey; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: status_cat status_cat_pkey; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY status_cat
@@ -1597,7 +2525,7 @@ ALTER TABLE ONLY status_cat
 
 
 --
--- Name: survey survey_pkey; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: survey survey_pkey; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY survey
@@ -1605,7 +2533,7 @@ ALTER TABLE ONLY survey
 
 
 --
--- Name: survey survey_plan_no_key; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: survey survey_plan_no_key; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY survey
@@ -1613,7 +2541,7 @@ ALTER TABLE ONLY survey
 
 
 --
--- Name: survey survey_plan_no_key1; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: survey survey_plan_no_key1; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY survey
@@ -1621,7 +2549,7 @@ ALTER TABLE ONLY survey
 
 
 --
--- Name: transactions transactions_pkey; Type: CONSTRAINT; Schema: public; Owner: docker
+-- Name: transactions transactions_pkey; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY transactions
@@ -1629,210 +2557,176 @@ ALTER TABLE ONLY transactions
 
 
 --
--- Name: beacons_beacon_idx; Type: INDEX; Schema: public; Owner: docker
+-- Name: beacons_beacon_idx; Type: INDEX; Schema: public; 
 --
 
 CREATE INDEX beacons_beacon_idx ON beacons USING btree (beacon);
 
 
 --
--- Name: beardist_beacon_from_idx; Type: INDEX; Schema: public; Owner: docker
+-- Name: beardist_beacon_from_idx; Type: INDEX; Schema: public; 
 --
 
 CREATE INDEX beardist_beacon_from_idx ON beardist USING btree (beacon_from);
 
 
 --
--- Name: beardist_beacon_to_idx; Type: INDEX; Schema: public; Owner: docker
+-- Name: beardist_beacon_to_idx; Type: INDEX; Schema: public; 
 --
 
 CREATE INDEX beardist_beacon_to_idx ON beardist USING btree (beacon_to);
 
 
 --
--- Name: beardist_ndx1; Type: INDEX; Schema: public; Owner: docker
+-- Name: beardist_ndx1; Type: INDEX; Schema: public; 
 --
 
 CREATE INDEX beardist_ndx1 ON beardist USING btree (beacon_from);
 
 
 --
--- Name: beardist_plan_no_idx; Type: INDEX; Schema: public; Owner: docker
+-- Name: beardist_plan_no_idx; Type: INDEX; Schema: public; 
 --
 
 CREATE INDEX beardist_plan_no_idx ON beardist USING btree (plan_no);
 
 
 --
--- Name: fki_parcel_lookup_status_cat_fkey; Type: INDEX; Schema: public; Owner: docker
+-- Name: fki_parcel_lookup_status_cat_fkey; Type: INDEX; Schema: public; 
 --
 
 CREATE INDEX fki_parcel_lookup_status_cat_fkey ON parcel_lookup USING btree (status);
 
 
 --
--- Name: fki_transactions_instrument_fkey; Type: INDEX; Schema: public; Owner: docker
+-- Name: fki_transactions_instrument_fkey; Type: INDEX; Schema: public; 
 --
 
 CREATE INDEX fki_transactions_instrument_fkey ON transactions USING btree (instrument);
 
 
 --
--- Name: fki_transactions_parcel_fkey; Type: INDEX; Schema: public; Owner: docker
+-- Name: fki_transactions_parcel_fkey; Type: INDEX; Schema: public; 
 --
 
 CREATE INDEX fki_transactions_parcel_fkey ON transactions USING btree (parcel_id);
 
 
 --
--- Name: fki_transactions_survey_fkey; Type: INDEX; Schema: public; Owner: docker
+-- Name: fki_transactions_survey_fkey; Type: INDEX; Schema: public; 
 --
 
 CREATE INDEX fki_transactions_survey_fkey ON transactions USING btree (survey);
 
 
 --
--- Name: hist_beacons_idx1; Type: INDEX; Schema: public; Owner: docker
+-- Name: hist_beacons_idx1; Type: INDEX; Schema: public; 
 --
 
 CREATE INDEX hist_beacons_idx1 ON hist_beacons USING btree (gid);
 
 
 --
--- Name: hist_beacons_idx2; Type: INDEX; Schema: public; Owner: docker
+-- Name: hist_beacons_idx2; Type: INDEX; Schema: public; 
 --
 
 CREATE INDEX hist_beacons_idx2 ON hist_beacons USING btree (hist_time);
 
 
 --
--- Name: idp_beacons_intersect; Type: INDEX; Schema: public; Owner: docker
+-- Name: idp_beacons_intersect; Type: INDEX; Schema: public; 
 --
 
 CREATE UNIQUE INDEX idp_beacons_intersect ON beacons_intersect USING btree (beacon);
 
 
 --
--- Name: idp_beacons_mtview; Type: INDEX; Schema: public; Owner: docker
+-- Name: idp_beacons_mtview; Type: INDEX; Schema: public; 
 --
 
 CREATE UNIQUE INDEX idp_beacons_mtview ON beacons_views USING btree (gid);
 
 
 --
--- Name: idp_parcel_overlap_matviews; Type: INDEX; Schema: public; Owner: docker
---
-
-CREATE UNIQUE INDEX idp_parcel_overlap_matviews ON parcel_overlap_matviews USING btree (parcel_id);
-
-
---
--- Name: idp_parcels_intersect; Type: INDEX; Schema: public; Owner: docker
---
-
-CREATE UNIQUE INDEX idp_parcels_intersect ON parcels_intersect USING btree (parcel_id);
-
-
---
--- Name: idx_beacons_intersect_geom; Type: INDEX; Schema: public; Owner: docker
+-- Name: idx_beacons_intersect_geom; Type: INDEX; Schema: public; 
 --
 
 CREATE INDEX idx_beacons_intersect_geom ON beacons_intersect USING gist (the_geom);
 
 
 --
--- Name: idx_beacons_matviews_geom; Type: INDEX; Schema: public; Owner: docker
+-- Name: idx_beacons_matviews_geom; Type: INDEX; Schema: public; 
 --
 
 CREATE INDEX idx_beacons_matviews_geom ON beacons_views USING gist (the_geom);
 
-
 --
--- Name: idx_boundaries_labels_geom; Type: INDEX; Schema: public; Owner: docker
---
-
-CREATE INDEX idx_boundaries_labels_geom ON boundaries USING gist (geom);
-
-
---
--- Name: idx_boundary_labels_geom; Type: INDEX; Schema: public; Owner: docker
---
-
-CREATE INDEX idx_boundary_labels_geom ON boundary_labels USING gist (geom);
-
-
---
--- Name: idx_derived_boundaries_labels_geom; Type: INDEX; Schema: public; Owner: docker
---
-
-CREATE INDEX idx_derived_boundaries_labels_geom ON derived_boundaries USING gist (geom);
-
-
---
--- Name: idx_parcels_intersects_new_matviews_geom; Type: INDEX; Schema: public; Owner: docker
---
-
-CREATE INDEX idx_parcels_intersects_new_matviews_geom ON parcels_intersect USING gist (the_geom);
-
-
---
--- Name: ndx_schemes1; Type: INDEX; Schema: public; Owner: docker
+-- Name: ndx_schemes1; Type: INDEX; Schema: public; 
 --
 
 CREATE INDEX ndx_schemes1 ON schemes USING gin (to_tsvector('english'::regconfig, (COALESCE(scheme_name, ''::character varying))::text));
 
 
---
--- Name: parcel_over_idx; Type: INDEX; Schema: public; Owner: docker
---
-
-CREATE INDEX parcel_over_idx ON parcel_overlap_matviews USING gist (the_geom);
 
 
 --
--- Name: sidx_beacons_geom; Type: INDEX; Schema: public; Owner: docker
+-- Name: sidx_beacons_geom; Type: INDEX; Schema: public; 
 --
 
 CREATE INDEX sidx_beacons_geom ON beacons USING gist (the_geom);
 
+--
+-- Name: parcel_def bcn_a_view; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER bcn_a_view BEFORE INSERT OR UPDATE ON public.parcel_def FOR EACH ROW EXECUTE PROCEDURE public.refresh_beacons_views();
+
 
 --
--- Name: beacons insert_nodes_geom; Type: TRIGGER; Schema: public; Owner: docker
+-- Name: parcel_def bcn_intersects; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER bcn_intersects BEFORE INSERT OR UPDATE ON public.parcel_def FOR EACH ROW EXECUTE PROCEDURE public.refresh_beacons_intersects();
+
+
+
+--
+-- Name: beacons insert_nodes_geom; Type: TRIGGER; Schema: public; 
 --
 
 CREATE TRIGGER insert_nodes_geom BEFORE INSERT OR UPDATE ON beacons FOR EACH ROW EXECUTE PROCEDURE calc_point();
 
 
 --
--- Name: parcel_def parcel_lookup_define_parcel; Type: TRIGGER; Schema: public; Owner: docker
+-- Name: parcel_def parcel_lookup_define_parcel; Type: TRIGGER; Schema: public; 
 --
 
 CREATE TRIGGER parcel_lookup_define_parcel BEFORE INSERT OR UPDATE ON parcel_def FOR EACH ROW EXECUTE PROCEDURE parcel_lookup_define_parcel_trigger();
 
 
 --
--- Name: beacons trg_beacons_after_insert; Type: TRIGGER; Schema: public; Owner: docker
+-- Name: beacons trg_beacons_after_insert; Type: TRIGGER; Schema: public; 
 --
 
 CREATE TRIGGER trg_beacons_after_insert AFTER INSERT ON beacons FOR EACH ROW EXECUTE PROCEDURE fn_beacons_after_insert();
 
 
 --
--- Name: beacons trg_beacons_before_delete; Type: TRIGGER; Schema: public; Owner: docker
+-- Name: beacons trg_beacons_before_delete; Type: TRIGGER; Schema: public; 
 --
 
 CREATE TRIGGER trg_beacons_before_delete BEFORE DELETE ON beacons FOR EACH ROW EXECUTE PROCEDURE fn_beacons_before_delete();
 
 
 --
--- Name: beacons trg_beacons_before_update; Type: TRIGGER; Schema: public; Owner: docker
+-- Name: beacons trg_beacons_before_update; Type: TRIGGER; Schema: public; 
 --
 
 CREATE TRIGGER trg_beacons_before_update BEFORE UPDATE ON beacons FOR EACH ROW EXECUTE PROCEDURE fn_beacons_before_update();
 
 
 --
--- Name: beardist beardist_beacon_from_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: beardist beardist_beacon_from_fkey; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY beardist
@@ -1840,7 +2734,7 @@ ALTER TABLE ONLY beardist
 
 
 --
--- Name: beardist beardist_beacon_from_fkey1; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: beardist beardist_beacon_from_fkey1; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY beardist
@@ -1848,7 +2742,7 @@ ALTER TABLE ONLY beardist
 
 
 --
--- Name: beardist beardist_beacon_to_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: beardist beardist_beacon_to_fkey; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY beardist
@@ -1856,7 +2750,7 @@ ALTER TABLE ONLY beardist
 
 
 --
--- Name: beardist beardist_beacon_to_fkey1; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: beardist beardist_beacon_to_fkey1; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY beardist
@@ -1864,7 +2758,7 @@ ALTER TABLE ONLY beardist
 
 
 --
--- Name: beardist beardist_plan_no_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: beardist beardist_plan_no_fkey; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY beardist
@@ -1872,7 +2766,7 @@ ALTER TABLE ONLY beardist
 
 
 --
--- Name: beardist beardist_plan_no_fkey1; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: beardist beardist_plan_no_fkey1; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY beardist
@@ -1880,7 +2774,7 @@ ALTER TABLE ONLY beardist
 
 
 --
--- Name: parcel_def parcel_def_beacon_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: parcel_def parcel_def_beacon_fkey; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY parcel_def
@@ -1888,7 +2782,7 @@ ALTER TABLE ONLY parcel_def
 
 
 --
--- Name: parcel_def parcel_def_parcel_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: parcel_def parcel_def_parcel_id_fkey; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY parcel_def
@@ -1896,7 +2790,7 @@ ALTER TABLE ONLY parcel_def
 
 
 --
--- Name: parcel_lookup parcel_lookup_allocation_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: parcel_lookup parcel_lookup_allocation_id_fkey; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY parcel_lookup
@@ -1904,7 +2798,7 @@ ALTER TABLE ONLY parcel_lookup
 
 
 --
--- Name: parcel_lookup parcel_lookup_local_govt_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: parcel_lookup parcel_lookup_local_govt_id_fkey; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY parcel_lookup
@@ -1912,7 +2806,7 @@ ALTER TABLE ONLY parcel_lookup
 
 
 --
--- Name: parcel_lookup parcel_lookup_prop_type_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: parcel_lookup parcel_lookup_prop_type_id_fkey; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY parcel_lookup
@@ -1920,7 +2814,7 @@ ALTER TABLE ONLY parcel_lookup
 
 
 --
--- Name: parcel_lookup parcel_lookup_scheme_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: parcel_lookup parcel_lookup_scheme_id_fkey; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY parcel_lookup
@@ -1928,7 +2822,7 @@ ALTER TABLE ONLY parcel_lookup
 
 
 --
--- Name: parcel_lookup parcel_lookup_status_cat_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: parcel_lookup parcel_lookup_status_cat_fkey; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY parcel_lookup
@@ -1936,7 +2830,7 @@ ALTER TABLE ONLY parcel_lookup
 
 
 --
--- Name: survey survey_ref_beacon_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: survey survey_ref_beacon_fkey; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY survey
@@ -1944,7 +2838,7 @@ ALTER TABLE ONLY survey
 
 
 --
--- Name: survey survey_scheme_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: survey survey_scheme_fkey; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY survey
@@ -1952,7 +2846,7 @@ ALTER TABLE ONLY survey
 
 
 --
--- Name: transactions transactions_instrument_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: transactions transactions_instrument_fkey; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY transactions
@@ -1960,7 +2854,7 @@ ALTER TABLE ONLY transactions
 
 
 --
--- Name: transactions transactions_parcel_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: transactions transactions_parcel_fkey; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY transactions
@@ -1968,7 +2862,7 @@ ALTER TABLE ONLY transactions
 
 
 --
--- Name: transactions transactions_survey_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker
+-- Name: transactions transactions_survey_fkey; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY transactions

@@ -319,9 +319,11 @@ class DatabaseConnectionDialog(QDialog):
                 if crs:
                     query = open(
                         get_path("scripts", "database_setup.sql"), "r").read()
-                    query = query.replace(":CRS", "{CRS}")
+                    query = query.replace(":CRS", "{CRS}").replace(":DATABASE", "{DATABASE}").replace(":DBOWNER",
+                                                                                                      "{DBOWNER}")
                     cursor = self.db_connection.cursor()
-                    cursor.execute(query.format(CRS=crs))
+                    db_sql = query.format(CRS=crs, DATABASE=db_name, DBOWNER=db_username)
+                    cursor.execute(db_sql)
                     self.db_connection.commit()
                     del cursor
 
