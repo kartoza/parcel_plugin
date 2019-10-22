@@ -1060,7 +1060,7 @@ class FormParcelDialog(QDialog):
     def highlight_features(self, layer, features):
         """ Highlight multiple features on a vector layer
         """
-        layer.setSelectedFeatures(features)
+        layer.selectByIds([feature.id() for feature in features])
 
     def captured(self, selected):
         """ Notify the dialog of a feature selection and disable selecting
