@@ -27,7 +27,7 @@ sample data create the database with a CRS: `26332`. A sample survey is provided
 
 # User manual
 
-[User manual](http://goo.gl/CY9TYn)
+[User manual](http://goo.gl/CY9TYn) or look at the PDF attached in data folder
 
 
 ## Credits
