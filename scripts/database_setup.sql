@@ -463,7 +463,7 @@ COMMENT ON COLUMN parcel_lookup.plot_sn IS 'plot serial no within a block. Forms
 -- Name: beacons_views; Type: MATERIALIZED VIEW; Schema: public; 
 --
 
-CREATE MATERIALIZED VIEW beacons_views AS
+CREATE  VIEW beacons_views AS
  SELECT DISTINCT ON (b.gid) b.gid,
     b.beacon,
     b.y,
@@ -476,35 +476,10 @@ CREATE MATERIALIZED VIEW beacons_views AS
    FROM ((beacons b
      JOIN parcel_def pd USING (beacon))
      JOIN parcel_lookup pl USING (parcel_id))
-  WITH NO DATA;
+  ;
 
 
---
--- Name: refresh_beacons_intersects(); Type: FUNCTION; Schema: public; Owner: -
---
 
-CREATE FUNCTION public.refresh_beacons_intersects() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-  BEGIN
-    REFRESH MATERIALIZED VIEW  beacons_intersect ;
-  RETURN NEW;
-  END
-  $$;
-
-
---
--- Name: refresh_beacons_views(); Type: FUNCTION; Schema: public; Owner: -
---d
-
-CREATE FUNCTION public.refresh_beacons_views() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-  BEGIN
-    REFRESH MATERIALIZED VIEW  beacons_views ;
-  RETURN NEW;
-  END
-  $$;
 
 
 
@@ -598,7 +573,7 @@ CREATE VIEW parcels AS
 -- Name: beacons_intersect; Type: MATERIALIZED VIEW; Schema: public; 
 --
 
-CREATE MATERIALIZED VIEW beacons_intersect AS
+CREATE  VIEW beacons_intersect AS
  SELECT a.beacon,
     a.the_geom,
     a.x,
@@ -607,7 +582,7 @@ CREATE MATERIALIZED VIEW beacons_intersect AS
     a.private
    FROM (beacons_views a
      LEFT JOIN parcels b ON ((a.parcel_id = b.parcel_id)))
-  WITH NO DATA;
+  ;
 
 
 
@@ -2633,32 +2608,9 @@ CREATE INDEX hist_beacons_idx1 ON hist_beacons USING btree (gid);
 CREATE INDEX hist_beacons_idx2 ON hist_beacons USING btree (hist_time);
 
 
---
--- Name: idp_beacons_intersect; Type: INDEX; Schema: public; 
---
-
-CREATE UNIQUE INDEX idp_beacons_intersect ON beacons_intersect USING btree (beacon);
 
 
---
--- Name: idp_beacons_mtview; Type: INDEX; Schema: public; 
---
 
-CREATE UNIQUE INDEX idp_beacons_mtview ON beacons_views USING btree (gid);
-
-
---
--- Name: idx_beacons_intersect_geom; Type: INDEX; Schema: public; 
---
-
-CREATE INDEX idx_beacons_intersect_geom ON beacons_intersect USING gist (the_geom);
-
-
---
--- Name: idx_beacons_matviews_geom; Type: INDEX; Schema: public; 
---
-
-CREATE INDEX idx_beacons_matviews_geom ON beacons_views USING gist (the_geom);
 
 --
 -- Name: ndx_schemes1; Type: INDEX; Schema: public; 
@@ -2675,18 +2627,9 @@ CREATE INDEX ndx_schemes1 ON schemes USING gin (to_tsvector('english'::regconfig
 
 CREATE INDEX sidx_beacons_geom ON beacons USING gist (the_geom);
 
---
--- Name: parcel_def bcn_a_view; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER bcn_a_view BEFORE INSERT OR UPDATE ON public.parcel_def FOR EACH ROW EXECUTE PROCEDURE public.refresh_beacons_views();
 
 
---
--- Name: parcel_def bcn_intersects; Type: TRIGGER; Schema: public; Owner: -
---
 
-CREATE TRIGGER bcn_intersects BEFORE INSERT OR UPDATE ON public.parcel_def FOR EACH ROW EXECUTE PROCEDURE public.refresh_beacons_intersects();
 
 
 
