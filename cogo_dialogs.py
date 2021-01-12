@@ -23,9 +23,9 @@ from collections import OrderedDict
 from PyQt5.QtCore import QSettings, QMetaObject, QStringListModel
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QCursor, QIcon
-from PyQt5.QtWidgets import QDialog, QMessageBox, QGridLayout, QVBoxLayout, QLabel, QFormLayout, QComboBox, QHBoxLayout, \
-    QPushButton, QSpacerItem, QApplication, QDialogButtonBox, QLayout, QSplitter, QWidget, QLineEdit, QCheckBox, \
-    QRadioButton, QFrame, QCompleter, QSizePolicy, QListWidget, QToolBox
+from PyQt5.QtWidgets import QDialog, QMessageBox, QGridLayout, QVBoxLayout, QLabel, QFormLayout, QComboBox, \
+    QHBoxLayout, QPushButton, QSpacerItem, QApplication, QDialogButtonBox, QLayout, QSplitter, QWidget, QLineEdit, \
+    QCheckBox, QRadioButton, QFrame, QCompleter, QSizePolicy, QListWidget, QToolBox
 from qgis.core import QgsCredentials, QgsDataSourceUri
 from qgis.gui import QgsAuthConfigSelect
 
