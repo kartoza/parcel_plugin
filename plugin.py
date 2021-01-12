@@ -88,7 +88,31 @@ class SMLSurveyor(object):
         # 1. beacons
         # 2. parcels
         self.required_non_spatial_layers.append(RequiredLayer(
-            'Instrument_cat', 'Instrument_cats', 'instrument_cat', 'instrument_cat', None
+            'Instrument_cat', 'Instrument_cat', 'instrument_cat', 'instrument_cat', None
+        ))
+        self.required_non_spatial_layers.append(RequiredLayer(
+            'Allocation_cat', 'Allocation_cat', 'allocation_cat', 'allocation_cat', None
+        ))
+        self.required_non_spatial_layers.append(RequiredLayer(
+            'Local_govt', 'Local_govt', 'instrument_cat', 'id', None
+        ))
+        self.required_non_spatial_layers.append(RequiredLayer(
+            'Status_cat', 'Status_cat', 'status_cat', 'status_cat', None
+        ))
+        self.required_non_spatial_layers.append(RequiredLayer(
+            'Prop_types', 'Prop_types', 'prop_types', 'id', None
+        ))
+        self.required_non_spatial_layers.append(RequiredLayer(
+            'Schemes', 'Schemes', 'schemes', 'id', None
+        ))
+        self.required_non_spatial_layers.append(RequiredLayer(
+            'Deeds', 'Deeds', 'deeds', 'deed_sn', None
+        ))
+        self.required_non_spatial_layers.append(RequiredLayer(
+            'Survey', 'Survey', 'survey', 'id', None
+        ))
+        self.required_non_spatial_layers.append(RequiredLayer(
+            'Parcel_lookup', 'Parcel_lookup', 'parcel_lookup', 'parcel_id', None
         ))
 
         self.required_layers.append(RequiredLayer(

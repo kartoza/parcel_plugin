@@ -1,40 +1,40 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis styleCategories="AllStyleCategories" readOnly="0" version="3.16.2-Hannover" maxScale="0" minScale="1e+08" hasScaleBasedVisibilityFlag="0">
+<qgis maxScale="0" minScale="1e+08" readOnly="0" hasScaleBasedVisibilityFlag="0" styleCategories="AllStyleCategories" version="3.16.2-Hannover">
   <flags>
     <Identifiable>1</Identifiable>
     <Removable>1</Removable>
     <Searchable>1</Searchable>
   </flags>
-  <temporal enabled="0" durationField="" durationUnit="min" startExpression="" accumulate="0" mode="0" endField="" fixedDuration="0" startField="" endExpression="">
+  <temporal fixedDuration="0" durationField="" startExpression="" enabled="0" mode="0" endField="" startField="" accumulate="0" durationUnit="min" endExpression="">
     <fixedRange>
       <start></start>
       <end></end>
     </fixedRange>
   </temporal>
   <customproperties>
-    <property value="0" key="embeddedWidgets/count"/>
+    <property key="embeddedWidgets/count" value="0"/>
     <property key="variableNames"/>
     <property key="variableValues"/>
   </customproperties>
-  <geometryOptions removeDuplicateNodes="0" geometryPrecision="0">
+  <geometryOptions geometryPrecision="0" removeDuplicateNodes="0">
     <activeChecks/>
     <checkConfiguration/>
   </geometryOptions>
   <legend type="default-vector"/>
   <referencedLayers>
-    <relation referencingLayer="parcel_lookup_b847ff48_ccca_4853_8f12_16a797c25a31" providerKey="postgres" layerName="allocation_cat" id="parcel_lookup_allocation_id_fkey" layerId="allocation_cat_e36ab2cd_9894_49a8_b33a_b581755718b4" dataSource="dbname='gis' host=localhost port=25433 user='docker' key='allocation_cat' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;allocation_cat&quot;" name="parcel_lookup_allocation_id_fkey" strength="Association" referencedLayer="allocation_cat_e36ab2cd_9894_49a8_b33a_b581755718b4">
+    <relation dataSource="dbname='gis' host=localhost port=25433 user='docker' key='allocation_cat' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;allocation_cat&quot;" strength="Association" referencedLayer="Allocation_cat_10ac040f_8dda_40b3_a748_bab6b522f22f" layerName="Allocation_cat" providerKey="postgres" layerId="Allocation_cat_10ac040f_8dda_40b3_a748_bab6b522f22f" referencingLayer="Parcel_lookup_0ae946da_fb76_4743_bf0f_6be1a081f808" id="parcel_lookup_allocation_id_fkey" name="parcel_lookup_allocation_id_fkey">
       <fieldRef referencedField="allocation_cat" referencingField="allocation"/>
     </relation>
-    <relation referencingLayer="parcel_lookup_b847ff48_ccca_4853_8f12_16a797c25a31" providerKey="postgres" layerName="local_govt" id="parcel_lookup_local_govt_id_fkey" layerId="local_govt_da78b4a8_e887_48ba_9c8e_0e1d703f9fda" dataSource="dbname='gis' host=localhost port=25433 user='docker' key='id' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;local_govt&quot;" name="parcel_lookup_local_govt_id_fkey" strength="Association" referencedLayer="local_govt_da78b4a8_e887_48ba_9c8e_0e1d703f9fda">
+    <relation dataSource="dbname='gis' host=localhost port=25433 user='docker' key='id' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;local_govt&quot;" strength="Association" referencedLayer="Local_govt_c0c745b6_7aed_4c38_8fe9_8a3e774d12a5" layerName="Local_govt" providerKey="postgres" layerId="Local_govt_c0c745b6_7aed_4c38_8fe9_8a3e774d12a5" referencingLayer="Parcel_lookup_0ae946da_fb76_4743_bf0f_6be1a081f808" id="parcel_lookup_local_govt_id_fkey" name="parcel_lookup_local_govt_id_fkey">
       <fieldRef referencedField="id" referencingField="local_govt"/>
     </relation>
-    <relation referencingLayer="parcel_lookup_b847ff48_ccca_4853_8f12_16a797c25a31" providerKey="postgres" layerName="prop_types" id="parcel_lookup_prop_type_id_fkey" layerId="prop_types_ca20e66a_c203_41bc_a45b_8a1c56b55d49" dataSource="dbname='gis' host=localhost port=25433 user='docker' key='id' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;prop_types&quot;" name="parcel_lookup_prop_type_id_fkey" strength="Association" referencedLayer="prop_types_ca20e66a_c203_41bc_a45b_8a1c56b55d49">
+    <relation dataSource="dbname='gis' host=localhost port=25433 user='docker' key='id' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;prop_types&quot;" strength="Association" referencedLayer="Prop_types_fc594dfa_9daa_4b66_9ca5_7d346985df6c" layerName="Prop_types" providerKey="postgres" layerId="Prop_types_fc594dfa_9daa_4b66_9ca5_7d346985df6c" referencingLayer="Parcel_lookup_0ae946da_fb76_4743_bf0f_6be1a081f808" id="parcel_lookup_prop_type_id_fkey" name="parcel_lookup_prop_type_id_fkey">
       <fieldRef referencedField="id" referencingField="prop_type"/>
     </relation>
-    <relation referencingLayer="parcel_lookup_b847ff48_ccca_4853_8f12_16a797c25a31" providerKey="postgres" layerName="schemes" id="parcel_lookup_scheme_id_fkey" layerId="schemes_c17af0aa_4b8b_4c10_9181_7cc3650e6b5c" dataSource="dbname='gis' host=localhost port=25433 user='docker' key='id' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;schemes&quot;" name="parcel_lookup_scheme_id_fkey" strength="Association" referencedLayer="schemes_c17af0aa_4b8b_4c10_9181_7cc3650e6b5c">
+    <relation dataSource="dbname='gis' host=localhost port=25433 user='docker' key='id' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;schemes&quot;" strength="Association" referencedLayer="Schemes_4ba3c59d_fee6_4041_8e44_62262cf09c4e" layerName="Schemes" providerKey="postgres" layerId="Schemes_4ba3c59d_fee6_4041_8e44_62262cf09c4e" referencingLayer="Parcel_lookup_0ae946da_fb76_4743_bf0f_6be1a081f808" id="parcel_lookup_scheme_id_fkey" name="parcel_lookup_scheme_id_fkey">
       <fieldRef referencedField="id" referencingField="scheme"/>
     </relation>
-    <relation referencingLayer="parcel_lookup_b847ff48_ccca_4853_8f12_16a797c25a31" providerKey="postgres" layerName="status_cat" id="parcel_lookup_status_cat_fkey" layerId="status_cat_4bc778da_85ea_4d99_8232_8a6f70aee12e" dataSource="dbname='gis' host=localhost port=25433 user='docker' key='status_cat' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;status_cat&quot;" name="parcel_lookup_status_cat_fkey" strength="Association" referencedLayer="status_cat_4bc778da_85ea_4d99_8232_8a6f70aee12e">
+    <relation dataSource="dbname='gis' host=localhost port=25433 user='docker' key='status_cat' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;status_cat&quot;" strength="Association" referencedLayer="Status_cat_43adb69f_62ec_40c3_b082_59efb2f645c9" layerName="Status_cat" providerKey="postgres" layerId="Status_cat_43adb69f_62ec_40c3_b082_59efb2f645c9" referencingLayer="Parcel_lookup_0ae946da_fb76_4743_bf0f_6be1a081f808" id="parcel_lookup_status_cat_fkey" name="parcel_lookup_status_cat_fkey">
       <fieldRef referencedField="status_cat" referencingField="status"/>
     </relation>
   </referencedLayers>
@@ -57,11 +57,11 @@
       <editWidget type="RelationReference">
         <config>
           <Option type="Map">
-            <Option value="true" type="bool" name="AllowAddFeatures"/>
-            <Option value="true" type="bool" name="OrderByValue"/>
-            <Option value="parcel_lookup_scheme_id_fkey" type="QString" name="Relation"/>
-            <Option value="false" type="bool" name="ShowForm"/>
-            <Option value="false" type="bool" name="ShowOpenFormButton"/>
+            <Option type="bool" value="true" name="AllowAddFeatures"/>
+            <Option type="bool" value="true" name="OrderByValue"/>
+            <Option type="QString" value="parcel_lookup_scheme_id_fkey" name="Relation"/>
+            <Option type="bool" value="false" name="ShowForm"/>
+            <Option type="bool" value="false" name="ShowOpenFormButton"/>
           </Option>
         </config>
       </editWidget>
@@ -77,11 +77,11 @@
       <editWidget type="RelationReference">
         <config>
           <Option type="Map">
-            <Option value="true" type="bool" name="AllowAddFeatures"/>
-            <Option value="true" type="bool" name="OrderByValue"/>
-            <Option value="parcel_lookup_local_govt_id_fkey" type="QString" name="Relation"/>
-            <Option value="false" type="bool" name="ShowForm"/>
-            <Option value="false" type="bool" name="ShowOpenFormButton"/>
+            <Option type="bool" value="true" name="AllowAddFeatures"/>
+            <Option type="bool" value="true" name="OrderByValue"/>
+            <Option type="QString" value="parcel_lookup_local_govt_id_fkey" name="Relation"/>
+            <Option type="bool" value="false" name="ShowForm"/>
+            <Option type="bool" value="false" name="ShowOpenFormButton"/>
           </Option>
         </config>
       </editWidget>
@@ -90,11 +90,11 @@
       <editWidget type="RelationReference">
         <config>
           <Option type="Map">
-            <Option value="true" type="bool" name="AllowAddFeatures"/>
-            <Option value="true" type="bool" name="OrderByValue"/>
-            <Option value="parcel_lookup_prop_type_id_fkey" type="QString" name="Relation"/>
-            <Option value="false" type="bool" name="ShowForm"/>
-            <Option value="false" type="bool" name="ShowOpenFormButton"/>
+            <Option type="bool" value="true" name="AllowAddFeatures"/>
+            <Option type="bool" value="true" name="OrderByValue"/>
+            <Option type="QString" value="parcel_lookup_prop_type_id_fkey" name="Relation"/>
+            <Option type="bool" value="false" name="ShowForm"/>
+            <Option type="bool" value="false" name="ShowOpenFormButton"/>
           </Option>
         </config>
       </editWidget>
@@ -110,11 +110,11 @@
       <editWidget type="RelationReference">
         <config>
           <Option type="Map">
-            <Option value="true" type="bool" name="AllowAddFeatures"/>
-            <Option value="true" type="bool" name="OrderByValue"/>
-            <Option value="parcel_lookup_allocation_id_fkey" type="QString" name="Relation"/>
-            <Option value="false" type="bool" name="ShowForm"/>
-            <Option value="false" type="bool" name="ShowOpenFormButton"/>
+            <Option type="bool" value="true" name="AllowAddFeatures"/>
+            <Option type="bool" value="true" name="OrderByValue"/>
+            <Option type="QString" value="parcel_lookup_allocation_id_fkey" name="Relation"/>
+            <Option type="bool" value="false" name="ShowForm"/>
+            <Option type="bool" value="false" name="ShowOpenFormButton"/>
           </Option>
         </config>
       </editWidget>
@@ -158,11 +158,11 @@
       <editWidget type="RelationReference">
         <config>
           <Option type="Map">
-            <Option value="true" type="bool" name="AllowAddFeatures"/>
-            <Option value="true" type="bool" name="OrderByValue"/>
-            <Option value="parcel_lookup_status_cat_fkey" type="QString" name="Relation"/>
-            <Option value="false" type="bool" name="ShowForm"/>
-            <Option value="false" type="bool" name="ShowOpenFormButton"/>
+            <Option type="bool" value="true" name="AllowAddFeatures"/>
+            <Option type="bool" value="true" name="OrderByValue"/>
+            <Option type="QString" value="parcel_lookup_status_cat_fkey" name="Relation"/>
+            <Option type="bool" value="false" name="ShowForm"/>
+            <Option type="bool" value="false" name="ShowOpenFormButton"/>
           </Option>
         </config>
       </editWidget>
@@ -185,73 +185,73 @@
     <alias field="status" index="13" name=""/>
   </aliases>
   <defaults>
-    <default applyOnUpdate="0" field="plot_sn" expression=""/>
-    <default applyOnUpdate="0" field="available" expression=""/>
-    <default applyOnUpdate="0" field="scheme" expression=""/>
-    <default applyOnUpdate="0" field="block" expression=""/>
-    <default applyOnUpdate="0" field="local_govt" expression=""/>
-    <default applyOnUpdate="0" field="prop_type" expression=""/>
-    <default applyOnUpdate="0" field="file_number" expression=""/>
-    <default applyOnUpdate="0" field="allocation" expression=""/>
-    <default applyOnUpdate="0" field="manual_no" expression=""/>
-    <default applyOnUpdate="0" field="deeds_file" expression=""/>
-    <default applyOnUpdate="0" field="parcel_id" expression=""/>
-    <default applyOnUpdate="0" field="official_area" expression=""/>
-    <default applyOnUpdate="0" field="private" expression=""/>
-    <default applyOnUpdate="0" field="status" expression=""/>
+    <default field="plot_sn" expression="" applyOnUpdate="0"/>
+    <default field="available" expression="" applyOnUpdate="0"/>
+    <default field="scheme" expression="" applyOnUpdate="0"/>
+    <default field="block" expression="" applyOnUpdate="0"/>
+    <default field="local_govt" expression="" applyOnUpdate="0"/>
+    <default field="prop_type" expression="" applyOnUpdate="0"/>
+    <default field="file_number" expression="" applyOnUpdate="0"/>
+    <default field="allocation" expression="" applyOnUpdate="0"/>
+    <default field="manual_no" expression="" applyOnUpdate="0"/>
+    <default field="deeds_file" expression="" applyOnUpdate="0"/>
+    <default field="parcel_id" expression="" applyOnUpdate="0"/>
+    <default field="official_area" expression="" applyOnUpdate="0"/>
+    <default field="private" expression="" applyOnUpdate="0"/>
+    <default field="status" expression="" applyOnUpdate="0"/>
   </defaults>
   <constraints>
-    <constraint field="plot_sn" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
-    <constraint field="available" constraints="1" unique_strength="0" notnull_strength="1" exp_strength="0"/>
-    <constraint field="scheme" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
-    <constraint field="block" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
-    <constraint field="local_govt" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
-    <constraint field="prop_type" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
-    <constraint field="file_number" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
-    <constraint field="allocation" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
-    <constraint field="manual_no" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
-    <constraint field="deeds_file" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
-    <constraint field="parcel_id" constraints="3" unique_strength="1" notnull_strength="1" exp_strength="0"/>
-    <constraint field="official_area" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
-    <constraint field="private" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
-    <constraint field="status" constraints="0" unique_strength="0" notnull_strength="0" exp_strength="0"/>
+    <constraint unique_strength="0" notnull_strength="0" field="plot_sn" constraints="0" exp_strength="0"/>
+    <constraint unique_strength="0" notnull_strength="1" field="available" constraints="1" exp_strength="0"/>
+    <constraint unique_strength="0" notnull_strength="0" field="scheme" constraints="0" exp_strength="0"/>
+    <constraint unique_strength="0" notnull_strength="0" field="block" constraints="0" exp_strength="0"/>
+    <constraint unique_strength="0" notnull_strength="0" field="local_govt" constraints="0" exp_strength="0"/>
+    <constraint unique_strength="0" notnull_strength="0" field="prop_type" constraints="0" exp_strength="0"/>
+    <constraint unique_strength="0" notnull_strength="0" field="file_number" constraints="0" exp_strength="0"/>
+    <constraint unique_strength="0" notnull_strength="0" field="allocation" constraints="0" exp_strength="0"/>
+    <constraint unique_strength="0" notnull_strength="0" field="manual_no" constraints="0" exp_strength="0"/>
+    <constraint unique_strength="0" notnull_strength="0" field="deeds_file" constraints="0" exp_strength="0"/>
+    <constraint unique_strength="1" notnull_strength="1" field="parcel_id" constraints="3" exp_strength="0"/>
+    <constraint unique_strength="0" notnull_strength="0" field="official_area" constraints="0" exp_strength="0"/>
+    <constraint unique_strength="0" notnull_strength="0" field="private" constraints="0" exp_strength="0"/>
+    <constraint unique_strength="0" notnull_strength="0" field="status" constraints="0" exp_strength="0"/>
   </constraints>
   <constraintExpressions>
-    <constraint field="plot_sn" desc="" exp=""/>
-    <constraint field="available" desc="" exp=""/>
-    <constraint field="scheme" desc="" exp=""/>
-    <constraint field="block" desc="" exp=""/>
-    <constraint field="local_govt" desc="" exp=""/>
-    <constraint field="prop_type" desc="" exp=""/>
-    <constraint field="file_number" desc="" exp=""/>
-    <constraint field="allocation" desc="" exp=""/>
-    <constraint field="manual_no" desc="" exp=""/>
-    <constraint field="deeds_file" desc="" exp=""/>
-    <constraint field="parcel_id" desc="" exp=""/>
-    <constraint field="official_area" desc="" exp=""/>
-    <constraint field="private" desc="" exp=""/>
-    <constraint field="status" desc="" exp=""/>
+    <constraint desc="" field="plot_sn" exp=""/>
+    <constraint desc="" field="available" exp=""/>
+    <constraint desc="" field="scheme" exp=""/>
+    <constraint desc="" field="block" exp=""/>
+    <constraint desc="" field="local_govt" exp=""/>
+    <constraint desc="" field="prop_type" exp=""/>
+    <constraint desc="" field="file_number" exp=""/>
+    <constraint desc="" field="allocation" exp=""/>
+    <constraint desc="" field="manual_no" exp=""/>
+    <constraint desc="" field="deeds_file" exp=""/>
+    <constraint desc="" field="parcel_id" exp=""/>
+    <constraint desc="" field="official_area" exp=""/>
+    <constraint desc="" field="private" exp=""/>
+    <constraint desc="" field="status" exp=""/>
   </constraintExpressions>
   <expressionfields/>
   <attributeactions>
-    <defaultAction value="{00000000-0000-0000-0000-000000000000}" key="Canvas"/>
+    <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
   </attributeactions>
-  <attributetableconfig actionWidgetStyle="dropDown" sortExpression="" sortOrder="0">
+  <attributetableconfig actionWidgetStyle="dropDown" sortOrder="0" sortExpression="">
     <columns>
-      <column type="field" name="plot_sn" width="-1" hidden="0"/>
-      <column type="field" name="available" width="-1" hidden="0"/>
-      <column type="field" name="scheme" width="-1" hidden="0"/>
-      <column type="field" name="block" width="-1" hidden="0"/>
-      <column type="field" name="local_govt" width="-1" hidden="0"/>
-      <column type="field" name="prop_type" width="-1" hidden="0"/>
-      <column type="field" name="file_number" width="-1" hidden="0"/>
-      <column type="field" name="allocation" width="-1" hidden="0"/>
-      <column type="field" name="manual_no" width="-1" hidden="0"/>
-      <column type="field" name="deeds_file" width="-1" hidden="0"/>
-      <column type="field" name="parcel_id" width="-1" hidden="0"/>
-      <column type="field" name="official_area" width="-1" hidden="0"/>
-      <column type="field" name="private" width="-1" hidden="0"/>
-      <column type="field" name="status" width="-1" hidden="0"/>
+      <column type="field" width="-1" hidden="0" name="plot_sn"/>
+      <column type="field" width="-1" hidden="0" name="available"/>
+      <column type="field" width="-1" hidden="0" name="scheme"/>
+      <column type="field" width="-1" hidden="0" name="block"/>
+      <column type="field" width="-1" hidden="0" name="local_govt"/>
+      <column type="field" width="-1" hidden="0" name="prop_type"/>
+      <column type="field" width="-1" hidden="0" name="file_number"/>
+      <column type="field" width="-1" hidden="0" name="allocation"/>
+      <column type="field" width="-1" hidden="0" name="manual_no"/>
+      <column type="field" width="-1" hidden="0" name="deeds_file"/>
+      <column type="field" width="-1" hidden="0" name="parcel_id"/>
+      <column type="field" width="-1" hidden="0" name="official_area"/>
+      <column type="field" width="-1" hidden="0" name="private"/>
+      <column type="field" width="-1" hidden="0" name="status"/>
       <column type="actions" width="-1" hidden="1"/>
     </columns>
   </attributetableconfig>
@@ -284,27 +284,21 @@ def my_form_open(dialog, layer, feature):
   <featformsuppress>0</featformsuppress>
   <editorlayout>tablayout</editorlayout>
   <attributeEditorForm>
-    <attributeEditorContainer visibilityExpressionEnabled="0" showLabel="1" visibilityExpression="" groupBox="0" name="General" columnCount="2">
-      <attributeEditorField showLabel="1" index="0" name="plot_sn"/>
-      <attributeEditorField showLabel="1" index="2" name="scheme"/>
-      <attributeEditorField showLabel="1" index="3" name="block"/>
-      <attributeEditorField showLabel="1" index="4" name="local_govt"/>
-      <attributeEditorField showLabel="1" index="5" name="prop_type"/>
-      <attributeEditorField showLabel="1" index="6" name="file_number"/>
-      <attributeEditorField showLabel="1" index="7" name="allocation"/>
-      <attributeEditorField showLabel="1" index="8" name="manual_no"/>
-      <attributeEditorField showLabel="1" index="9" name="deeds_file"/>
-      <attributeEditorField showLabel="1" index="11" name="official_area"/>
-      <attributeEditorField showLabel="1" index="13" name="status"/>
-      <attributeEditorField showLabel="1" index="1" name="available"/>
-      <attributeEditorField showLabel="1" index="12" name="private"/>
-      <attributeEditorField showLabel="1" index="10" name="parcel_id"/>
-    </attributeEditorContainer>
-    <attributeEditorContainer visibilityExpressionEnabled="0" showLabel="1" visibilityExpression="" groupBox="0" name="parcel_def" columnCount="1">
-      <attributeEditorRelation showLabel="1" forceSuppressFormPopup="0" label="" buttons="AllButtons" nmRelationId="" name="" relation=""/>
-    </attributeEditorContainer>
-    <attributeEditorContainer visibilityExpressionEnabled="0" showLabel="1" visibilityExpression="" groupBox="0" name="transactions" columnCount="1">
-      <attributeEditorRelation showLabel="1" forceSuppressFormPopup="0" label="" buttons="AllButtons" nmRelationId="" name="" relation=""/>
+    <attributeEditorContainer showLabel="1" visibilityExpressionEnabled="0" visibilityExpression="" groupBox="0" name="General" columnCount="2">
+      <attributeEditorField showLabel="1" name="plot_sn" index="0"/>
+      <attributeEditorField showLabel="1" name="scheme" index="2"/>
+      <attributeEditorField showLabel="1" name="block" index="3"/>
+      <attributeEditorField showLabel="1" name="local_govt" index="4"/>
+      <attributeEditorField showLabel="1" name="prop_type" index="5"/>
+      <attributeEditorField showLabel="1" name="file_number" index="6"/>
+      <attributeEditorField showLabel="1" name="allocation" index="7"/>
+      <attributeEditorField showLabel="1" name="manual_no" index="8"/>
+      <attributeEditorField showLabel="1" name="deeds_file" index="9"/>
+      <attributeEditorField showLabel="1" name="official_area" index="11"/>
+      <attributeEditorField showLabel="1" name="status" index="13"/>
+      <attributeEditorField showLabel="1" name="available" index="1"/>
+      <attributeEditorField showLabel="1" name="private" index="12"/>
+      <attributeEditorField showLabel="1" name="parcel_id" index="10"/>
     </attributeEditorContainer>
   </attributeEditorForm>
   <editable>
