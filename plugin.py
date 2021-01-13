@@ -94,7 +94,7 @@ class SMLSurveyor(object):
             'Allocation_cat', 'Allocation_cat', 'allocation_cat', 'allocation_cat', None
         ))
         self.required_non_spatial_layers.append(RequiredLayer(
-            'Local_govt', 'Local_govt', 'instrument_cat', 'id', None
+            'Local_govt', 'Local_govt', 'local_govt', 'id', None
         ))
         self.required_non_spatial_layers.append(RequiredLayer(
             'Status_cat', 'Status_cat', 'status_cat', 'status_cat', None
