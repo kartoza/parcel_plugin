@@ -25,19 +25,19 @@
   </geometryOptions>
   <legend type="default-vector"/>
   <referencedLayers>
-    <relation strength="Association" name="parcel_lookup_allocation_id_fkey" layerId="allocation_cat_7a483598_2122_42ac_9b32_8d633ba6399c" dataSource="dbname='gis' host=localhost port=25433 user='docker' key='allocation_cat' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;allocation_cat&quot;" providerKey="postgres" referencingLayer="parcel_lookup_7b1fdc98_30be_4b57_8cf5_336db3ff2099" id="parcel_lookup_allocation_id_fkey" referencedLayer="allocation_cat_7a483598_2122_42ac_9b32_8d633ba6399c" layerName="Allocation_cat">
+    <relation strength="Association" name="parcel_lookup_allocation_id_fkey" layerId="allocation_cat_7a483598_2122_42ac_9b32_8d633ba6399c" dataSource="dbname=':DATABASE' host=:DB_HOST port=:DB_PORT user=':DBOWNER' password=':DB_PASS'  key='allocation_cat' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;allocation_cat&quot;" providerKey="postgres" referencingLayer="parcel_lookup_7b1fdc98_30be_4b57_8cf5_336db3ff2099" id="parcel_lookup_allocation_id_fkey" referencedLayer="allocation_cat_7a483598_2122_42ac_9b32_8d633ba6399c" layerName="Allocation_cat">
       <fieldRef referencedField="allocation_cat" referencingField="allocation"/>
     </relation>
-    <relation strength="Association" name="parcel_lookup_local_govt_id_fkey" layerId="local_govt_bb30d8c8_fbfa_42e6_a66d_1204c919c09e" dataSource="dbname='gis' host=localhost port=25433 user='docker' key='id' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;local_govt&quot;" providerKey="postgres" referencingLayer="parcel_lookup_7b1fdc98_30be_4b57_8cf5_336db3ff2099" id="parcel_lookup_local_govt_id_fkey" referencedLayer="local_govt_bb30d8c8_fbfa_42e6_a66d_1204c919c09e" layerName="Local_govt">
+    <relation strength="Association" name="parcel_lookup_local_govt_id_fkey" layerId="local_govt_bb30d8c8_fbfa_42e6_a66d_1204c919c09e" dataSource="dbname=':DATABASE' host=:DB_HOST port=:DB_PORT user=':DBOWNER' password=':DB_PASS'  key='id' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;local_govt&quot;" providerKey="postgres" referencingLayer="parcel_lookup_7b1fdc98_30be_4b57_8cf5_336db3ff2099" id="parcel_lookup_local_govt_id_fkey" referencedLayer="local_govt_bb30d8c8_fbfa_42e6_a66d_1204c919c09e" layerName="Local_govt">
       <fieldRef referencedField="id" referencingField="local_govt"/>
     </relation>
-    <relation strength="Association" name="parcel_lookup_prop_type_id_fkey" layerId="prop_types_b6a3cf3d_8288_4a78_b681_10a0d41203ff" dataSource="dbname='gis' host=localhost port=25433 user='docker' key='id' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;prop_types&quot;" providerKey="postgres" referencingLayer="parcel_lookup_7b1fdc98_30be_4b57_8cf5_336db3ff2099" id="parcel_lookup_prop_type_id_fkey" referencedLayer="prop_types_b6a3cf3d_8288_4a78_b681_10a0d41203ff" layerName="Prop_types">
+    <relation strength="Association" name="parcel_lookup_prop_type_id_fkey" layerId="prop_types_b6a3cf3d_8288_4a78_b681_10a0d41203ff" dataSource="dbname=':DATABASE' host=:DB_HOST port=:DB_PORT user=':DBOWNER' password=':DB_PASS'  key='id' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;prop_types&quot;" providerKey="postgres" referencingLayer="parcel_lookup_7b1fdc98_30be_4b57_8cf5_336db3ff2099" id="parcel_lookup_prop_type_id_fkey" referencedLayer="prop_types_b6a3cf3d_8288_4a78_b681_10a0d41203ff" layerName="Prop_types">
       <fieldRef referencedField="id" referencingField="prop_type"/>
     </relation>
-    <relation strength="Association" name="parcel_lookup_scheme_id_fkey" layerId="schemes_422921e0_833d_4ae0_8509_d8fd7175ebd5" dataSource="dbname='gis' host=localhost port=25433 user='docker' key='id' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;schemes&quot;" providerKey="postgres" referencingLayer="parcel_lookup_7b1fdc98_30be_4b57_8cf5_336db3ff2099" id="parcel_lookup_scheme_id_fkey" referencedLayer="schemes_422921e0_833d_4ae0_8509_d8fd7175ebd5" layerName="Schemes">
+    <relation strength="Association" name="parcel_lookup_scheme_id_fkey" layerId="schemes_422921e0_833d_4ae0_8509_d8fd7175ebd5" dataSource="dbname=':DATABASE' host=:DB_HOST port=:DB_PORT user=':DBOWNER' password=':DB_PASS'  key='id' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;schemes&quot;" providerKey="postgres" referencingLayer="parcel_lookup_7b1fdc98_30be_4b57_8cf5_336db3ff2099" id="parcel_lookup_scheme_id_fkey" referencedLayer="schemes_422921e0_833d_4ae0_8509_d8fd7175ebd5" layerName="Schemes">
       <fieldRef referencedField="id" referencingField="scheme"/>
     </relation>
-    <relation strength="Association" name="parcel_lookup_status_cat_fkey" layerId="status_cat_a4d50c7d_41bf_4d34_a102_02dd84b4a98a" dataSource="dbname='gis' host=localhost port=25433 user='docker' key='status_cat' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;status_cat&quot;" providerKey="postgres" referencingLayer="parcel_lookup_7b1fdc98_30be_4b57_8cf5_336db3ff2099" id="parcel_lookup_status_cat_fkey" referencedLayer="status_cat_a4d50c7d_41bf_4d34_a102_02dd84b4a98a" layerName="Status_cat">
+    <relation strength="Association" name="parcel_lookup_status_cat_fkey" layerId="status_cat_a4d50c7d_41bf_4d34_a102_02dd84b4a98a" dataSource="dbname=':DATABASE' host=:DB_HOST port=:DB_PORT user=':DBOWNER' password=':DB_PASS'  key='status_cat' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;status_cat&quot;" providerKey="postgres" referencingLayer="parcel_lookup_7b1fdc98_30be_4b57_8cf5_336db3ff2099" id="parcel_lookup_status_cat_fkey" referencedLayer="status_cat_a4d50c7d_41bf_4d34_a102_02dd84b4a98a" layerName="Status_cat">
       <fieldRef referencedField="status_cat" referencingField="status"/>
     </relation>
   </referencedLayers>
@@ -71,7 +71,7 @@
             <Option name="MapIdentification" type="bool" value="false"/>
             <Option name="OrderByValue" type="bool" value="true"/>
             <Option name="ReadOnly" type="bool" value="false"/>
-            <Option name="ReferencedLayerDataSource" type="QString" value="dbname='gis' host=localhost port=25433 user='docker' key='id' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;schemes&quot;"/>
+            <Option name="ReferencedLayerDataSource" type="QString" value="dbname=':DATABASE' host=:DB_HOST port=:DB_PORT user=':DBOWNER' password=':DB_PASS'  key='id' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;schemes&quot;"/>
             <Option name="ReferencedLayerId" type="QString" value="schemes_422921e0_833d_4ae0_8509_d8fd7175ebd5"/>
             <Option name="ReferencedLayerName" type="QString" value="Schemes"/>
             <Option name="ReferencedLayerProviderKey" type="QString" value="postgres"/>
@@ -101,7 +101,7 @@
             <Option name="MapIdentification" type="bool" value="false"/>
             <Option name="OrderByValue" type="bool" value="true"/>
             <Option name="ReadOnly" type="bool" value="false"/>
-            <Option name="ReferencedLayerDataSource" type="QString" value="dbname='gis' host=localhost port=25433 user='docker' key='id' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;local_govt&quot;"/>
+            <Option name="ReferencedLayerDataSource" type="QString" value="dbname=':DATABASE' host=:DB_HOST port=:DB_PORT user=':DBOWNER' password=':DB_PASS'  key='id' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;local_govt&quot;"/>
             <Option name="ReferencedLayerId" type="QString" value="local_govt_bb30d8c8_fbfa_42e6_a66d_1204c919c09e"/>
             <Option name="ReferencedLayerName" type="QString" value="Local_govt"/>
             <Option name="ReferencedLayerProviderKey" type="QString" value="postgres"/>
@@ -121,7 +121,7 @@
             <Option name="MapIdentification" type="bool" value="false"/>
             <Option name="OrderByValue" type="bool" value="true"/>
             <Option name="ReadOnly" type="bool" value="false"/>
-            <Option name="ReferencedLayerDataSource" type="QString" value="dbname='gis' host=localhost port=25433 user='docker' key='id' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;prop_types&quot;"/>
+            <Option name="ReferencedLayerDataSource" type="QString" value="dbname=':DATABASE' host=:DB_HOST port=:DB_PORT user=':DBOWNER' password=':DB_PASS'  key='id' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;prop_types&quot;"/>
             <Option name="ReferencedLayerId" type="QString" value="prop_types_b6a3cf3d_8288_4a78_b681_10a0d41203ff"/>
             <Option name="ReferencedLayerName" type="QString" value="Prop_types"/>
             <Option name="ReferencedLayerProviderKey" type="QString" value="postgres"/>
@@ -151,7 +151,7 @@
             <Option name="MapIdentification" type="bool" value="false"/>
             <Option name="OrderByValue" type="bool" value="true"/>
             <Option name="ReadOnly" type="bool" value="false"/>
-            <Option name="ReferencedLayerDataSource" type="QString" value="dbname='gis' host=localhost port=25433 user='docker' key='allocation_cat' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;allocation_cat&quot;"/>
+            <Option name="ReferencedLayerDataSource" type="QString" value="dbname=':DATABASE' host=:DB_HOST port=:DB_PORT user=':DBOWNER' password=':DB_PASS'  key='allocation_cat' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;allocation_cat&quot;"/>
             <Option name="ReferencedLayerId" type="QString" value="allocation_cat_7a483598_2122_42ac_9b32_8d633ba6399c"/>
             <Option name="ReferencedLayerName" type="QString" value="Allocation_cat"/>
             <Option name="ReferencedLayerProviderKey" type="QString" value="postgres"/>
@@ -218,7 +218,7 @@
             <Option name="MapIdentification" type="bool" value="false"/>
             <Option name="OrderByValue" type="bool" value="true"/>
             <Option name="ReadOnly" type="bool" value="false"/>
-            <Option name="ReferencedLayerDataSource" type="QString" value="dbname='gis' host=localhost port=25433 user='docker' key='status_cat' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;status_cat&quot;"/>
+            <Option name="ReferencedLayerDataSource" type="QString" value="dbname=':DATABASE' host=:DB_HOST port=:DB_PORT user=':DBOWNER' password=':DB_PASS'  key='status_cat' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;status_cat&quot;"/>
             <Option name="ReferencedLayerId" type="QString" value="status_cat_a4d50c7d_41bf_4d34_a102_02dd84b4a98a"/>
             <Option name="ReferencedLayerName" type="QString" value="Status_cat"/>
             <Option name="ReferencedLayerProviderKey" type="QString" value="postgres"/>
@@ -296,7 +296,7 @@
   </constraintExpressions>
   <expressionfields/>
   <attributeactions>
-    <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
+    <defaultAction key="Canvas" value="{{00000000-0000-0000-0000-000000000000}}"/>
   </attributeactions>
   <attributetableconfig sortOrder="0" sortExpression="" actionWidgetStyle="dropDown">
     <columns>
@@ -340,8 +340,8 @@ An example follows:
 from qgis.PyQt.QtWidgets import QWidget
 
 def my_form_open(dialog, layer, feature):
-	geom = feature.geometry()
-	control = dialog.findChild(QWidget, "MyLineEdit")
+  geom = feature.geometry()
+  control = dialog.findChild(QWidget, "MyLineEdit")
 ]]></editforminitcode>
   <featformsuppress>0</featformsuppress>
   <editorlayout>tablayout</editorlayout>

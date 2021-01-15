@@ -36,7 +36,7 @@ from . import database
 from .cogo_dialogs import BearingDistanceFormDialog, SelectorDialog, FormParcelDialog, ManagerDialog, \
     FormBeaconDialog, DatabaseConnectionDialog
 from .constants import *
-from .utilities import validate_plugin_actions
+from .utilities import validate_plugin_actions, get_path
 
 
 # user imports
@@ -344,6 +344,7 @@ class SMLSurveyor(object):
 
             self.populate_tables(target_group, self.required_layers)
             self.populate_tables(target_group_non_spatial, self.required_non_spatial_layers)
+            self.style_lookup_tables(self.required_non_spatial_layers, target_group_non_spatial)
 
     def populate_tables(self, layer_group, layers):
         for required_layer in reversed(layers):
@@ -384,6 +385,50 @@ class SMLSurveyor(object):
             target_group = root.insertGroup(position, group_name)
         target_group.setItemVisibilityChecked(Qt.Checked)
         return target_group
+
+    def layer_srid(self, layer_group):
+
+        for layer_node in layer_group.findLayers():
+            layer = layer_node.layer()
+            if layer.name() == 'Beacons':
+                layer_csr = layer.crs().authid()
+                srs = layer_csr.replace("EPSG", "")
+            else:
+                pass
+        return srs
+
+    def style_lookup_tables(self, layers, layer_group):
+        settings_postgis = QSettings()
+        settings_postgis.beginGroup('PostgreSQL/connections')
+        db_host = settings_postgis.value(self.connection + '/host')
+        db_port = settings_postgis.value(self.connection + '/port')
+        db_name = settings_postgis.value(self.connection + '/database')
+        db_username = settings_postgis.value(self.connection + '/username')
+        db_password = settings_postgis.value(self.connection + '/password')
+        crs = 26332
+
+        for required_layer in reversed(layers):
+            for layer_node in layer_group.findLayers():
+                layer = layer_node.layer()
+
+                if required_layer.name_plural.lower() == layer.name().lower():
+                    qml_style = layer.name().lower() + '.qml'
+                    full_path = (get_path("documents", "styles", "lookups", qml_style))
+                    if layer.name().lower() == 'survey' or layer.name().lower() == 'parcel_lookup':
+
+                        query = open(full_path, "r").read()
+                        query = query.replace(":CRS", "{CRS}").replace(":DATABASE", "{DATABASE}").replace(
+                            ":DBOWNER", "{DBOWNER}") \
+                            .replace(":DB_HOST", "{DB_HOST}").replace(":DB_PORT", "{DB_PORT}").replace(":DB_PASS",
+                                                                                                       "{DB_PASS}")
+                        modified_qml = query.format(CRS=crs, DATABASE=db_name, DBOWNER=db_username, DB_HOST=db_host,
+                                                    DB_PORT=db_port, DB_PASS=db_password)
+                        print(modified_qml)
+
+                        layer.loadNamedStyle(modified_qml)
+
+                    else:
+                        layer.loadNamedStyle(full_path)
 
     def manage_beacons(self):
         """ Portal which enables the management of beacons

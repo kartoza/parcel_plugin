@@ -25,10 +25,10 @@
   </geometryOptions>
   <legend type="default-vector"/>
   <referencedLayers>
-    <relation strength="Association" name="survey_ref_beacon_fkey" layerId="beacons_ecf1c285_b2d3_4ed2_88b7_b1229bdf1e0a" dataSource="dbname='gis' host=localhost port=25433 user='docker' key='gid' srid=26332 type=Point checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;beacons&quot; (the_geom)" providerKey="postgres" referencingLayer="survey_95ff4d94_57c1_452f_a97a_44dd0e0d48a9" id="survey_ref_beacon_fkey" referencedLayer="beacons_ecf1c285_b2d3_4ed2_88b7_b1229bdf1e0a" layerName="beacons">
+    <relation strength="Association" name="survey_ref_beacon_fkey" layerId="beacons_ecf1c285_b2d3_4ed2_88b7_b1229bdf1e0a" dataSource="dbname=':DATABASE' host=:DB_HOST port=:DB_PORT user=':DBOWNER' password=':DB_PASS'  key='gid' srid=:CRS type=Point checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;beacons&quot; (the_geom)" providerKey="postgres" referencingLayer="survey_95ff4d94_57c1_452f_a97a_44dd0e0d48a9" id="survey_ref_beacon_fkey" referencedLayer="beacons_ecf1c285_b2d3_4ed2_88b7_b1229bdf1e0a" layerName="beacons">
       <fieldRef referencedField="beacon" referencingField="ref_beacon"/>
     </relation>
-    <relation strength="Association" name="survey_scheme_fkey" layerId="schemes_422921e0_833d_4ae0_8509_d8fd7175ebd5" dataSource="dbname='gis' host=localhost port=25433 user='docker' key='id' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;schemes&quot;" providerKey="postgres" referencingLayer="survey_95ff4d94_57c1_452f_a97a_44dd0e0d48a9" id="survey_scheme_fkey" referencedLayer="schemes_422921e0_833d_4ae0_8509_d8fd7175ebd5" layerName="Schemes">
+    <relation strength="Association" name="survey_scheme_fkey" layerId="schemes_422921e0_833d_4ae0_8509_d8fd7175ebd5" dataSource="dbname=':DATABASE' host=:DB_HOST port=:DB_PORT user=':DBOWNER' password=':DB_PASS'  key='id' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;schemes&quot;" providerKey="postgres" referencingLayer="survey_95ff4d94_57c1_452f_a97a_44dd0e0d48a9" id="survey_scheme_fkey" referencedLayer="schemes_422921e0_833d_4ae0_8509_d8fd7175ebd5" layerName="Schemes">
       <fieldRef referencedField="id" referencingField="scheme"/>
     </relation>
   </referencedLayers>
@@ -59,7 +59,7 @@
             <Option name="MapIdentification" type="bool" value="false"/>
             <Option name="OrderByValue" type="bool" value="true"/>
             <Option name="ReadOnly" type="bool" value="false"/>
-            <Option name="ReferencedLayerDataSource" type="QString" value="dbname='gis' host=localhost port=25433 user='docker' key='gid' srid=26332 type=Point checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;beacons&quot; (the_geom)"/>
+            <Option name="ReferencedLayerDataSource" type="QString" value="dbname=':DATABASE' host=:DB_HOST port=:DB_PORT user=':DBOWNER' password=':DB_PASS'  key='gid' srid=:CRS type=Point checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;beacons&quot; (the_geom)"/>
             <Option name="ReferencedLayerId" type="QString" value="beacons_ecf1c285_b2d3_4ed2_88b7_b1229bdf1e0a"/>
             <Option name="ReferencedLayerName" type="QString" value="beacons"/>
             <Option name="ReferencedLayerProviderKey" type="QString" value="postgres"/>
@@ -79,7 +79,7 @@
             <Option name="MapIdentification" type="bool" value="false"/>
             <Option name="OrderByValue" type="bool" value="true"/>
             <Option name="ReadOnly" type="bool" value="false"/>
-            <Option name="ReferencedLayerDataSource" type="QString" value="dbname='gis' host=localhost port=25433 user='docker' key='id' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;schemes&quot;"/>
+            <Option name="ReferencedLayerDataSource" type="QString" value="dbname=':DATABASE' host=:DB_HOST port=:DB_PORT user=':DBOWNER' password=':DB_PASS'  key='id' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;schemes&quot;"/>
             <Option name="ReferencedLayerId" type="QString" value="schemes_422921e0_833d_4ae0_8509_d8fd7175ebd5"/>
             <Option name="ReferencedLayerName" type="QString" value="Schemes"/>
             <Option name="ReferencedLayerProviderKey" type="QString" value="postgres"/>
@@ -131,7 +131,7 @@
   </constraintExpressions>
   <expressionfields/>
   <attributeactions>
-    <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
+    <defaultAction key="Canvas" value="{{00000000-0000-0000-0000-000000000000}}"/>
   </attributeactions>
   <attributetableconfig sortOrder="0" sortExpression="" actionWidgetStyle="dropDown">
     <columns>
@@ -166,8 +166,8 @@ An example follows:
 from qgis.PyQt.QtWidgets import QWidget
 
 def my_form_open(dialog, layer, feature):
-	geom = feature.geometry()
-	control = dialog.findChild(QWidget, "MyLineEdit")
+  geom = feature.geometry()
+  control = dialog.findChild(QWidget, "MyLineEdit")
 ]]></editforminitcode>
   <featformsuppress>0</featformsuppress>
   <editorlayout>tablayout</editorlayout>
