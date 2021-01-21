@@ -398,15 +398,6 @@ class SMLSurveyor(object):
         return srs
 
     def style_lookup_tables(self, layers, layer_group):
-        settings_postgis = QSettings()
-        settings_postgis.beginGroup('PostgreSQL/connections')
-        db_host = settings_postgis.value(self.connection + '/host')
-        db_port = settings_postgis.value(self.connection + '/port')
-        db_name = settings_postgis.value(self.connection + '/database')
-        db_username = settings_postgis.value(self.connection + '/username')
-        db_password = settings_postgis.value(self.connection + '/password')
-        crs = 26332
-
         for required_layer in reversed(layers):
             for layer_node in layer_group.findLayers():
                 layer = layer_node.layer()
@@ -415,18 +406,7 @@ class SMLSurveyor(object):
                     qml_style = layer.name().lower() + '.qml'
                     full_path = (get_path("documents", "styles", "lookups", qml_style))
                     if layer.name().lower() == 'survey' or layer.name().lower() == 'parcel_lookup':
-
-                        query = open(full_path, "r").read()
-                        query = query.replace(":CRS", "{CRS}").replace(":DATABASE", "{DATABASE}").replace(
-                            ":DBOWNER", "{DBOWNER}") \
-                            .replace(":DB_HOST", "{DB_HOST}").replace(":DB_PORT", "{DB_PORT}").replace(":DB_PASS",
-                                                                                                       "{DB_PASS}")
-                        modified_qml = query.format(CRS=crs, DATABASE=db_name, DBOWNER=db_username, DB_HOST=db_host,
-                                                    DB_PORT=db_port, DB_PASS=db_password)
-                        print(modified_qml)
-
-                        layer.loadNamedStyle(modified_qml)
-
+                        pass
                     else:
                         layer.loadNamedStyle(full_path)
 

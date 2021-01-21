@@ -320,9 +320,13 @@ class DatabaseConnectionDialog(QDialog):
                     query = open(
                         get_path("scripts", "database_setup.sql"), "r").read()
                     query = query.replace(":CRS", "{CRS}").replace(":DATABASE", "{DATABASE}").replace(":DBOWNER",
-                                                                                                      "{DBOWNER}")
+                                                                                                      "{DBOWNER}") \
+                        .replace(":DB_HOST", "{DB_HOST}").replace(":DB_PORT", "{DB_PORT}").replace(":DB_PASS",
+                                                                                                   "{DB_PASS}")
                     cursor = self.db_connection.cursor()
-                    db_sql = query.format(CRS=crs, DATABASE=db_name, DBOWNER=db_username)
+                    # db_sql = query.format(CRS=crs, DATABASE=db_name, DBOWNER=db_username)
+                    db_sql = query.format(CRS=crs, DATABASE=db_name, DBOWNER=db_username, DB_HOST=db_host,
+                                          DB_PORT=db_port, DB_PASS=db_password)
                     cursor.execute(db_sql)
                     self.db_connection.commit()
                     del cursor
