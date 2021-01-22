@@ -25,7 +25,7 @@
   </geometryOptions>
   <legend type="default-vector"/>
   <referencedLayers>
-    <relation strength="Association" name="survey_ref_beacon_fkey" layerId="beacons_ecf1c285_b2d3_4ed2_88b7_b1229bdf1e0a" dataSource="dbname=':DATABASE' host=:DB_HOST port=:DB_PORT user=':DBOWNER' password=':DB_PASS'  key='gid' srid=:CRS type=Point checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;beacons&quot; (the_geom)" providerKey="postgres" referencingLayer="survey_95ff4d94_57c1_452f_a97a_44dd0e0d48a9" id="survey_ref_beacon_fkey" referencedLayer="beacons_ecf1c285_b2d3_4ed2_88b7_b1229bdf1e0a" layerName="beacons">
+    <relation strength="Association" name="survey_ref_beacon_fkey" layerId="beacons_ecf1c285_b2d3_4ed2_88b7_b1229bdf1e0a" dataSource="dbname=':DATABASE' host=:DB_HOST port=:DB_PORT user=':DBOWNER' password=':DB_PASS'  key='gid' srid=:CRS type=Point checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;beacons&quot; (the_geom)" providerKey="postgres" referencingLayer="survey_95ff4d94_57c1_452f_a97a_44dd0e0d48a9" id="survey_ref_beacon_fkey" referencedLayer="beacons_ecf1c285_b2d3_4ed2_88b7_b1229bdf1e0a" layerName="Beacons">
       <fieldRef referencedField="beacon" referencingField="ref_beacon"/>
     </relation>
     <relation strength="Association" name="survey_scheme_fkey" layerId="schemes_422921e0_833d_4ae0_8509_d8fd7175ebd5" dataSource="dbname=':DATABASE' host=:DB_HOST port=:DB_PORT user=':DBOWNER' password=':DB_PASS'  key='id' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;schemes&quot;" providerKey="postgres" referencingLayer="survey_95ff4d94_57c1_452f_a97a_44dd0e0d48a9" id="survey_scheme_fkey" referencedLayer="schemes_422921e0_833d_4ae0_8509_d8fd7175ebd5" layerName="Schemes">
