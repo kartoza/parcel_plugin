@@ -414,21 +414,16 @@ class SMLSurveyor(object):
                 if required_layer.name_plural.lower() == layer.name().lower():
                     qml_style = layer.name().lower() + '.qml'
                     full_path = (get_path("documents", "styles", "lookups", qml_style))
-                    if layer.name().lower() == 'survey' or layer.name().lower() == 'parcel_lookup':
 
-                        query = open(full_path, "r").read()
-                        query = query.replace(":CRS", "{CRS}").replace(":DATABASE", "{DATABASE}").replace(
-                            ":DBOWNER", "{DBOWNER}") \
-                            .replace(":DB_HOST", "{DB_HOST}").replace(":DB_PORT", "{DB_PORT}").replace(":DB_PASS",
-                                                                                                       "{DB_PASS}")
-                        modified_qml = query.format(CRS=crs, DATABASE=db_name, DBOWNER=db_username, DB_HOST=db_host,
-                                                    DB_PORT=db_port, DB_PASS=db_password)
+                    query = open(full_path, "r").read()
+                    query = query.replace(":CRS", "{CRS}").replace(":DATABASE", "{DATABASE}").replace(
+                        ":DBOWNER", "{DBOWNER}") \
+                        .replace(":DB_HOST", "{DB_HOST}").replace(":DB_PORT", "{DB_PORT}").replace(":DB_PASS",
+                                                                                                   "{DB_PASS}")
+                    modified_qml = query.format(CRS=crs, DATABASE=db_name, DBOWNER=db_username, DB_HOST=db_host,
+                                                DB_PORT=db_port, DB_PASS=db_password)
 
-
-                        layer.loadNamedStyle(full_path)
-
-                    else:
-                        layer.loadNamedStyle(full_path)
+                    layer.loadNamedStyle(full_path)
 
     def manage_beacons(self):
         """ Portal which enables the management of beacons
