@@ -235,7 +235,7 @@
     <alias field="available" name="Availability" index="1"/>
     <alias field="scheme" name="Scheme" index="2"/>
     <alias field="block" name="Block" index="3"/>
-    <alias field="local_govt" name="Local overnment" index="4"/>
+    <alias field="local_govt" name="Local government" index="4"/>
     <alias field="prop_type" name="Property Type" index="5"/>
     <alias field="file_number" name="File Number" index="6"/>
     <alias field="allocation" name="Allocation" index="7"/>

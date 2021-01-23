@@ -1,35 +1,32 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis styleCategories="AllStyleCategories" version="3.16.2-Hannover" minScale="1e+08" readOnly="0" maxScale="0" hasScaleBasedVisibilityFlag="0">
+<qgis minScale="1e+08" hasScaleBasedVisibilityFlag="0" maxScale="0" version="3.16.3-Hannover" styleCategories="AllStyleCategories" readOnly="0">
   <flags>
     <Identifiable>1</Identifiable>
     <Removable>1</Removable>
     <Searchable>1</Searchable>
   </flags>
-  <temporal accumulate="0" enabled="0" startField="" durationField="" endExpression="" fixedDuration="0" mode="0" durationUnit="min" endField="" startExpression="">
+  <temporal startExpression="" endField="" fixedDuration="0" accumulate="0" durationField="" mode="0" endExpression="" enabled="0" startField="" durationUnit="min">
     <fixedRange>
       <start></start>
       <end></end>
     </fixedRange>
   </temporal>
   <customproperties>
-    <property key="dualview/previewExpressions">
-      <value>"description"</value>
-    </property>
-    <property key="embeddedWidgets/count" value="0"/>
+    <property value="0" key="embeddedWidgets/count"/>
     <property key="variableNames"/>
     <property key="variableValues"/>
   </customproperties>
-  <geometryOptions geometryPrecision="0" removeDuplicateNodes="0">
+  <geometryOptions removeDuplicateNodes="0" geometryPrecision="0">
     <activeChecks/>
     <checkConfiguration/>
   </geometryOptions>
   <legend type="default-vector"/>
   <referencedLayers>
-    <relation strength="Association" name="survey_ref_beacon_fkey" layerId="beacons_ecf1c285_b2d3_4ed2_88b7_b1229bdf1e0a" dataSource="dbname=':DATABASE' host=:DB_HOST port=:DB_PORT user=':DBOWNER' password=':DB_PASS'  key='gid' srid=:CRS type=Point checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;beacons&quot; (the_geom)" providerKey="postgres" referencingLayer="survey_95ff4d94_57c1_452f_a97a_44dd0e0d48a9" id="survey_ref_beacon_fkey" referencedLayer="beacons_ecf1c285_b2d3_4ed2_88b7_b1229bdf1e0a" layerName="Beacons">
-      <fieldRef referencedField="beacon" referencingField="ref_beacon"/>
+    <relation referencedLayer="beacons_767b37a2_fd63_4cb4_aaa2_424e53c13cc2" layerName="Beacons" strength="Association" referencingLayer="survey_56473f07_4929_4494_921b_40b73e3324a5" providerKey="postgres" name="survey_ref_beacon_fkey" layerId="beacons_767b37a2_fd63_4cb4_aaa2_424e53c13cc2" dataSource="dbname=':DATABASE' host=:DB_HOST port=:DB_PORT user=':DBOWNER' password=':DB_PASS' key='gid' srid=:CRS type=Point checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;beacons&quot; (the_geom)" id="survey_ref_beacon_fkey">
+      <fieldRef referencingField="ref_beacon" referencedField="beacon"/>
     </relation>
-    <relation strength="Association" name="survey_scheme_fkey" layerId="schemes_422921e0_833d_4ae0_8509_d8fd7175ebd5" dataSource="dbname=':DATABASE' host=:DB_HOST port=:DB_PORT user=':DBOWNER' password=':DB_PASS'  key='id' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;schemes&quot;" providerKey="postgres" referencingLayer="survey_95ff4d94_57c1_452f_a97a_44dd0e0d48a9" id="survey_scheme_fkey" referencedLayer="schemes_422921e0_833d_4ae0_8509_d8fd7175ebd5" layerName="Schemes">
-      <fieldRef referencedField="id" referencingField="scheme"/>
+    <relation referencedLayer="schemes_ac1eeb89_57e3_47cc_849d_4849da44e2ef" layerName="Schemes" strength="Association" referencingLayer="survey_56473f07_4929_4494_921b_40b73e3324a5" providerKey="postgres" name="survey_scheme_fkey" layerId="schemes_ac1eeb89_57e3_47cc_849d_4849da44e2ef" dataSource="dbname=':DATABASE' host=:DB_HOST port=:DB_PORT user=':DBOWNER' password=':DB_PASS' key='id' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;schemes&quot;" id="survey_scheme_fkey">
+      <fieldRef referencingField="scheme" referencedField="id"/>
     </relation>
   </referencedLayers>
   <fieldConfiguration>
@@ -44,8 +41,8 @@
       <editWidget type="TextEdit">
         <config>
           <Option type="Map">
-            <Option name="IsMultiline" type="bool" value="false"/>
-            <Option name="UseHtml" type="bool" value="false"/>
+            <Option value="false" name="IsMultiline" type="bool"/>
+            <Option value="false" name="UseHtml" type="bool"/>
           </Option>
         </config>
       </editWidget>
@@ -54,18 +51,18 @@
       <editWidget type="RelationReference">
         <config>
           <Option type="Map">
-            <Option name="AllowAddFeatures" type="bool" value="true"/>
-            <Option name="AllowNULL" type="bool" value="false"/>
-            <Option name="MapIdentification" type="bool" value="false"/>
-            <Option name="OrderByValue" type="bool" value="true"/>
-            <Option name="ReadOnly" type="bool" value="false"/>
-            <Option name="ReferencedLayerDataSource" type="QString" value="dbname=':DATABASE' host=:DB_HOST port=:DB_PORT user=':DBOWNER' password=':DB_PASS'  key='gid' srid=:CRS type=Point checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;beacons&quot; (the_geom)"/>
-            <Option name="ReferencedLayerId" type="QString" value="beacons_ecf1c285_b2d3_4ed2_88b7_b1229bdf1e0a"/>
-            <Option name="ReferencedLayerName" type="QString" value="beacons"/>
-            <Option name="ReferencedLayerProviderKey" type="QString" value="postgres"/>
-            <Option name="Relation" type="QString" value="survey_ref_beacon_fkey"/>
-            <Option name="ShowForm" type="bool" value="false"/>
-            <Option name="ShowOpenFormButton" type="bool" value="false"/>
+            <Option value="true" name="AllowAddFeatures" type="bool"/>
+            <Option value="false" name="AllowNULL" type="bool"/>
+            <Option value="false" name="MapIdentification" type="bool"/>
+            <Option value="true" name="OrderByValue" type="bool"/>
+            <Option value="false" name="ReadOnly" type="bool"/>
+            <Option value="dbname=':DATABASE' host=:DB_HOST port=:DB_PORT user=':DBOWNER' password=':DB_PASS' key='gid' srid=:CRS type=Point checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;beacons&quot; (the_geom)" name="ReferencedLayerDataSource" type="QString"/>
+            <Option value="beacons_767b37a2_fd63_4cb4_aaa2_424e53c13cc2" name="ReferencedLayerId" type="QString"/>
+            <Option value="Beacons" name="ReferencedLayerName" type="QString"/>
+            <Option value="postgres" name="ReferencedLayerProviderKey" type="QString"/>
+            <Option value="survey_ref_beacon_fkey" name="Relation" type="QString"/>
+            <Option value="false" name="ShowForm" type="bool"/>
+            <Option value="false" name="ShowOpenFormButton" type="bool"/>
           </Option>
         </config>
       </editWidget>
@@ -74,18 +71,18 @@
       <editWidget type="RelationReference">
         <config>
           <Option type="Map">
-            <Option name="AllowAddFeatures" type="bool" value="true"/>
-            <Option name="AllowNULL" type="bool" value="false"/>
-            <Option name="MapIdentification" type="bool" value="false"/>
-            <Option name="OrderByValue" type="bool" value="true"/>
-            <Option name="ReadOnly" type="bool" value="false"/>
-            <Option name="ReferencedLayerDataSource" type="QString" value="dbname=':DATABASE' host=:DB_HOST port=:DB_PORT user=':DBOWNER' password=':DB_PASS'  key='id' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;schemes&quot;"/>
-            <Option name="ReferencedLayerId" type="QString" value="schemes_422921e0_833d_4ae0_8509_d8fd7175ebd5"/>
-            <Option name="ReferencedLayerName" type="QString" value="Schemes"/>
-            <Option name="ReferencedLayerProviderKey" type="QString" value="postgres"/>
-            <Option name="Relation" type="QString" value="survey_scheme_fkey"/>
-            <Option name="ShowForm" type="bool" value="false"/>
-            <Option name="ShowOpenFormButton" type="bool" value="false"/>
+            <Option value="true" name="AllowAddFeatures" type="bool"/>
+            <Option value="false" name="AllowNULL" type="bool"/>
+            <Option value="false" name="MapIdentification" type="bool"/>
+            <Option value="true" name="OrderByValue" type="bool"/>
+            <Option value="false" name="ReadOnly" type="bool"/>
+            <Option value="dbname=':DATABASE' host=:DB_HOST port=:DB_PORT user=':DBOWNER' password=':DB_PASS' key='id' checkPrimaryKeyUnicity='1' table=&quot;public&quot;.&quot;schemes&quot;" name="ReferencedLayerDataSource" type="QString"/>
+            <Option value="schemes_ac1eeb89_57e3_47cc_849d_4849da44e2ef" name="ReferencedLayerId" type="QString"/>
+            <Option value="Schemes" name="ReferencedLayerName" type="QString"/>
+            <Option value="postgres" name="ReferencedLayerProviderKey" type="QString"/>
+            <Option value="survey_scheme_fkey" name="Relation" type="QString"/>
+            <Option value="false" name="ShowForm" type="bool"/>
+            <Option value="false" name="ShowOpenFormButton" type="bool"/>
           </Option>
         </config>
       </editWidget>
@@ -94,33 +91,33 @@
       <editWidget type="TextEdit">
         <config>
           <Option type="Map">
-            <Option name="IsMultiline" type="bool" value="false"/>
-            <Option name="UseHtml" type="bool" value="false"/>
+            <Option value="false" name="IsMultiline" type="bool"/>
+            <Option value="false" name="UseHtml" type="bool"/>
           </Option>
         </config>
       </editWidget>
     </field>
   </fieldConfiguration>
   <aliases>
-    <alias field="id" name="Id" index="0"/>
-    <alias field="plan_no" name="Plan Number" index="1"/>
-    <alias field="ref_beacon" name="Reference Beacon" index="2"/>
-    <alias field="scheme" name="Scheme" index="3"/>
-    <alias field="description" name="Description" index="4"/>
+    <alias index="0" name="" field="id"/>
+    <alias index="1" name="Plan Number" field="plan_no"/>
+    <alias index="2" name="Reference Beacon" field="ref_beacon"/>
+    <alias index="3" name="Scheme" field="scheme"/>
+    <alias index="4" name="Description" field="description"/>
   </aliases>
   <defaults>
-    <default expression="" applyOnUpdate="0" field="id"/>
-    <default expression="" applyOnUpdate="0" field="plan_no"/>
-    <default expression="" applyOnUpdate="0" field="ref_beacon"/>
-    <default expression="" applyOnUpdate="0" field="scheme"/>
-    <default expression="" applyOnUpdate="0" field="description"/>
+    <default applyOnUpdate="0" field="id" expression=""/>
+    <default applyOnUpdate="0" field="plan_no" expression=""/>
+    <default applyOnUpdate="0" field="ref_beacon" expression=""/>
+    <default applyOnUpdate="0" field="scheme" expression=""/>
+    <default applyOnUpdate="0" field="description" expression=""/>
   </defaults>
   <constraints>
-    <constraint notnull_strength="1" field="id" unique_strength="1" constraints="3" exp_strength="0"/>
-    <constraint notnull_strength="1" field="plan_no" unique_strength="1" constraints="3" exp_strength="0"/>
-    <constraint notnull_strength="1" field="ref_beacon" unique_strength="0" constraints="1" exp_strength="0"/>
-    <constraint notnull_strength="0" field="scheme" unique_strength="0" constraints="0" exp_strength="0"/>
-    <constraint notnull_strength="0" field="description" unique_strength="0" constraints="0" exp_strength="0"/>
+    <constraint constraints="3" unique_strength="1" field="id" exp_strength="0" notnull_strength="1"/>
+    <constraint constraints="3" unique_strength="1" field="plan_no" exp_strength="0" notnull_strength="1"/>
+    <constraint constraints="1" unique_strength="0" field="ref_beacon" exp_strength="0" notnull_strength="1"/>
+    <constraint constraints="0" unique_strength="0" field="scheme" exp_strength="0" notnull_strength="0"/>
+    <constraint constraints="0" unique_strength="0" field="description" exp_strength="0" notnull_strength="0"/>
   </constraints>
   <constraintExpressions>
     <constraint field="id" exp="" desc=""/>
@@ -131,16 +128,16 @@
   </constraintExpressions>
   <expressionfields/>
   <attributeactions>
-    <defaultAction key="Canvas" value="{{00000000-0000-0000-0000-000000000000}}"/>
+    <defaultAction value="{{00000000-0000-0000-0000-000000000000}}" key="Canvas"/>
   </attributeactions>
-  <attributetableconfig sortOrder="0" sortExpression="" actionWidgetStyle="dropDown">
+  <attributetableconfig actionWidgetStyle="dropDown" sortExpression="" sortOrder="0">
     <columns>
-      <column name="id" type="field" hidden="0" width="-1"/>
-      <column name="plan_no" type="field" hidden="0" width="-1"/>
-      <column name="ref_beacon" type="field" hidden="0" width="-1"/>
-      <column name="scheme" type="field" hidden="0" width="-1"/>
-      <column name="description" type="field" hidden="0" width="-1"/>
-      <column type="actions" hidden="1" width="-1"/>
+      <column hidden="0" name="id" width="-1" type="field"/>
+      <column hidden="0" name="plan_no" width="-1" type="field"/>
+      <column hidden="0" name="ref_beacon" width="-1" type="field"/>
+      <column hidden="0" name="scheme" width="-1" type="field"/>
+      <column hidden="0" name="description" width="-1" type="field"/>
+      <column hidden="1" width="-1" type="actions"/>
     </columns>
   </attributetableconfig>
   <conditionalstyles>
@@ -166,18 +163,18 @@ An example follows:
 from qgis.PyQt.QtWidgets import QWidget
 
 def my_form_open(dialog, layer, feature):
-  geom = feature.geometry()
-  control = dialog.findChild(QWidget, "MyLineEdit")
+	geom = feature.geometry()
+	control = dialog.findChild(QWidget, "MyLineEdit")
 ]]></editforminitcode>
   <featformsuppress>0</featformsuppress>
   <editorlayout>tablayout</editorlayout>
   <attributeEditorForm>
-    <attributeEditorContainer visibilityExpressionEnabled="0" name="General" showLabel="1" visibilityExpression="" columnCount="2" groupBox="0">
-      <attributeEditorField name="plan_no" showLabel="1" index="1"/>
-      <attributeEditorField name="ref_beacon" showLabel="1" index="2"/>
-      <attributeEditorField name="scheme" showLabel="1" index="3"/>
-      <attributeEditorField name="description" showLabel="1" index="4"/>
-      <attributeEditorField name="id" showLabel="1" index="0"/>
+    <attributeEditorContainer showLabel="1" visibilityExpressionEnabled="0" visibilityExpression="" name="General" columnCount="2" groupBox="0">
+      <attributeEditorField showLabel="1" index="1" name="plan_no"/>
+      <attributeEditorField showLabel="1" index="2" name="ref_beacon"/>
+      <attributeEditorField showLabel="1" index="3" name="scheme"/>
+      <attributeEditorField showLabel="1" index="4" name="description"/>
+      <attributeEditorField showLabel="1" index="0" name="id"/>
     </attributeEditorContainer>
   </attributeEditorForm>
   <editable>
@@ -188,11 +185,11 @@ def my_form_open(dialog, layer, feature):
     <field name="scheme" editable="1"/>
   </editable>
   <labelOnTop>
-    <field name="description" labelOnTop="0"/>
-    <field name="id" labelOnTop="0"/>
-    <field name="plan_no" labelOnTop="0"/>
-    <field name="ref_beacon" labelOnTop="0"/>
-    <field name="scheme" labelOnTop="0"/>
+    <field labelOnTop="0" name="description"/>
+    <field labelOnTop="0" name="id"/>
+    <field labelOnTop="0" name="plan_no"/>
+    <field labelOnTop="0" name="ref_beacon"/>
+    <field labelOnTop="0" name="scheme"/>
   </labelOnTop>
   <dataDefinedFieldProperties/>
   <widgets/>
