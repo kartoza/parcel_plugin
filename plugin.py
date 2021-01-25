@@ -31,6 +31,7 @@ from PyQt5.QtCore import QSettings, Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QToolBar, QAction, QMessageBox
 from qgis.core import QgsCoordinateReferenceSystem, QgsProject, QgsVectorLayer, QgsCredentials, QgsDataSourceUri
+from qgis.utils import iface
 
 from . import database
 from .cogo_dialogs import BearingDistanceFormDialog, SelectorDialog, FormParcelDialog, ManagerDialog, \
@@ -386,18 +387,17 @@ class SMLSurveyor(object):
         target_group.setItemVisibilityChecked(Qt.Checked)
         return target_group
 
-    def layer_srid(self, layer_group):
-
-        for layer_node in layer_group.findLayers():
-            layer = layer_node.layer()
+    def layer_srid(self):
+        for layer in iface.mapCanvas().layers():
             if layer.name() == 'Beacons':
                 layer_csr = layer.crs().authid()
                 srs = layer_csr.replace("EPSG", "")
             else:
                 pass
-        return srs
+            return srs
 
     def style_lookup_tables(self, layers, layer_group):
+        crs = self.layer_srid()
         settings_postgis = QSettings()
         settings_postgis.beginGroup('PostgreSQL/connections')
         db_host = settings_postgis.value(self.connection + '/host')
@@ -405,7 +405,6 @@ class SMLSurveyor(object):
         db_name = settings_postgis.value(self.connection + '/database')
         db_username = settings_postgis.value(self.connection + '/username')
         db_password = settings_postgis.value(self.connection + '/password')
-        crs = 26332
 
         for required_layer in reversed(layers):
             for layer_node in layer_group.findLayers():
