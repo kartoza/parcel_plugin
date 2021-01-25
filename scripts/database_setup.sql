@@ -1384,7 +1384,7 @@ ALTER TABLE ONLY public.layer_styles ALTER COLUMN id SET DEFAULT nextval('public
 
 
 
-INSERT INTO public.layer_styles VALUES (1, ':DATABASE', 'public', 'beacons', 'the_geom', 'beacons', '<!DOCTYPE qgis PUBLIC ''http://mrcc.com/qgis.dtd'' ''SYSTEM''>
+INSERT INTO layer_styles(f_table_catalog,f_table_schema,f_table_name,f_geometry_column,styleName,styleQML,styleSLD,useAsDefault,description,owner) VALUES ( ':DATABASE', 'public', 'beacons', 'the_geom', 'beacons', '<!DOCTYPE qgis PUBLIC ''http://mrcc.com/qgis.dtd'' ''SYSTEM''>
 <qgis version="3.8.0-Zanzibar" labelsEnabled="1" simplifyAlgorithm="0" maxScale="0" simplifyDrawingTol="1" simplifyLocal="1" hasScaleBasedVisibilityFlag="1" simplifyDrawingHints="0" readOnly="0" styleCategories="AllStyleCategories" minScale="10000" simplifyMaxScale="1">
  <flags>
   <Identifiable>1</Identifiable>
@@ -1692,8 +1692,10 @@ def my_form_open(dialog, layer, feature):
   </UserStyle>
  </NamedLayer>
 </StyledLayerDescriptor>
-', true, 'Mon Jul 8 11:24:51 2019', ':DBOWNER', NULL, '2019-07-08 09:24:51.081314');
-INSERT INTO public.layer_styles VALUES (2, ':DATABASE', 'public', 'parcels', 'the_geom', 'parcels', '<!DOCTYPE qgis PUBLIC ''http://mrcc.com/qgis.dtd'' ''SYSTEM''>
+', true, 'Mon Jul 8 11:24:51 2019', ':DBOWNER');
+
+
+INSERT INTO layer_styles(f_table_catalog,f_table_schema,f_table_name,f_geometry_column,styleName,styleQML,styleSLD,useAsDefault,description,owner) VALUES (':DATABASE', 'public', 'parcels', 'the_geom', 'parcels', '<!DOCTYPE qgis PUBLIC ''http://mrcc.com/qgis.dtd'' ''SYSTEM''>
 <qgis version="3.8.0-Zanzibar" labelsEnabled="1" simplifyAlgorithm="0" maxScale="-4.65661e-10" simplifyDrawingTol="1" simplifyLocal="1" hasScaleBasedVisibilityFlag="0" simplifyDrawingHints="1" readOnly="0" styleCategories="AllStyleCategories" minScale="1e+08" simplifyMaxScale="1">
  <flags>
   <Identifiable>1</Identifiable>
@@ -2250,7 +2252,10 @@ def my_form_open(dialog, layer, feature):
   </UserStyle>
  </NamedLayer>
 </StyledLayerDescriptor>
-', true, 'Mon Jul 8 11:25:02 2019', ':DBOWNER', NULL, '2019-07-08 09:25:02.645003');
+', true, 'Mon Jul 8 11:25:02 2019', ':DBOWNER');
+
+
+
 
 
 

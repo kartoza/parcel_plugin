@@ -23,9 +23,9 @@ from collections import OrderedDict
 from PyQt5.QtCore import QSettings, QMetaObject, QStringListModel
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QCursor, QIcon
-from PyQt5.QtWidgets import QDialog, QMessageBox, QGridLayout, QVBoxLayout, QLabel, QFormLayout, QComboBox, QHBoxLayout, \
-    QPushButton, QSpacerItem, QApplication, QDialogButtonBox, QLayout, QSplitter, QWidget, QLineEdit, QCheckBox, \
-    QRadioButton, QFrame, QCompleter, QSizePolicy, QListWidget, QToolBox
+from PyQt5.QtWidgets import QDialog, QMessageBox, QGridLayout, QVBoxLayout, QLabel, QFormLayout, QComboBox, \
+    QHBoxLayout, QPushButton, QSpacerItem, QApplication, QDialogButtonBox, QLayout, QSplitter, QWidget, QLineEdit, \
+    QCheckBox, QRadioButton, QFrame, QCompleter, QSizePolicy, QListWidget, QToolBox
 from qgis.core import QgsCredentials, QgsDataSourceUri
 from qgis.gui import QgsAuthConfigSelect
 
@@ -320,9 +320,13 @@ class DatabaseConnectionDialog(QDialog):
                     query = open(
                         get_path("scripts", "database_setup.sql"), "r").read()
                     query = query.replace(":CRS", "{CRS}").replace(":DATABASE", "{DATABASE}").replace(":DBOWNER",
-                                                                                                      "{DBOWNER}")
+                                                                                                      "{DBOWNER}") \
+                        .replace(":DB_HOST", "{DB_HOST}").replace(":DB_PORT", "{DB_PORT}").replace(":DB_PASS",
+                                                                                                   "{DB_PASS}")
                     cursor = self.db_connection.cursor()
-                    db_sql = query.format(CRS=crs, DATABASE=db_name, DBOWNER=db_username)
+                    # db_sql = query.format(CRS=crs, DATABASE=db_name, DBOWNER=db_username)
+                    db_sql = query.format(CRS=crs, DATABASE=db_name, DBOWNER=db_username, DB_HOST=db_host,
+                                          DB_PORT=db_port, DB_PASS=db_password)
                     cursor.execute(db_sql)
                     self.db_connection.commit()
                     del cursor
