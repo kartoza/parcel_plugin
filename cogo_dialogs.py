@@ -1062,7 +1062,6 @@ class FormParcelDialog(QDialog):
         """
         request = QgsFeatureRequest(QgsExpression('parcel_id = %s' % feature)).setFlags(
             QgsFeatureRequest.NoGeometry).setSubsetOfAttributes([])
-        layer.getFeatures(request)
         for feat in layer.getFeatures(request):
             single_feat = feat.id()
         return single_feat
