@@ -26,6 +26,7 @@ from PyQt5.QtGui import QCursor, QIcon
 from PyQt5.QtWidgets import QDialog, QMessageBox, QGridLayout, QVBoxLayout, QLabel, QFormLayout, QComboBox, \
     QHBoxLayout, QPushButton, QSpacerItem, QApplication, QDialogButtonBox, QLayout, QSplitter, QWidget, QLineEdit, \
     QCheckBox, QRadioButton, QFrame, QCompleter, QSizePolicy, QListWidget, QToolBox
+from qgis._core import QgsFeatureRequest, QgsExpression
 from qgis.core import QgsCredentials, QgsDataSourceUri
 from qgis.gui import QgsAuthConfigSelect
 
@@ -1059,7 +1060,12 @@ class FormParcelDialog(QDialog):
     def highlight_feature(self, layer, feature):
         """ Highlight a single feature on a vector layer
         """
-        self.highlight_features(layer, [feature, ])
+        request = QgsFeatureRequest(QgsExpression('parcel_id = %s' % feature)).setFlags(
+            QgsFeatureRequest.NoGeometry).setSubsetOfAttributes([])
+        layer.getFeatures(request)
+        for feat in layer.getFeatures(request):
+            single_feat = feat.id()
+        return single_feat
 
     def highlight_features(self, layer, features):
         """ Highlight multiple features on a vector layer
