@@ -1041,21 +1041,22 @@ class FormParcelDialog(QDialog):
                 self.SQL_PARCELS["SELECT"], (feat_id,))[0][0]
             self.parcel_id_lineedit.setText(str(self.old_values["parcel_id"]))
             self.highlight_feature(self.layers[1].layer, feat_id)
-        if bool(feat_sequence):
-            # populate sequence
-            self.sequence = []
-            self.old_values["sequence"] = []
-            for id in feat_sequence:
-                beacon_id = str(
-                    self.database.query(
-                        self.SQL_BEACONS["SELECT"], (id,))[0][0])
-                self.sequence.append(beacon_id)
-                self.old_values["sequence"].append(beacon_id)
-                self.sequence_listwidget.addItem(beacon_id.replace("\n", ""))
-            self.highlight_features(self.layers[0].layer, feat_sequence)
-            self.selector.selected = feat_sequence
-            # update selector selection
-            self.selector.selected = feat_sequence
+        else:
+            if bool(feat_sequence):
+                # populate sequence
+                self.sequence = []
+                self.old_values["sequence"] = []
+                for id in feat_sequence:
+                    beacon_id = str(
+                        self.database.query(
+                            self.SQL_BEACONS["SELECT"], (id,))[0][0])
+                    self.sequence.append(beacon_id)
+                    self.old_values["sequence"].append(beacon_id)
+                    self.sequence_listwidget.addItem(beacon_id.replace("\n", ""))
+                self.highlight_features(self.layers[0].layer, feat_sequence)
+                self.selector.selected = feat_sequence
+                # update selector selection
+                self.selector.selected = feat_sequence
 
     def highlight_feature(self, layer, feature):
         """ Highlight a single feature on a vector layer
