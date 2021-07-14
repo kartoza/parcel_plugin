@@ -463,7 +463,7 @@ COMMENT ON COLUMN parcel_lookup.plot_sn IS 'plot serial no within a block. Forms
 -- Name: beacons_views; Type: MATERIALIZED VIEW; Schema: public; 
 --
 
-CREATE MATERIALIZED VIEW beacons_views AS
+CREATE  VIEW beacons_views AS
  SELECT DISTINCT ON (b.gid) b.gid,
     b.beacon,
     b.y,
@@ -476,35 +476,10 @@ CREATE MATERIALIZED VIEW beacons_views AS
    FROM ((beacons b
      JOIN parcel_def pd USING (beacon))
      JOIN parcel_lookup pl USING (parcel_id))
-  WITH NO DATA;
+  ;
 
 
---
--- Name: refresh_beacons_intersects(); Type: FUNCTION; Schema: public; Owner: -
---
 
-CREATE FUNCTION public.refresh_beacons_intersects() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-  BEGIN
-    REFRESH MATERIALIZED VIEW  beacons_intersect ;
-  RETURN NEW;
-  END
-  $$;
-
-
---
--- Name: refresh_beacons_views(); Type: FUNCTION; Schema: public; Owner: -
---d
-
-CREATE FUNCTION public.refresh_beacons_views() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-  BEGIN
-    REFRESH MATERIALIZED VIEW  beacons_views ;
-  RETURN NEW;
-  END
-  $$;
 
 
 
@@ -598,7 +573,7 @@ CREATE VIEW parcels AS
 -- Name: beacons_intersect; Type: MATERIALIZED VIEW; Schema: public; 
 --
 
-CREATE MATERIALIZED VIEW beacons_intersect AS
+CREATE  VIEW beacons_intersect AS
  SELECT a.beacon,
     a.the_geom,
     a.x,
@@ -607,7 +582,7 @@ CREATE MATERIALIZED VIEW beacons_intersect AS
     a.private
    FROM (beacons_views a
      LEFT JOIN parcels b ON ((a.parcel_id = b.parcel_id)))
-  WITH NO DATA;
+  ;
 
 
 
@@ -1409,7 +1384,7 @@ ALTER TABLE ONLY public.layer_styles ALTER COLUMN id SET DEFAULT nextval('public
 
 
 
-INSERT INTO public.layer_styles VALUES (1, ':DATABASE', 'public', 'beacons', 'the_geom', 'beacons', '<!DOCTYPE qgis PUBLIC ''http://mrcc.com/qgis.dtd'' ''SYSTEM''>
+INSERT INTO layer_styles(f_table_catalog,f_table_schema,f_table_name,f_geometry_column,styleName,styleQML,styleSLD,useAsDefault,description,owner) VALUES ( ':DATABASE', 'public', 'beacons', 'the_geom', 'beacons', '<!DOCTYPE qgis PUBLIC ''http://mrcc.com/qgis.dtd'' ''SYSTEM''>
 <qgis version="3.8.0-Zanzibar" labelsEnabled="1" simplifyAlgorithm="0" maxScale="0" simplifyDrawingTol="1" simplifyLocal="1" hasScaleBasedVisibilityFlag="1" simplifyDrawingHints="0" readOnly="0" styleCategories="AllStyleCategories" minScale="10000" simplifyMaxScale="1">
  <flags>
   <Identifiable>1</Identifiable>
@@ -1717,8 +1692,10 @@ def my_form_open(dialog, layer, feature):
   </UserStyle>
  </NamedLayer>
 </StyledLayerDescriptor>
-', true, 'Mon Jul 8 11:24:51 2019', ':DBOWNER', NULL, '2019-07-08 09:24:51.081314');
-INSERT INTO public.layer_styles VALUES (2, ':DATABASE', 'public', 'parcels', 'the_geom', 'parcels', '<!DOCTYPE qgis PUBLIC ''http://mrcc.com/qgis.dtd'' ''SYSTEM''>
+', true, 'Mon Jul 8 11:24:51 2019', ':DBOWNER');
+
+
+INSERT INTO layer_styles(f_table_catalog,f_table_schema,f_table_name,f_geometry_column,styleName,styleQML,styleSLD,useAsDefault,description,owner) VALUES (':DATABASE', 'public', 'parcels', 'the_geom', 'parcels', '<!DOCTYPE qgis PUBLIC ''http://mrcc.com/qgis.dtd'' ''SYSTEM''>
 <qgis version="3.8.0-Zanzibar" labelsEnabled="1" simplifyAlgorithm="0" maxScale="-4.65661e-10" simplifyDrawingTol="1" simplifyLocal="1" hasScaleBasedVisibilityFlag="0" simplifyDrawingHints="1" readOnly="0" styleCategories="AllStyleCategories" minScale="1e+08" simplifyMaxScale="1">
  <flags>
   <Identifiable>1</Identifiable>
@@ -2275,7 +2252,10 @@ def my_form_open(dialog, layer, feature):
   </UserStyle>
  </NamedLayer>
 </StyledLayerDescriptor>
-', true, 'Mon Jul 8 11:25:02 2019', ':DBOWNER', NULL, '2019-07-08 09:25:02.645003');
+', true, 'Mon Jul 8 11:25:02 2019', ':DBOWNER');
+
+
+
 
 
 
@@ -2633,32 +2613,9 @@ CREATE INDEX hist_beacons_idx1 ON hist_beacons USING btree (gid);
 CREATE INDEX hist_beacons_idx2 ON hist_beacons USING btree (hist_time);
 
 
---
--- Name: idp_beacons_intersect; Type: INDEX; Schema: public; 
---
-
-CREATE UNIQUE INDEX idp_beacons_intersect ON beacons_intersect USING btree (beacon);
 
 
---
--- Name: idp_beacons_mtview; Type: INDEX; Schema: public; 
---
 
-CREATE UNIQUE INDEX idp_beacons_mtview ON beacons_views USING btree (gid);
-
-
---
--- Name: idx_beacons_intersect_geom; Type: INDEX; Schema: public; 
---
-
-CREATE INDEX idx_beacons_intersect_geom ON beacons_intersect USING gist (the_geom);
-
-
---
--- Name: idx_beacons_matviews_geom; Type: INDEX; Schema: public; 
---
-
-CREATE INDEX idx_beacons_matviews_geom ON beacons_views USING gist (the_geom);
 
 --
 -- Name: ndx_schemes1; Type: INDEX; Schema: public; 
@@ -2675,18 +2632,9 @@ CREATE INDEX ndx_schemes1 ON schemes USING gin (to_tsvector('english'::regconfig
 
 CREATE INDEX sidx_beacons_geom ON beacons USING gist (the_geom);
 
---
--- Name: parcel_def bcn_a_view; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER bcn_a_view BEFORE INSERT OR UPDATE ON public.parcel_def FOR EACH ROW EXECUTE PROCEDURE public.refresh_beacons_views();
 
 
---
--- Name: parcel_def bcn_intersects; Type: TRIGGER; Schema: public; Owner: -
---
 
-CREATE TRIGGER bcn_intersects BEFORE INSERT OR UPDATE ON public.parcel_def FOR EACH ROW EXECUTE PROCEDURE public.refresh_beacons_intersects();
 
 
 

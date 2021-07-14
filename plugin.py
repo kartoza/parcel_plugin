@@ -31,14 +31,16 @@ from PyQt5.QtCore import QSettings, Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QToolBar, QAction, QMessageBox
 from qgis.core import QgsCoordinateReferenceSystem, QgsProject, QgsVectorLayer, QgsCredentials, QgsDataSourceUri
+from qgis.utils import iface
+
+from . import database
+from .cogo_dialogs import BearingDistanceFormDialog, SelectorDialog, FormParcelDialog, ManagerDialog, \
+    FormBeaconDialog, DatabaseConnectionDialog
+from .constants import *
+from .utilities import validate_plugin_actions, get_path
+
 
 # user imports
-
-from .cogo_dialogs import BearingDistanceFormDialog, SelectorDialog, FormParcelDialog, ManagerDialog, FormBeaconDialog, \
-    DatabaseConnectionDialog
-from . import database
-from .constants import *
-from .utilities import validate_plugin_actions
 
 
 class RequiredLayer(object):
@@ -82,9 +84,38 @@ class SMLSurveyor(object):
         self.crs = None
         self.database = None
         self.datetime = datetime.now()
+        self.required_non_spatial_layers = []
         self.required_layers = []
         # 1. beacons
         # 2. parcels
+        self.required_non_spatial_layers.append(RequiredLayer(
+            'Instrument_cat', 'Instrument_cat', 'instrument_cat', 'instrument_cat', None
+        ))
+        self.required_non_spatial_layers.append(RequiredLayer(
+            'Allocation_cat', 'Allocation_cat', 'allocation_cat', 'allocation_cat', None
+        ))
+        self.required_non_spatial_layers.append(RequiredLayer(
+            'Local_govt', 'Local_govt', 'local_govt', 'id', None
+        ))
+        self.required_non_spatial_layers.append(RequiredLayer(
+            'Status_cat', 'Status_cat', 'status_cat', 'status_cat', None
+        ))
+        self.required_non_spatial_layers.append(RequiredLayer(
+            'Prop_types', 'Prop_types', 'prop_types', 'id', None
+        ))
+        self.required_non_spatial_layers.append(RequiredLayer(
+            'Schemes', 'Schemes', 'schemes', 'id', None
+        ))
+        self.required_non_spatial_layers.append(RequiredLayer(
+            'Deeds', 'Deeds', 'deeds', 'deed_sn', None
+        ))
+        self.required_non_spatial_layers.append(RequiredLayer(
+            'Survey', 'Survey', 'survey', 'id', None
+        ))
+        self.required_non_spatial_layers.append(RequiredLayer(
+            'Parcel_lookup', 'Parcel_lookup', 'parcel_lookup', 'parcel_id', None
+        ))
+
         self.required_layers.append(RequiredLayer(
             'Beacon', 'Beacons', 'beacons', 'gid', 'points'
         ))
@@ -290,7 +321,6 @@ class SMLSurveyor(object):
         """ Ensure all required layers exist
         """
         if bool(self.database):
-
             # Comment out below section because connection name is better
             # to be a group name than crs name IMHO.
 
@@ -308,39 +338,91 @@ class SMLSurveyor(object):
             #         group_name = key
 
             group_name = self.connection
+            group_name_non_spatial_layers = self.connection + '_' + 'lookup'
 
-            root = QgsProject.instance().layerTreeRoot()
-            target_group = root.findGroup(group_name)
-            if not bool(target_group):
-                target_group = root.insertGroup(0, group_name)
-            target_group.setItemVisibilityChecked(Qt.Checked)
+            target_group = self.insert_group(group_name, 0)
+            target_group_non_spatial = self.insert_group(group_name_non_spatial_layers, 1)
 
-            for required_layer in reversed(self.required_layers):
-                for layer_node in target_group.findLayers():
-                    layer = layer_node.layer()
-                    if required_layer.name_plural.lower() == \
-                            layer.name().lower():
-                        target_group.removeLayer(layer)
+            self.populate_tables(target_group, self.required_layers)
+            self.populate_tables(target_group_non_spatial, self.required_non_spatial_layers)
+            self.style_lookup_tables(self.required_non_spatial_layers, target_group_non_spatial)
 
-            for required_layer in self.required_layers:
-                self.uri.setDataSource(
-                    required_layer.schema,
-                    required_layer.table,
-                    required_layer.geometry_column,
-                    '',
-                    required_layer.primary_key)
-                added_layer = QgsVectorLayer(
-                    self.uri.uri(), required_layer.name_plural, "postgres")
-                QgsProject.instance().addMapLayer(added_layer, False)
-                target_group.addLayer(added_layer)
-                for layer_node in target_group.findLayers():
-                    layer = layer_node.layer()
-                    if required_layer.name_plural == layer.name():
-                        required_layer.layer = layer
-                        layer_node.setItemVisibilityChecked(Qt.Checked)
-                        if self.crs:
-                            layer.setCrs(self.crs)
-                self.iface.zoomToActiveLayer()
+    def populate_tables(self, layer_group, layers):
+        for required_layer in reversed(layers):
+            for layer_node in layer_group.findLayers():
+                layer = layer_node.layer()
+                if required_layer.name_plural.lower() == \
+                        layer.name().lower():
+                    layer_group.removeLayer(layer)
+
+        for required_layer in layers:
+            if layer_group.name() == self.connection:
+                geom_column = required_layer.geometry_column
+            else:
+                geom_column = None
+            self.uri.setDataSource(
+                required_layer.schema,
+                required_layer.table,
+                geom_column,
+                '',
+                required_layer.primary_key)
+            added_layer = QgsVectorLayer(
+                self.uri.uri(), required_layer.name_plural, "postgres")
+            QgsProject.instance().addMapLayer(added_layer, False)
+            layer_group.addLayer(added_layer)
+            for layer_node in layer_group.findLayers():
+                layer = layer_node.layer()
+                if required_layer.name_plural == layer.name():
+                    required_layer.layer = layer
+                    layer_node.setItemVisibilityChecked(Qt.Checked)
+                    if self.crs:
+                        layer.setCrs(self.crs)
+            self.iface.zoomToActiveLayer()
+
+    def insert_group(self, group_name, position):
+        root = QgsProject.instance().layerTreeRoot()
+        target_group = root.findGroup(group_name)
+        if not bool(target_group):
+            target_group = root.insertGroup(position, group_name)
+        target_group.setItemVisibilityChecked(Qt.Checked)
+        return target_group
+
+    def layer_srid(self):
+        for layer in iface.mapCanvas().layers():
+            if layer.name() == 'Beacons':
+                layer_csr = layer.crs().authid()
+                srs = layer_csr.replace("EPSG", "")
+            else:
+                pass
+            return srs
+
+    def style_lookup_tables(self, layers, layer_group):
+        crs = self.layer_srid()
+        settings_postgis = QSettings()
+        settings_postgis.beginGroup('PostgreSQL/connections')
+        db_host = settings_postgis.value(self.connection + '/host')
+        db_port = settings_postgis.value(self.connection + '/port')
+        db_name = settings_postgis.value(self.connection + '/database')
+        db_username = settings_postgis.value(self.connection + '/username')
+        db_password = settings_postgis.value(self.connection + '/password')
+
+        for required_layer in reversed(layers):
+            for layer_node in layer_group.findLayers():
+                layer = layer_node.layer()
+
+                if required_layer.name_plural.lower() == layer.name().lower():
+                    qml_style = layer.name().lower() + '.qml'
+                    full_path = (get_path("documents", "styles", "lookups", qml_style))
+
+                    query = open(full_path, "r").read()
+                    query = query.replace(":CRS", "{CRS}").replace(":DATABASE", "{DATABASE}").replace(
+                        ":DBOWNER", "{DBOWNER}") \
+                        .replace(":DB_HOST", "{DB_HOST}").replace(":DB_PORT", "{DB_PORT}").replace(":DB_PASS",
+                                                                                                   "{DB_PASS}")
+                    modified_qml = query.format(CRS=crs, DATABASE=db_name, DBOWNER=db_username, DB_HOST=db_host,
+                                                DB_PORT=db_port, DB_PASS=db_password)
+
+                    layer.loadNamedStyle(full_path)
 
     def manage_beacons(self):
         """ Portal which enables the management of beacons

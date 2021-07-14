@@ -15,9 +15,9 @@ This is a postgresql database manager.
  *                                                                         *
  ***************************************************************************/
 """
-from builtins import str
-from builtins import object
 import psycopg2
+from builtins import object
+from builtins import str
 
 
 class Field(object):
