@@ -26,9 +26,9 @@ from PyQt5.QtGui import QCursor, QIcon
 from PyQt5.QtWidgets import QDialog, QMessageBox, QGridLayout, QVBoxLayout, QLabel, QFormLayout, QComboBox, \
     QHBoxLayout, QPushButton, QSpacerItem, QApplication, QDialogButtonBox, QLayout, QSplitter, QWidget, QLineEdit, \
     QCheckBox, QRadioButton, QFrame, QCompleter, QSizePolicy, QListWidget, QToolBox
-from qgis._core import QgsFeatureRequest, QgsExpression
-from qgis.core import QgsCredentials, QgsDataSourceUri
+from qgis.core import QgsCredentials, QgsDataSourceUri, QgsFeatureRequest, QgsExpression
 from qgis.gui import QgsAuthConfigSelect
+
 
 from .cogo_widgets import XQPushButton, XQDialogButtonBox
 from .database import *
@@ -319,7 +319,7 @@ class DatabaseConnectionDialog(QDialog):
 
                 if crs:
                     query = open(
-                        get_path("scripts", "database_setup.sql"), "r").read()
+                        get_path("scripts", "database_setup.sql"), "r", encoding='UTF8').read()
                     query = query.replace(":CRS", "{CRS}").replace(":DATABASE", "{DATABASE}").replace(":DBOWNER",
                                                                                                       "{DBOWNER}") \
                         .replace(":DB_HOST", "{DB_HOST}").replace(":DB_PORT", "{DB_PORT}").replace(":DB_PASS",
