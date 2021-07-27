@@ -26,9 +26,9 @@ from PyQt5.QtGui import QCursor, QIcon
 from PyQt5.QtWidgets import QDialog, QMessageBox, QGridLayout, QVBoxLayout, QLabel, QFormLayout, QComboBox, \
     QHBoxLayout, QPushButton, QSpacerItem, QApplication, QDialogButtonBox, QLayout, QSplitter, QWidget, QLineEdit, \
     QCheckBox, QRadioButton, QFrame, QCompleter, QSizePolicy, QListWidget, QToolBox
-from qgis._core import QgsFeatureRequest, QgsExpression
-from qgis.core import QgsCredentials, QgsDataSourceUri
+from qgis.core import QgsCredentials, QgsDataSourceUri, QgsFeatureRequest, QgsExpression
 from qgis.gui import QgsAuthConfigSelect
+
 
 from .cogo_widgets import XQPushButton, XQDialogButtonBox
 from .database import *
@@ -319,7 +319,7 @@ class DatabaseConnectionDialog(QDialog):
 
                 if crs:
                     query = open(
-                        get_path("scripts", "database_setup.sql"), "r").read()
+                        get_path("scripts", "database_setup.sql"), "r", encoding='UTF8').read()
                     query = query.replace(":CRS", "{CRS}").replace(":DATABASE", "{DATABASE}").replace(":DBOWNER",
                                                                                                       "{DBOWNER}") \
                         .replace(":DB_HOST", "{DB_HOST}").replace(":DB_PORT", "{DB_PORT}").replace(":DB_PASS",
@@ -1041,21 +1041,22 @@ class FormParcelDialog(QDialog):
                 self.SQL_PARCELS["SELECT"], (feat_id,))[0][0]
             self.parcel_id_lineedit.setText(str(self.old_values["parcel_id"]))
             self.highlight_feature(self.layers[1].layer, feat_id)
-        if bool(feat_sequence):
-            # populate sequence
-            self.sequence = []
-            self.old_values["sequence"] = []
-            for id in feat_sequence:
-                beacon_id = str(
-                    self.database.query(
-                        self.SQL_BEACONS["SELECT"], (id,))[0][0])
-                self.sequence.append(beacon_id)
-                self.old_values["sequence"].append(beacon_id)
-                self.sequence_listwidget.addItem(beacon_id.replace("\n", ""))
-            self.highlight_features(self.layers[0].layer, feat_sequence)
-            self.selector.selected = feat_sequence
-            # update selector selection
-            self.selector.selected = feat_sequence
+        else:
+            if bool(feat_sequence):
+                # populate sequence
+                self.sequence = []
+                self.old_values["sequence"] = []
+                for id in feat_sequence:
+                    beacon_id = str(
+                        self.database.query(
+                            self.SQL_BEACONS["SELECT"], (id,))[0][0])
+                    self.sequence.append(beacon_id)
+                    self.old_values["sequence"].append(beacon_id)
+                    self.sequence_listwidget.addItem(beacon_id.replace("\n", ""))
+                self.highlight_features(self.layers[0].layer, feat_sequence)
+                self.selector.selected = feat_sequence
+                # update selector selection
+                self.selector.selected = feat_sequence
 
     def highlight_feature(self, layer, feature):
         """ Highlight a single feature on a vector layer
