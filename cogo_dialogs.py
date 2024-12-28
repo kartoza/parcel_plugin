@@ -20,15 +20,18 @@ from __future__ import absolute_import
 from builtins import range
 from collections import OrderedDict
 
-from PyQt5.QtCore import QSettings, QMetaObject, QStringListModel
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import QSettings, QMetaObject, QStringListModel, Qt
 from PyQt5.QtGui import QCursor, QIcon
 from PyQt5.QtWidgets import QDialog, QMessageBox, QGridLayout, QVBoxLayout, QLabel, QFormLayout, QComboBox, \
     QHBoxLayout, QPushButton, QSpacerItem, QApplication, QDialogButtonBox, QLayout, QSplitter, QWidget, QLineEdit, \
     QCheckBox, QRadioButton, QFrame, QCompleter, QSizePolicy, QListWidget, QToolBox
 from qgis.core import QgsCredentials, QgsDataSourceUri, QgsFeatureRequest, QgsExpression
 from qgis.gui import QgsAuthConfigSelect
-
+try:
+    from PyQt5.QtWebEngineWidgets import QWebEngineView
+    webengine_available = True
+except ImportError:
+    webengine_available = False
 
 from .cogo_widgets import XQPushButton, XQDialogButtonBox
 from .database import *

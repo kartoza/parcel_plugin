@@ -226,11 +226,11 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QWebView</class>
-   <extends>QWidget</extends>
-   <header>PyQt4.QtWebKit</header>
+    <class>{CLASS_NAME}</class>
+    <extends>QWidget</extends>
+    <header>{HEADER_NAME}</header>
   </customwidget>
- </customwidgets>
+</customwidgets>
  <resources/>
  <connections>
   <connection>
