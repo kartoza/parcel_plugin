@@ -58,6 +58,26 @@ def get_path(*args):
     return path
 
 
+def adjust_ui_file(ui_file_path, class_name, header_name):
+    """
+    Adjusts the UI file by replacing placeholders with the provided class and header names.
+
+    :param ui_file_path: Path to the .ui file.
+    :param class_name: Class name to substitute.
+    :param header_name: Header name to substitute.
+    """
+    with open(ui_file_path, 'r') as file:
+        content = file.read()
+
+    # Replace placeholders
+    if '{CLASS_NAME}' in content and '{HEADER_NAME}' in content:
+        content = content.replace('{CLASS_NAME}', class_name).replace('{HEADER_NAME}', header_name)
+    else:
+        print("Warning: Placeholders not found in the UI file.")
+    with open(ui_file_path, 'w') as file:
+        file.write(content)
+
+
 def get_ui_class(ui_file):
     """Get UI Python class from .ui file.
 
@@ -73,6 +93,16 @@ def get_ui_class(ui_file):
             ui_file
         )
     )
+    try:
+        from PyQt5.QtWebEngineWidgets import QWebEngineView
+        class_name = 'QWebEngineView'
+        header_name = 'PyQt5.QtWebEngineWidgets'
+    except ImportError:
+        class_name = 'QWebView'
+        header_name = 'PyQt4.QtWebKit'
+
+    adjust_ui_file(ui_file_path, class_name, header_name)
+
     return uic.loadUiType(ui_file_path, from_imports=True)[0]
 
 
